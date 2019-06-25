@@ -10,4 +10,6 @@ public interface UserService {
     Optional<AppUser> findUserByUserName(String userName);
 
     void register(UserDto appUser) throws LoginAlreadyExistException;
+
+    Optional<AppUser> getCurrentLogInUser();
 }
