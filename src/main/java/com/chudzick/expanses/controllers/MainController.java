@@ -26,13 +26,13 @@ public class MainController {
     }
 
     @PostMapping(value = "/register")
-    public String registration(@ModelAttribute @Valid UserDto userD, BindingResult bindingResult, Model model) {
+    public String registration(@ModelAttribute @Valid UserDto userDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute(userD);
+            model.addAttribute("bindingResult" ,bindingResult);
             return "register";
         }
         try {
-            userService.register(userD);
+            userService.register(userDto);
         } catch (LoginAlreadyExistException ex) {
             model.addAttribute("userExistError", ex.getMessage());
         }
