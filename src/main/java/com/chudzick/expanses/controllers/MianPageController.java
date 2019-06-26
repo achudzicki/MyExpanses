@@ -1,4 +1,4 @@
-package com.chudzick.expanses.config;
+package com.chudzick.expanses.controllers;
 
 import com.chudzick.expanses.beans.UserBean;
 import com.chudzick.expanses.domain.AppUser;
