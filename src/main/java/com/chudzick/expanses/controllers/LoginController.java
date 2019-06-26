@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.validation.Valid;
 
 @Controller
-public class MainController {
+public class LoginController {
 
     @Autowired
     private UserService userService;
@@ -28,7 +28,7 @@ public class MainController {
     @PostMapping(value = "/register")
     public String registration(@ModelAttribute @Valid UserDto userD, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute(userD);
+            model.addAttribute("bindingResult",bindingResult);
             return "register";
         }
         try {

@@ -79,9 +79,9 @@ public class UserServiceImpl implements UserService {
 
         Optional<Role> role = roleRepository.findByName("ROLE_USER");
         if (!role.isPresent()) {
-            roleRepository.save(new Role("ROLE_USER"));
+            role = Optional.of(roleRepository.save(new Role("ROLE_USER")));
         }
-        userRole.add(roleRepository.findByName("ROLE_USER").get());
+        userRole.add(role.get());
         userToRegister.setRoles(userRole);
     }
 }
