@@ -1,4 +1,4 @@
-package com.chudzick.expanses.domain;
+package com.chudzick.expanses.domain.users;
 
 import com.chudzick.expanses.validators.ValidEmail;
 

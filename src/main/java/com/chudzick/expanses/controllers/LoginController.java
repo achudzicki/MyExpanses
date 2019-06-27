@@ -1,8 +1,8 @@
 package com.chudzick.expanses.controllers;
 
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.UserDto;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
-import com.chudzick.expanses.services.UserService;
+import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

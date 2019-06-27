@@ -1,7 +1,7 @@
 package com.chudzick.expanses.controllers;
 
 import com.chudzick.expanses.TestUserSupplier;
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.UserDto;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
