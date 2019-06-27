@@ -1,6 +1,6 @@
-package com.chudzick.expanses.repositories;
+package com.chudzick.expanses.repositories.users;
 
-import com.chudzick.expanses.domain.Role;
+import com.chudzick.expanses.domain.users.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.chudzick.expanses.beans;
 
-import com.chudzick.expanses.domain.AppUser;
+import com.chudzick.expanses.domain.users.AppUser;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;

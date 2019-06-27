@@ -1,7 +1,7 @@
 package com.chudzick.expanses.factories;
 
-import com.chudzick.expanses.domain.AppUser;
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.domain.users.UserDto;
 
 public class AppUserStaticFactory {
 

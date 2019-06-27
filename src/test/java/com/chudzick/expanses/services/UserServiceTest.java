@@ -2,13 +2,14 @@ package com.chudzick.expanses.services;
 
 
 import com.chudzick.expanses.TestUserSupplier;
-import com.chudzick.expanses.domain.AppUser;
-import com.chudzick.expanses.domain.Role;
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.domain.users.Role;
+import com.chudzick.expanses.domain.users.UserDto;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
 import com.chudzick.expanses.mappers.UserDtoToAppUserMapper;
-import com.chudzick.expanses.repositories.RoleRepository;
-import com.chudzick.expanses.repositories.UserRepository;
+import com.chudzick.expanses.repositories.users.RoleRepository;
+import com.chudzick.expanses.repositories.users.UserRepository;
+import com.chudzick.expanses.services.users.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

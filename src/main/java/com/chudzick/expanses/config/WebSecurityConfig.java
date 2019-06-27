@@ -1,7 +1,7 @@
 package com.chudzick.expanses.config;
 
-import com.chudzick.expanses.repositories.UserRepository;
-import com.chudzick.expanses.services.UserDetailServiceImpl;
+import com.chudzick.expanses.repositories.users.UserRepository;
+import com.chudzick.expanses.services.users.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package com.chudzick.expanses;
 
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.UserDto;
 
 public interface TestUserSupplier {
 
