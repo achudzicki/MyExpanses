@@ -1,4 +1,4 @@
-package com.chudzick.expanses.repositories.users;
+package com.chudzick.expanses.repositories;
 
 import com.chudzick.expanses.domain.users.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;

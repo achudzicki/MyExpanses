@@ -1,7 +1,7 @@
 package com.chudzick.expanses.services.users;
 
 import com.chudzick.expanses.domain.users.AppUser;
-import com.chudzick.expanses.repositories.users.UserRepository;
+import com.chudzick.expanses.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

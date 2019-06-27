@@ -4,6 +4,7 @@ import com.chudzick.expanses.domain.users.AppUser;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,7 +17,7 @@ public class SingleTransaction {
 
     private BigDecimal amound;
 
-    private LocalDateTime transactionDate;
+    private LocalDate transactionDate;
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
@@ -49,11 +50,11 @@ public class SingleTransaction {
         this.amound = amound;
     }
 
-    public LocalDateTime getTransactionDate() {
+    public LocalDate getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDateTime transactionDate) {
+    public void setTransactionDate(LocalDate transactionDate) {
         this.transactionDate = transactionDate;
     }
 

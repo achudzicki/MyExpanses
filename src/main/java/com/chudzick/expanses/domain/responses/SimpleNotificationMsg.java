@@ -2,7 +2,7 @@ package com.chudzick.expanses.domain.responses;
 
 public class SimpleNotificationMsg {
     private String message;
-    private boolean isSuccess;
+    private boolean success;
 
     public String getMessage() {
         return message;
@@ -13,10 +13,10 @@ public class SimpleNotificationMsg {
     }
 
     public boolean isSuccess() {
-        return isSuccess;
+        return success;
     }
 
     public void setSuccess(boolean success) {
-        isSuccess = success;
+        this.success = success;
     }
 }

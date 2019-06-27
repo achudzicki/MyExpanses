@@ -12,17 +12,32 @@
 
     <script>
         $(document).ready(function () {
-            console.log('sda')
+            $('#notifications li').each(function () {
+                var isSuccess = $(this).find('input[name="success"]').val();
+                var msg = $(this).find('input[name="msg"]').val();
+
+                console.log(msg);
+
+                if (isSuccess) {
+                    UIkit.notification({message: '<i style="color: #007000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
+                } else {
+                    UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
+                }
+            })
         });
     </script>
 </head>
-
 <body>
 
-notificationMessagesBean
+<div hidden id="notifications" th:if="${notificationMessagesBean != null}">
+        <li th:each="notification : ${notificationMessagesBean.notificationsMessages}">
+            <input name="success" th:value="${notification.success}">
+            <input name="msg" th:value="${notification.message}">
+        </li>
+</div>
 <div class="uk-container uk-margin-small">
             <h2>DODAJ NOWA TRANSAKCJE TEST</h2>
-            <form class="uk-form" th:object="${singleTransaction}" th:action="@{/register}" method="POST">
+            <form class="uk-form" th:object="${singleTransactionDto}" th:action="@{/transaction/add}" method="POST">
                 <div class="uk-margin">
                     <label>Kwota</label>
                     <input type="number" name="amound" class="uk-input" th:field="*{amound}">
@@ -40,7 +55,7 @@ notificationMessagesBean
                 <div class="uk-margin">
                     <label>Typ transakcji</label>
                     <select class="uk-select" name="transactionGroup" th:field="*{transactionGroup}">
-                        <option th:each ="group : ${transactionGroups}" th:value="${group}" th:text="${group.gorupName}"></option>
+                        <option th:each ="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
                     </select>
                 </div>
                 <button type="submit" class="uk-button uk-button-primary">Zapisz</button>

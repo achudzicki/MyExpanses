@@ -1,6 +1,6 @@
 package com.chudzick.expanses.config;
 
-import com.chudzick.expanses.repositories.users.UserRepository;
+import com.chudzick.expanses.repositories.UserRepository;
 import com.chudzick.expanses.services.users.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf()
+                .disable()
+
                 .authorizeRequests()
                 .antMatchers( "/register","/css/**","/js/**","/img/**").permitAll()
                 .anyRequest().authenticated()

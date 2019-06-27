@@ -4,7 +4,7 @@ import com.chudzick.expanses.beans.UserBean;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.exceptions.LoggedInUserNotFoundException;
-import com.chudzick.expanses.repositories.transactionsApp.TransactionGroupRepository;
+import com.chudzick.expanses.repositories.TransactionGroupRepository;
 import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

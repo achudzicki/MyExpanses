@@ -1,23 +1,20 @@
 package com.chudzick.expanses.controllers.transaction;
 
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
-import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionType;
 import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
-import com.chudzick.expanses.repositories.transactionsApp.TransactionGroupRepository;
+import com.chudzick.expanses.repositories.TransactionGroupRepository;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -35,19 +32,13 @@ public class TransactionController {
 
     @GetMapping(value = "")
     public String getTransactionPage(Model model) {
-        List<TransactionGroup> transactionGroups = transactionGroupRepository.findAll();
-        model.addAttribute("transactionGroups", transactionGroups);
-        model.addAttribute("singleTransaction", new SingleTransaction());
-        model.addAttribute("transactionTypes", TransactionType.values());
+
+        initBasicAddTransactionModelAttributes(model);
         return "transaction/transactionMain";
     }
 
     @PostMapping(value = "/add")
-    public String addNewTransaction(@Valid @ModelAttribute SingleTransactionDto singleTransactionDto, Model model, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "transaction/transactionMain";
-        }
-
+    public String addNewTransaction(@ModelAttribute SingleTransactionDto singleTransactionDto, Model model) {
         singleTransactionService.addNewTransaction(singleTransactionDto);
 
         notificationMessagesBean.setNotificationsMessages(
@@ -56,7 +47,15 @@ public class TransactionController {
                         .getNotificationList()
         );
 
+        initBasicAddTransactionModelAttributes(model);
         model.addAttribute("notificationMessagesBean", notificationMessagesBean);
         return "transaction/transactionMain";
+    }
+
+    private void initBasicAddTransactionModelAttributes(Model model) {
+        List<TransactionGroup> transactionGroups = transactionGroupRepository.findAll();
+        model.addAttribute("transactionGroups", transactionGroups);
+        model.addAttribute("singleTransactionDto", new SingleTransactionDto());
+        model.addAttribute("transactionTypes", TransactionType.values());
     }
 }

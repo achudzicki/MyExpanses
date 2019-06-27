@@ -1,26 +1,15 @@
 package com.chudzick.expanses.domain.expanses;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class SingleTransactionDto {
 
-    @NotNull
-    @NotEmpty
     private BigDecimal amound;
 
-    @NotNull
-    @NotEmpty
-    private LocalDateTime transactionDate;
+    private String transactionDate;
 
-    @NotNull
-    @NotEmpty
     private TransactionType transactionType;
 
-    @NotNull
-    @NotEmpty
     private TransactionGroup transactionGroup;
 
     public BigDecimal getAmound() {
@@ -31,11 +20,11 @@ public class SingleTransactionDto {
         this.amound = amound;
     }
 
-    public LocalDateTime getTransactionDate() {
+    public String getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDateTime transactionDate) {
+    public void setTransactionDate(String transactionDate) {
         this.transactionDate = transactionDate;
     }
 

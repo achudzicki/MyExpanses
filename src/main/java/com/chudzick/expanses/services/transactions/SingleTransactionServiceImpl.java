@@ -5,7 +5,7 @@ import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.exceptions.LoggedInUserNotFoundException;
 import com.chudzick.expanses.factories.SingleTransactionStaticFactory;
-import com.chudzick.expanses.repositories.transactionsApp.SingleTransactionRepository;
+import com.chudzick.expanses.repositories.SingleTransactionRepository;
 import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
