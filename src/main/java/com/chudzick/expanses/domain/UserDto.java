@@ -2,6 +2,7 @@ package com.chudzick.expanses.domain;
 
 import com.chudzick.expanses.validators.PasswordMatches;
 import com.chudzick.expanses.validators.ValidEmail;
+import com.chudzick.expanses.validators.ValidPassword;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public class UserDto {
     private String login;
     @NotNull
     @NotEmpty(message = "To pole nie może być puste")
+    @ValidPassword
     private String password;
     @NotNull
     @NotEmpty(message = "To pole nie może być puste")

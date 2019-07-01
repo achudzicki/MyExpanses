@@ -36,6 +36,8 @@ public class CustomPasswordValidator implements ConstraintValidator<ValidPasswor
         constraintValidatorContext.buildConstraintViolationWithTemplate(
                 String.join(",", validator.getMessages(result))
         ).addConstraintViolation();
+
+        validator.getMessages(result).forEach(a -> System.out.println(a));
         return false;
     }
 

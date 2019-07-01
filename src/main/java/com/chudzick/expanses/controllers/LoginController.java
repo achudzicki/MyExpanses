@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.validation.Valid;
 
 @Controller
-public class MainController {
+public class LoginController {
 
     @Autowired
     private UserService userService;
