@@ -1,12 +1,16 @@
 package com.chudzick.expanses.validators;
 
 import org.passay.*;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.net.URL;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Properties;
 
+@PropertySource("messages.properties")
 public class CustomPasswordValidator implements ConstraintValidator<ValidPassword, String> {
 
     @Override
@@ -15,9 +19,16 @@ public class CustomPasswordValidator implements ConstraintValidator<ValidPasswor
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext constraintValidatorContext) {
-        URL resource = this.getClass().getClassLoader().getResource("messages_pl.properties");
+        Properties properties = new Properties();
 
-        PasswordValidator validator = new PasswordValidator(Arrays.asList(
+        try (FileInputStream inputStream = new FileInputStream(getClass().getClassLoader().getResource("messages.properties").getFile())) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        MessageResolver messageResolver = new PropertiesMessageResolver(properties);
+        PasswordValidator validator = new PasswordValidator(messageResolver, Arrays.asList(
                 new LengthRule(8, 25),
                 new CharacterRule(EnglishCharacterData.LowerCase, 1),
                 new CharacterRule(EnglishCharacterData.UpperCase, 1),
@@ -34,10 +45,8 @@ public class CustomPasswordValidator implements ConstraintValidator<ValidPasswor
 
         constraintValidatorContext.disableDefaultConstraintViolation();
         constraintValidatorContext.buildConstraintViolationWithTemplate(
-                String.join(",", validator.getMessages(result))
+                validator.getMessages(result).get(0)
         ).addConstraintViolation();
-
-        validator.getMessages(result).forEach(a -> System.out.println(a));
         return false;
     }
 

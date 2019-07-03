@@ -1,6 +1,6 @@
 package com.chudzick.expanses.validators;
 
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.UserDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

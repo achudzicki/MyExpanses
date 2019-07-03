@@ -1,4 +1,4 @@
-package com.chudzick.expanses.domain;
+package com.chudzick.expanses.domain.users;
 
 import com.chudzick.expanses.validators.PasswordMatches;
 import com.chudzick.expanses.validators.ValidEmail;
@@ -12,24 +12,24 @@ import javax.validation.constraints.Size;
 public class UserDto {
 
     @NotNull
-    @NotEmpty(message = "To pole nie może być puste")
+    @NotEmpty(message = "{form.validation.not.empty}")
     private String lastName;
     @NotNull
-    @NotEmpty(message = "To pole nie może być puste")
+    @NotEmpty(message = "{form.validation.not.empty}")
     private String name;
     @NotNull
-    @NotEmpty(message = "To pole nie może być puste")
-    @Size(min = 6, message = "Login musi posiadać przynajmniej 6 znaków")
+    @NotEmpty(message = "{form.validation.not.empty}")
+    @Size(min = 6,max = 20,message = "{form.validation.wrong.login.length}" )
     private String login;
     @NotNull
-    @NotEmpty(message = "To pole nie może być puste")
+    @NotEmpty(message = "{form.validation.not.empty}")
     @ValidPassword
     private String password;
     @NotNull
-    @NotEmpty(message = "To pole nie może być puste")
+    @NotEmpty(message = "{form.validation.not.empty}")
     private String repeatedPassword;
     private String gender;
-    @NotEmpty(message = "To pole nie może być puste")
+    @NotEmpty(message = "{form.validation.not.empty}")
     @NotNull
     @ValidEmail
     private String email;

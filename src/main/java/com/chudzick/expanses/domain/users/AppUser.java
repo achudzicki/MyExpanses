@@ -1,7 +1,11 @@
-package com.chudzick.expanses.domain;
+package com.chudzick.expanses.domain.users;
+
+import com.chudzick.expanses.domain.expanses.SingleTransaction;
+import com.chudzick.expanses.domain.expanses.TransactionGroup;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,6 +32,37 @@ public class AppUser {
     private String gender;
     private String email;
 
+    @OneToMany(
+            mappedBy = "appUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<SingleTransaction> transactionList;
+
+    @OneToMany(
+            mappedBy = "appUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<TransactionGroup> transactionGroups;
+
+
+    public List<SingleTransaction> getTransactionList() {
+        return transactionList;
+    }
+
+    public void setTransactionList(List<SingleTransaction> transactionList) {
+        this.transactionList = transactionList;
+    }
+
+    public List<TransactionGroup> getTransactionGroups() {
+        return transactionGroups;
+    }
+
+    public void setTransactionGroups(List<TransactionGroup> transactionGroups) {
+        this.transactionGroups = transactionGroups;
+    }
+
     public Long getId() {
         return id;
     }
@@ -43,6 +78,7 @@ public class AppUser {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }

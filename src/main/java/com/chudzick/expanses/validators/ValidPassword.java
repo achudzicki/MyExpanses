@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = CustomPasswordValidator.class)
 @Documented
 public @interface ValidPassword {
-    String message() default "Hasło musi posiadać przynajmniej jeden znak szczególny i liczbę";
+    String message() default "";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

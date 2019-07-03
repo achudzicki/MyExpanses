@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = CustomEmailValidator.class)
 @Documented
 public @interface ValidEmail {
-    String message() default "Invalid email format";
+    String message() default "{form.validation.invalid.email.format}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
  }
