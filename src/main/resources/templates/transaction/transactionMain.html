@@ -16,10 +16,8 @@
                 var isSuccess = $(this).find('input[name="success"]').val();
                 var msg = $(this).find('input[name="msg"]').val();
 
-                console.log(msg);
-
                 if (isSuccess) {
-                    UIkit.notification({message: '<i style="color: #007000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
+                    UIkit.notification({message: '<i style="color: #007000"><span uk-icon=\'icon: check\'></span> ' + msg + '</i>'});
                 } else {
                     UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
                 }

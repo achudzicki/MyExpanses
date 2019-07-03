@@ -11,8 +11,7 @@ public class CustomEmailValidator implements ConstraintValidator<ValidEmail, Str
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-+]+(.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})$";
 
     @Override
-    public void initialize(ValidEmail constraintAnnotation) {
-    }
+    public void initialize(ValidEmail constraintAnnotation) {}
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {

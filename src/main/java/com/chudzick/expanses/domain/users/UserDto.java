@@ -1,31 +1,35 @@
 package com.chudzick.expanses.domain.users;
 
+import com.chudzick.expanses.validators.PasswordMatches;
 import com.chudzick.expanses.validators.ValidEmail;
+import com.chudzick.expanses.validators.ValidPassword;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@PasswordMatches
 public class UserDto {
 
     @NotNull
-    @NotEmpty
-    private String name;
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "{form.validation.not.empty}")
     private String lastName;
     @NotNull
-    @NotEmpty
-    @Size(min = 6, max = 20)
+    @NotEmpty(message = "{form.validation.not.empty}")
+    private String name;
+    @NotNull
+    @NotEmpty(message = "{form.validation.not.empty}")
+    @Size(min = 6,max = 20,message = "{form.validation.wrong.login.length}" )
     private String login;
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "{form.validation.not.empty}")
+    @ValidPassword
     private String password;
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "{form.validation.not.empty}")
     private String repeatedPassword;
     private String gender;
-    @NotEmpty
+    @NotEmpty(message = "{form.validation.not.empty}")
     @NotNull
     @ValidEmail
     private String email;

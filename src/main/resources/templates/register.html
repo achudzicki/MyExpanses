@@ -9,6 +9,7 @@
     <!-- UIkit JS -->
     <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script th:src="@{/js/uikit.min.js}"></script>
+    <script th:src="@{/js/uikit-icons.js}"></script>
 </head>
 
 <body>
@@ -25,28 +26,53 @@
     <div class="uk-flex uk-flex-center uk-flex-between">
 
         <div style="width: 45%">
-            <h4 style="color: blue">Monitoruj swoje wydatki!</h4>
-            <p>Poczuj pełną kontrolę nad swoimy wydatkami, na bieżąco uzupełniaj swój domowy budżet. Pogrupuj swoje wydatki a dowiesz się na co wydajesz najwiecej pieniędzy !</p>
+            <br><h4>Monitoruj swoje wydatki!</h4>
+            <i>Poczuj pełną kontrolę nad swoimi wydatkami, na bieżąco uzupełniaj swój domowy budżet. Pogrupuj swoje wydatki a dowiesz się na co wydajesz najwiecej pieniędzy !</i>
             <hr>
-
+            <br><h4>Bądź na bierząco !</h4>
+            <i>Zastanawiasz się na co wydajesz najwięcej pieniędzy, zerknij do wykresów a dowiesz się w których aspektach trzeba wprowadzić ograniczenia!</i>
             <hr>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <br><h4>Prosto do celu!</h4>
+            <i>Wymażone wakacje, nowy samochód a może mieszkanie? Określ swoje cele na które chcesz odłożyć popiniądze a napewno niedługo uda się je zrealizować!</i>
         </div>
 
         <div style="width: 45%" class="uk-margin-left">
             <h2 th:text="#{navbar.register}"></h2>
+            <!--Info about valid form fill in-->
+            <div class="uk-alert-primary" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p>Login</p>
+                <ul class="uk-list uk-list-bullet">
+                    <li>Musi posiadać przynajmniej 6 znaków</li>
+                    <li>Musi być krótszy niż 20 znaków</li>
+                </ul>
+                <p>Hasło musi być dłuższe od 8 znaków i posiadać przynajmniej jedną :</p>
+                <ul class="uk-list uk-list-bullet">
+                  <li>Dużą literę</li>
+                  <li>Małą literę</li>
+                  <li>Znak specjalny</li>
+                  <li>Liczbę</li>
+                </ul>
+            </div>
+
             <form class="uk-form" th:object="${userDto}" th:action="@{/register}" method="POST">
                 <div class="uk-margin">
                     <label th:text="#{login.form.login}"></label>
                     <input type="text" name="login" class="uk-input" th:field="*{login}">
+                    <div th:each="error : ${#fields.errors('login')}">
+                        <i class="uk-text-danger"  th:text="${error}"></i><br/>
+                    </div>
+                    <i class="uk-text-danger" th:if="${userExistError != null}" th:text="${userExistError}"></i>
                 </div>
                 <div class="uk-margin">
                     <label th:text="#{register.form.name}"></label>
                     <input type="text" name="name" class="uk-input" th:field="*{name}">
+                    <i class="uk-text-danger" th:each="error : ${#fields.errors('name')}" th:text="${error}"></i>
                 </div>
                 <div class="uk-margin">
                     <label th:text="#{register.form.last.name}"></label>
                     <input type="text" name="lastName" class="uk-input" th:field="*{lastName}">
+                    <i class="uk-text-danger" th:each="error : ${#fields.errors('lastName')}" th:text="${error}"></i>
                 </div>
                 <div class="uk-margin">
                     <label th:text="#{register.form.gender}"></label>
@@ -58,24 +84,30 @@
                 <div class="uk-margin">
                     <label th:text="#{register.form.password}"></label>
                     <input type="password" name="password" class="uk-input" th:field="*{password}">
+                    <div th:each="error : ${#fields.errors('password')}">
+                        <i class="uk-text-danger"  th:text="${error}"></i><br/>
+                    </div>
                 </div>
                 <div class="uk-margin">
                     <label th:text="#{register.form.repeated.password}"></label>
                     <input type="password" name="repeatedPassword" class="uk-input" th:field="*{repeatedPassword}">
+                    <i class="uk-text-danger" th:each="error : ${#fields.errors('repeatedPassword')}" th:text="${error}"></i>
+                    <i class="uk-text-danger" th:if="${bindingResult != null && bindingResult.getGlobalError() != null}" th:text="${bindingResult.getGlobalError().getDefaultMessage()}"></i>
                 </div>
                 <div class="uk-margin">
                     <label th:text="#{register.form.email}"></label>
                     <input type="email" name="email" class="uk-input" th:field="*{email}">
+                    <i class="uk-text-danger" th:if="${bindingResult != null && bindingResult.getFieldError('email') != null}" th:text="${bindingResult.getFieldError('email').getDefaultMessage()}"></i>
                 </div>
-                <button type="submit" th:text="#{register.form.submit.register.button}"></button>
+                <button class="uk-button uk-button-primary uk-width-1-1" type="submit" th:text="#{register.form.submit.register.button}"></button>
             </form>
         </div>
     </div>
-
 </div>
 
+<hr>
 <footer style="background-color : #514B4F">
-    <p class="uk-float-right">@Copiright Andrzej Chudzicki</p>
+    <i class="uk-float-right">@Copiright Andrzej Chudzicki</i>
 </footer>
 
 </body>

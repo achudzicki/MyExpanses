@@ -9,6 +9,29 @@
     <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script th:src="@{/js/uikit.min.js}"></script>
     <script th:src="@{/js/uikit-icons.js}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#notifications li').each(function () {
+                var isSuccess = $(this).find('input[name="success"]').val();
+                var msg = $(this).find('input[name="msg"]').val();
+
+                if (isSuccess) {
+                    UIkit.notification({message: '<i style="color: #007000"><span uk-icon=\'icon: check\'></span> ' + msg + '</i>'});
+                } else {
+                    UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
+                }
+            })
+        });
+    </script>
+
+    <style>
+        .uk-notification-message {
+            background-color: white;
+            width: 500px !important;
+            opacity: 0.6 !important;
+        }
+    </style>
 </head>
 <body>
 <nav class="uk-navbar-container" uk-navbar>
@@ -23,6 +46,14 @@
 <div class="uk-cover-container uk-height-medium">
     <img th:src="@{/img/basic-savings-account.jpg}" alt="" uk-cover>
 </div>
+
+<div hidden id="notifications" th:if="${notificationMessagesBean != null}">
+    <li th:each="notification : ${notificationMessagesBean.notificationsMessages}">
+        <input name="success" th:value="${notification.success}">
+        <input name="msg" th:value="${notification.message}">
+    </li>
+</div>
+
 
 <div class="uk-card uk-card-default uk-flex uk-flex-middle uk-flex-around">
     <div class="uk-card-header">
