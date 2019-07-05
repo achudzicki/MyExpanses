@@ -89,7 +89,7 @@ public class LoginControllerTest implements TestUserSupplier {
                 .flashAttr("userDto", userDto))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("bindingResult", nullValue()))
-                .andExpect(view().name("register"));
+                .andExpect(view().name("login"));
     }
 
     private void sendRequestWithNotValidUserAndCheckModelResponse(UserDto userDto) throws Exception {

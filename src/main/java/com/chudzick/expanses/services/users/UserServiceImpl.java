@@ -3,6 +3,7 @@ package com.chudzick.expanses.services.users;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.Role;
 import com.chudzick.expanses.domain.users.UserDto;
+import com.chudzick.expanses.exceptions.LoggedInUserNotFoundException;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
 import com.chudzick.expanses.mappers.UserDtoToAppUserMapper;
 import com.chudzick.expanses.repositories.RoleRepository;
@@ -63,15 +64,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<AppUser> getCurrentLogInUser() {
+    public AppUser getCurrentLogInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
             LOG.error("Can't get current login user, authentication is null");
-            return Optional.empty();
+            throw new LoggedInUserNotFoundException();
         }
 
-        return findUserByUserName(authentication.getName().trim());
+        return findUserByUserName(authentication.getName().trim()).get();
     }
 
     public void setUserRoles(AppUser userToRegister) {

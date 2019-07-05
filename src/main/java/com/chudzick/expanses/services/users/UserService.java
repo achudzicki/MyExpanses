@@ -11,5 +11,5 @@ public interface UserService {
 
     void register(UserDto appUser) throws LoginAlreadyExistException;
 
-    Optional<AppUser> getCurrentLogInUser();
+    AppUser getCurrentLogInUser();
 }

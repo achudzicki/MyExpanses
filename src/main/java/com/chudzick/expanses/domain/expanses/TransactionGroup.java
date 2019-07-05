@@ -15,12 +15,7 @@ public class TransactionGroup {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
-    @NotEmpty
     private String gorupName;
-
-    @NotNull
-    @NotEmpty
     private String groupDescription;
 
     @OneToMany(

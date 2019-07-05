@@ -23,15 +23,8 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
 
     @Override
     public SingleTransaction addNewTransaction(SingleTransactionDto transactionDto) {
-        Optional<AppUser> appUser = userService.getCurrentLogInUser();
-
-        if (!appUser.isPresent()) {
-            throw new LoggedInUserNotFoundException();
-        }
-
-        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser.get());
-
-
+        AppUser appUser = userService.getCurrentLogInUser();
+        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser);
         return singleTransactionRepository.save(newTransaction);
     }
 }
