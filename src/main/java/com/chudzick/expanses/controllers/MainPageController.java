@@ -37,7 +37,7 @@ public class MainPageController {
 
         model.addAttribute("loggedUser", userBean.getAppUser());
         initTestDat();
-        return "home";
+        return "mainPage";
     }
 
 
