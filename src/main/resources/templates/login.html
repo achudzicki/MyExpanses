@@ -2,19 +2,101 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Spring Security Example </title>
+    <title>myExpanses Login</title>
+
+    <link rel="stylesheet" th:href="@{/css/uikit.min.css}" />
+    <!-- UIkit JS -->
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/uikit.min.js}"></script>
+    <script th:src="@{/js/uikit-icons.js}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#notifications li').each(function () {
+                var isSuccess = $(this).find('input[name="success"]').val();
+                var msg = $(this).find('input[name="msg"]').val();
+
+                if (isSuccess) {
+                    UIkit.notification({message: '<i style="color: #007000"><span uk-icon=\'icon: check\'></span> ' + msg + '</i>'});
+                } else {
+                    UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
+                }
+            })
+        });
+    </script>
+
+    <style>
+        .uk-notification-message {
+            background-color: white;
+            width: 500px !important;
+            opacity: 0.6 !important;
+        }
+    </style>
 </head>
 <body>
-<div th:if="${param.error}">
-    Invalid username and password.
+<nav class="uk-navbar-container" uk-navbar>
+    <div class="uk-navbar-right">
+        <ul class="uk-navbar-nav">
+            <li class="uk-active"><a th:href="@{/login}" th:text="#{navabar.login}"></a></li>
+            <li><a th:href="@{/register}" th:text="#{navbar.register}"></a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="uk-cover-container uk-height-medium">
+    <img th:src="@{/img/basic-savings-account.jpg}" alt="" uk-cover>
 </div>
-<div th:if="${param.logout}">
-    You have been logged out.
+
+<div hidden id="notifications" th:if="${notificationMessagesBean != null}">
+    <li th:each="notification : ${notificationMessagesBean.notificationsMessages}">
+        <input name="success" th:value="${notification.success}">
+        <input name="msg" th:value="${notification.message}">
+    </li>
 </div>
-<form th:action="@{/login}" method="post">
-    <div><label> User Name : <input type="text" name="username"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
-    <div><input type="submit" value="Sign In"/></div>
-</form>
+
+
+<div class="uk-card uk-card-default uk-flex uk-flex-middle uk-flex-around">
+    <div class="uk-card-header">
+        <div class="uk-width-expand">
+            <h3 class="uk-card-title uk-margin-remove-bottom" th:text="#{login.form.login.message}"></h3>
+            <p class="uk-text-meta uk-margin-remove-top" th:text="#{login.form.login.info}"></p>
+        </div>
+    </div>
+    <div class="uk-card-body">
+        <form class="uk-form" th:action="@{/login}" method="POST">
+            <div class="uk-margin">
+                <label th:text="#{login.form.login}"></label>
+                <input type="text" name="username" class="uk-input">
+            </div>
+            <div class="uk-margin">
+                <label th:text="#{login.form.password}"></label>
+                <input type="password" name="password" class="uk-input">
+            </div>
+            <button type="submit" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom">Register</button>
+        </form>
+        <div th:if="${param.error}">
+            <i style="color: darkred" th:text="#{login.form.wrong.credentials.info}"></i>
+        </div>
+        <div th:if="${param.logout}">
+            <i style="color: darkgreen" th:text="#{login.form.logout.info}"></i>
+        </div>
+    </div>
+    <div class="uk-text-center">
+        <h1 uk-icon="icon: credit-card; ratio: 3"></h1>
+        <p th:text="#{login.page.control.expanses.text}"></p>
+    </div>
+    <div class="uk-text-center">
+        <h1 uk-icon="icon: cart; ratio: 3"></h1>
+        <p th:text="#{login.page.create.shopping.groups.text}"></p>
+    </div>
+    <div class="uk-text-center">
+        <h1 uk-icon="icon: users; ratio: 3"></h1>
+        <p th:text="#{login.page.save.with.others.text}"></p>
+    </div>
+    <div class="uk-text-center">
+        <h1 uk-icon="icon:  settings; ratio: 3"></h1>
+        <p th:text="#{login.page.control.saving.increase.text}"></p>
+    </div>
+</div>
 </body>
 </html>

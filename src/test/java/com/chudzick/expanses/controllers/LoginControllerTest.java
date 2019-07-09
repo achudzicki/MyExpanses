@@ -1,7 +1,7 @@
 package com.chudzick.expanses.controllers;
 
 import com.chudzick.expanses.TestUserSupplier;
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.UserDto;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -89,7 +89,7 @@ public class LoginControllerTest implements TestUserSupplier {
                 .flashAttr("userDto", userDto))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("bindingResult", nullValue()))
-                .andExpect(view().name("register"));
+                .andExpect(view().name("login"));
     }
 
     private void sendRequestWithNotValidUserAndCheckModelResponse(UserDto userDto) throws Exception {

@@ -1,8 +1,9 @@
-package com.chudzick.expanses.repositories;
+package com.chudzick.expanses.repositories.users;
 
 import com.chudzick.expanses.TestUserSupplier;
-import com.chudzick.expanses.domain.AppUser;
+import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
+import com.chudzick.expanses.repositories.UserRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

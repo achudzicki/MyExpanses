@@ -1,18 +1,17 @@
 package com.chudzick.expanses.controllers;
 
 import com.chudzick.expanses.beans.UserBean;
-import com.chudzick.expanses.domain.AppUser;
-import com.chudzick.expanses.exceptions.LoggedInUserNotFoundException;
-import com.chudzick.expanses.services.UserService;
+import com.chudzick.expanses.domain.expanses.TransactionGroup;
+import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.repositories.TransactionGroupRepository;
+import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Optional;
-
 @Controller
-public class MianPageController {
+public class MainPageController {
 
     @Autowired
     private UserBean userBean;
@@ -20,18 +19,17 @@ public class MianPageController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TransactionGroupRepository transactionGroupRepository;
+
     @GetMapping(value = "/")
     public String initMainPage(Model model) {
 
-        Optional<AppUser> currentLogInUser = userService.getCurrentLogInUser();
-        if (currentLogInUser.isPresent()) {
-            userBean.setAppUser(currentLogInUser.get());
-        } else {
-            throw new LoggedInUserNotFoundException("Could not find current logged in user");
-        }
+        AppUser currentLogInUser = userService.getCurrentLogInUser();
+
+        userBean.setAppUser(currentLogInUser);
 
         model.addAttribute("loggedUser", userBean.getAppUser());
-        return "home";
+        return "mainPage";
     }
-
 }

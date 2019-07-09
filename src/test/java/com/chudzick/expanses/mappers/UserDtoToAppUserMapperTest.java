@@ -1,8 +1,8 @@
 package com.chudzick.expanses.mappers;
 
 import com.chudzick.expanses.TestUserSupplier;
-import com.chudzick.expanses.domain.AppUser;
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.domain.users.UserDto;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

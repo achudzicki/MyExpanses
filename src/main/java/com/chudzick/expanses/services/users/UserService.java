@@ -1,7 +1,7 @@
-package com.chudzick.expanses.services;
+package com.chudzick.expanses.services.users;
 
-import com.chudzick.expanses.domain.AppUser;
-import com.chudzick.expanses.domain.UserDto;
+import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.domain.users.UserDto;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
 
 import java.util.Optional;
@@ -11,5 +11,5 @@ public interface UserService {
 
     void register(UserDto appUser) throws LoginAlreadyExistException;
 
-    Optional<AppUser> getCurrentLogInUser();
+    AppUser getCurrentLogInUser();
 }
