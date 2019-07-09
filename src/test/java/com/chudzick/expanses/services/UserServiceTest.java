@@ -108,10 +108,10 @@ public class UserServiceTest implements TestUserSupplier {
         when(mockSecurityContext().getName()).thenReturn(currentLogin);
         when(userRepository.findByLogin(currentLogin)).thenReturn(Optional.of(appUser));
 
-        Optional<AppUser> logInUser = userService.getCurrentLogInUser();
+        AppUser logInUser = userService.getCurrentLogInUser();
 
-        Assert.assertTrue(logInUser.isPresent());
-        Assert.assertEquals(logInUser.get().getLogin(), currentLogin);
+        Assert.assertTrue(logInUser != null);
+        Assert.assertEquals(logInUser.getLogin(), currentLogin);
     }
 
 

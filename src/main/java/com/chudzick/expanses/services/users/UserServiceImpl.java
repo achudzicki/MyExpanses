@@ -3,6 +3,7 @@ package com.chudzick.expanses.services.users;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.Role;
 import com.chudzick.expanses.domain.users.UserDto;
+import com.chudzick.expanses.exceptions.LoggedInUserNotFoundException;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
 import com.chudzick.expanses.mappers.UserDtoToAppUserMapper;
 import com.chudzick.expanses.repositories.RoleRepository;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -63,15 +65,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<AppUser> getCurrentLogInUser() {
+    public AppUser getCurrentLogInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
             LOG.error("Can't get current login user, authentication is null");
-            return Optional.empty();
+            throw new LoggedInUserNotFoundException();
         }
 
-        return findUserByUserName(authentication.getName().trim());
+        String userName = authentication.getName().trim();
+        Optional<AppUser> foundUser = findUserByUserName(userName);
+
+        if (!foundUser.isPresent()) {
+            LOG.error("Error while searching for current login AppUser for username: {}", userName);
+            throw new UsernameNotFoundException("Can't found user for username: " + userName);
+        }
+
+        return foundUser.get();
     }
 
     public void setUserRoles(AppUser userToRegister) {

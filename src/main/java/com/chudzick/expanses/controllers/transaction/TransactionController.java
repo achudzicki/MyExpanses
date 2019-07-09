@@ -7,8 +7,8 @@ import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionType;
 import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
-import com.chudzick.expanses.repositories.TransactionGroupRepository;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
+import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -31,7 +30,7 @@ public class TransactionController {
     private static final String NOTIFICATIONS_ATTR_NAME = "notifications";
 
     @Autowired
-    private TransactionGroupRepository transactionGroupRepository;
+    private TransactionGroupService transactionGroupService;
 
     @Autowired
     private SingleTransactionService singleTransactionService;
@@ -51,11 +50,14 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/add")
-    public String addNewTransaction(@ModelAttribute("singleTransactionDto") @Valid  SingleTransactionDto singleTransactionDto, BindingResult bindingResult,
+    public String addNewTransaction(@ModelAttribute("singleTransactionDto") @Valid SingleTransactionDto singleTransactionDto, BindingResult bindingResult,
                                     RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(err -> System.out.println(err.getDefaultMessage()));
             initBasicAddTransactionModelAttributes(model);
+            notificationMessagesBean.setNotificationsMessages(new NotificationMessageListBuilder()
+                    .withFailureNotificationMsg("Wystąpił problem podczas dodawania nowej transakcji")
+                    .getNotificationList());
+            model.addAttribute("notificationMessagesBean", notificationMessagesBean);
             return "transaction/addNewTransaction";
         }
 
@@ -76,8 +78,8 @@ public class TransactionController {
 
     private void initBasicAddTransactionModelAttributes(Model model) {
         List<SingleTransaction> lastFiveTransactions = singleTransactionService.findLastSingleTransactionsLimitBy(NUMBERS_OF_TRANSACTIONS_DISPLAY);
-        //TODO zmienić na serwis
-        List<TransactionGroup> transactionGroups = transactionGroupRepository.findAll();
+
+        List<TransactionGroup> transactionGroups = transactionGroupService.getAllGroups();
         model.addAttribute("transactionGroups", transactionGroups);
         model.addAttribute("lastTransactions", lastFiveTransactions);
         model.addAttribute("singleTransactionDto", new SingleTransactionDto());

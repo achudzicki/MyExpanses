@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content, script,style)">
 <head>
     <meta charset="UTF-8">
-    <title th:replace="${title}"></title>
+    <title>MyExpanses</title>
 
     <link rel="stylesheet" th:href="@{/css/uikit.min.css}" />
     <!-- UIkit JS -->
@@ -20,7 +20,7 @@
                 var isSuccess = $(this).find('input[name="success"]').val();
                 var msg = $(this).find('input[name="msg"]').val();
 
-                if (isSuccess) {
+                if (isSuccess === 'true') {
                     UIkit.notification({message: '<i style="color: #007000"><span uk-icon=\'icon: check\'></span> ' + msg + '</i>'});
                 } else {
                     UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
@@ -95,7 +95,7 @@
 
                 <ul class="uk-navbar-nav">
                     <li><a href="#"><span class="uk-margin-small-right" uk-icon="user"></span>Andrzej Chudzicki</a></li>
-                    <li><a href="#"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Logout</a></li>
+                    <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Logout</a></li>
                 </ul>
 
             </div>
@@ -110,7 +110,7 @@
                     <ul class="uk-nav-sub">
                         <li><a href="/transaction/">Nowa transakcja</a></li>
                         <li><a href="#">Wszystkie transakcje</a></li>
-                        <li><a href="#">Kategorie transakcji</a></li>
+                        <li><a href="/transaction/group">Kategorie transakcji</a></li>
                     </ul>
                 </li>
                 <li class="uk-parent">
