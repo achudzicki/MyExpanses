@@ -24,12 +24,6 @@ public class MainPageController {
 
     @GetMapping(value = "/")
     public String initMainPage(Model model) {
-
-        AppUser currentLogInUser = userService.getCurrentLogInUser();
-
-        userBean.setAppUser(currentLogInUser);
-
-        model.addAttribute("loggedUser", userBean.getAppUser());
         return "mainPage";
     }
 }
