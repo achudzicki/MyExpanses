@@ -24,20 +24,16 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
 
     @Override
     public SingleTransaction addNewTransaction(SingleTransactionDto transactionDto) {
-        Optional<AppUser> appUser = userService.getCurrentLogInUser();
+        AppUser appUser = userService.getCurrentLogInUser();
 
-        if (!appUser.isPresent()) {
-            throw new LoggedInUserNotFoundException();
-        }
-
-        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser.get());
+        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser);
         return singleTransactionRepository.save(newTransaction);
     }
 
     @Override
     public List<SingleTransaction> findLastSingleTransactionsLimitBy(int limit) {
-        Optional<AppUser> current = userService.getCurrentLogInUser();
+        AppUser current = userService.getCurrentLogInUser();
 
-        return singleTransactionRepository.findTop5ByAppUserOrderByIdDesc(current.get());
+        return singleTransactionRepository.findTop5ByAppUserOrderByIdDesc(current);
     }
 }
