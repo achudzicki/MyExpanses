@@ -30,18 +30,6 @@ public class MainPageController {
         userBean.setAppUser(currentLogInUser);
 
         model.addAttribute("loggedUser", userBean.getAppUser());
-        initTestDat();
         return "mainPage";
-    }
-
-
-    // TODO do usuniecia
-    private void initTestDat() {
-        TransactionGroup transactionGroup = new TransactionGroup();
-
-        transactionGroup.setAppUser(userService.getCurrentLogInUser());
-        transactionGroup.setGorupName("TEST_GROUP");
-        transactionGroup.setGroupDescription("TEST_GROUP");
-        transactionGroupRepository.save(transactionGroup);
     }
 }

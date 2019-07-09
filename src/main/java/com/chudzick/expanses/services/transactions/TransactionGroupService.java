@@ -9,5 +9,5 @@ public interface TransactionGroupService {
 
     List<TransactionGroup> getAllGroups();
 
-    void addNewTransactionGroup(TransactionGroupDto transactionGroupDto);
+    TransactionGroup addNewTransactionGroup(TransactionGroupDto transactionGroupDto);
 }

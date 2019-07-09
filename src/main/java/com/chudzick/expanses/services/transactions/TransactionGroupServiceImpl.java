@@ -26,9 +26,9 @@ public class TransactionGroupServiceImpl implements TransactionGroupService {
     }
 
     @Override
-    public void addNewTransactionGroup(TransactionGroupDto transactionGroupDto) {
+    public TransactionGroup addNewTransactionGroup(TransactionGroupDto transactionGroupDto) {
         AppUser appUser = userService.getCurrentLogInUser();
         TransactionGroup newGroup = TransactionGroupStaticFactory.createFromDto(transactionGroupDto, appUser);
-        transactionGroupRepository.save(newGroup);
+        return transactionGroupRepository.save(newGroup);
     }
 }

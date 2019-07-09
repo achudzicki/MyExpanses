@@ -7,6 +7,7 @@ import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "transaction/group")
 public class TransactionGroupController {
+    private final String SUCCESS_NOTIFICATION_MESSAGE = "Poprawnie dodano nową grupę" ;
 
     @Autowired
     private TransactionGroupBean transactionGroupBean;
@@ -37,24 +39,29 @@ public class TransactionGroupController {
     @GetMapping
     public String transactionGroupMain(@ModelAttribute("notifications") List<SimpleNotificationMsg> notifications, Model model) {
         setUpMainPageBeans(notifications);
+        addBasicModelAttributes(model);
 
-        model.addAttribute("transactionGroupBean", transactionGroupBean);
-        model.addAttribute("notificationMessagesBean", notificationMessagesBean);
-        model.addAttribute("transactionGroupDto", new TransactionGroupDto());
-        return ""; //TODO RETURN VIEW OF MAIN TRANSACTION GROUP
+        return "transaction/transactionGroupMain";
     }
 
     @PostMapping(value = "/add")
-    public String addNewTransactionGroup(@Valid TransactionGroupDto transactionGroupDto, Model model, BindingResult bindingResult,
+    public String addNewTransactionGroup(@Valid @ModelAttribute TransactionGroupDto transactionGroupDto, BindingResult bindingResult, Model model,
                                          RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            return ""; //TODO RETURN VIEW OF MAIN TRANSACTION GROUP
+            setUpMainPageBeans(new NotificationMessageListBuilder()
+                    .withFailureNotificationMsg("Wystąpił problem podczas dodawania nowej grupy")
+                    .getNotificationList());
+
+            addBasicModelAttributes(model);
+            model.addAttribute("bindingResult", bindingResult);
+            return "transaction/transactionGroupMain";
         }
+
         transactionGroupService.addNewTransactionGroup(transactionGroupDto);
 
         redirectAttributes.addFlashAttribute("notifications", new NotificationMessageListBuilder()
-                .withSuccessNotification("{transaction.group.succes.add.message}")
+                .withSuccessNotification(SUCCESS_NOTIFICATION_MESSAGE)
                 .getNotificationList());
         return "redirect:/transaction/group";
     }
@@ -67,5 +74,11 @@ public class TransactionGroupController {
     private void setUpMainPageBeans(List<SimpleNotificationMsg> notifications) {
         notificationMessagesBean.setNotificationsMessages(notifications);
         transactionGroupBean.setUsersTransactionsGroups(transactionGroupService.getAllGroups());
+    }
+
+    private void addBasicModelAttributes(Model model) {
+        model.addAttribute("notificationMessagesBean", notificationMessagesBean);
+        model.addAttribute("transactionGroupBean", transactionGroupBean);
+        model.addAttribute("transactionGroupDto", new TransactionGroupDto());
     }
 }

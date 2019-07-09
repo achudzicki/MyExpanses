@@ -2,11 +2,13 @@ package com.chudzick.expanses.domain.expanses;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class TransactionGroupDto {
 
     @NotNull
     @NotEmpty(message = "{form.validation.not.empty}")
+    @Size(max = 20,message = "Nazwa grupy może zawierać maksymalnie 20 znaków")
     private String gorupName;
 
     @NotNull
