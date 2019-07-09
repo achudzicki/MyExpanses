@@ -13,7 +13,11 @@ public class NotificationMessagesBean {
     private List<SimpleNotificationMsg> notificationsMessages;
 
     public void setNotificationsMessages(List<SimpleNotificationMsg> notificationsMessages) {
-        this.notificationsMessages = notificationsMessages;
+        if (this.notificationsMessages == null || this.notificationsMessages.isEmpty()) {
+            this.notificationsMessages = notificationsMessages;
+        } else {
+            this.notificationsMessages.addAll(notificationsMessages);
+        }
     }
 
     public List<SimpleNotificationMsg> getNotificationsMessages() {

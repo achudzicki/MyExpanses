@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title>Add new  transaction</title>
+    <style></style>
+    <script>
+        $(document).ready(function () {
+            $('#transactionDate').val(new Date().toISOString().substr(0, 10));
+        })
+    </script>
+</head>
+<body>
+<div class="content">
+    <div class="uk-flex uk-flex-around">
+        <div>
+            <div class="uk-card uk-card-default">
+                <div class="uk-card-header">
+                    <h2 th:text="#{add.transaction.title}"></h2>
+                </div>
+                <div class="uk-card-body">
+                    <form class="uk-form" th:object="${singleTransactionDto}" th:action="@{/transaction/add}" method="POST">
+                        <div class="uk-margin">
+                            <label th:text="#{add.transaction.amound}"></label>
+                            <input value="0" type="number" step="0.01" name="amound" class="uk-input" th:field="*{amound}">
+                        </div>
+                        <div class="uk-margin">
+                            <label th:text="#{add.transaction.date}"></label>
+                            <input id="transactionDate" type="date" name="transactionDate" class="uk-input" th:field="*{transactionDate}">
+                        </div>
+                        <div class="uk-margin">
+                            <label th:text="#{add.transaction.type}"></label>
+                            <select class="uk-select" name="transactionType" th:field="*{transactionType}">
+                                <option th:each ="type : ${transactionTypes}" th:value="${type}" th:text="${type.name}"></option>
+                            </select>
+                        </div>
+                        <div class="uk-margin">
+                            <label th:text="#{add.transaction.group}"></label>
+                            <select class="uk-select" name="transactionGroup" th:field="*{transactionGroup}">
+                                <option th:each ="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
+                            </select>
+                        </div>
+                        <a th:text="#{add.transaction.save}" class="uk-float-right" onclick="$(this).closest('form').submit()"><span class="uk-margin-small-right" uk-icon="icon: check"></span></a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="height:100%; min-height: 100%" class="uk-card uk-card-default">
+                <div class="uk-card-header">
+                    <h2 th:text="#{add.transaction.last.five}"></h2>
+                </div>
+                <div class="uk-card-body">
+                    <table class="uk-table uk-table-striped">
+                        <thead>
+                        <tr>
+                            <th th:text="#{add.transaction.amound}"></th>
+                            <th th:text="#{add.transaction.type}"></th>
+                            <th th:text="#{add.transaction.group}"></th>
+                            <th th:text="#{add.transaction.date}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transaction : ${lastTransactions}">
+                            <th th:text="${transaction.amound}"></th>
+                            <th th:text="${transaction.transactionType.name}"></th>
+                            <th th:text="${transaction.transactionGroup.gorupName}"></th>
+                            <th th:text="${transaction.transactionDate}"></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,9 +1,13 @@
 package com.chudzick.expanses.domain.expanses;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class SingleTransactionDto {
 
+    @NotNull(message = "{form.validation.not.empty}")
+    @DecimalMin( value = "0.01", message = "Kwota nie może być mniejsza od zera")
     private BigDecimal amound;
 
     private String transactionDate;

@@ -10,6 +10,7 @@ import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,8 +24,20 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
 
     @Override
     public SingleTransaction addNewTransaction(SingleTransactionDto transactionDto) {
-        AppUser appUser = userService.getCurrentLogInUser();
-        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser);
+        Optional<AppUser> appUser = userService.getCurrentLogInUser();
+
+        if (!appUser.isPresent()) {
+            throw new LoggedInUserNotFoundException();
+        }
+
+        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser.get());
         return singleTransactionRepository.save(newTransaction);
+    }
+
+    @Override
+    public List<SingleTransaction> findLastSingleTransactionsLimitBy(int limit) {
+        Optional<AppUser> current = userService.getCurrentLogInUser();
+
+        return singleTransactionRepository.findTop5ByAppUserOrderByIdDesc(current.get());
     }
 }
