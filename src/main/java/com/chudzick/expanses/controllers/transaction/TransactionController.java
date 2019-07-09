@@ -28,6 +28,7 @@ import java.util.List;
 @RequestMapping(value = "transaction")
 public class TransactionController {
     private static final int NUMBERS_OF_TRANSACTIONS_DISPLAY = 5;
+    private static final String NOTIFICATIONS_ATTR_NAME = "notifications";
 
     @Autowired
     private TransactionGroupRepository transactionGroupRepository;
@@ -39,7 +40,7 @@ public class TransactionController {
     private NotificationMessagesBean notificationMessagesBean;
 
     @GetMapping(value = "")
-    public String getTransactionPage(@ModelAttribute("notifications") List<SimpleNotificationMsg> notifications,
+    public String getTransactionPage(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications,
                                      Model model) {
 
         initBasicAddTransactionModelAttributes(model);
@@ -64,11 +65,11 @@ public class TransactionController {
                 .withSuccessNotification("Dodano nową transakcję")
                 .getNotificationList();
 
-        redirectAttributes.addFlashAttribute("notifications", successNotification);
+        redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, successNotification);
         return "redirect:/transaction";
     }
 
-    @ModelAttribute("notifications")
+    @ModelAttribute(NOTIFICATIONS_ATTR_NAME)
     public List<SimpleNotificationMsg> defaultAddSuccessValue() {
         return new ArrayList<>();
     }
