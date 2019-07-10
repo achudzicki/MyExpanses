@@ -9,7 +9,9 @@ import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionGroupServiceImpl implements TransactionGroupService {
@@ -21,14 +23,35 @@ public class TransactionGroupServiceImpl implements TransactionGroupService {
     private UserService userService;
 
     @Override
+    @Transactional
     public List<TransactionGroup> getAllGroups() {
-        return transactionGroupRepository.findAll();
+        AppUser appUser = userService.getCurrentLogInUser();
+
+        return transactionGroupRepository.findAllByAppUser(appUser);
     }
 
     @Override
+    @Transactional
     public TransactionGroup addNewTransactionGroup(TransactionGroupDto transactionGroupDto) {
         AppUser appUser = userService.getCurrentLogInUser();
         TransactionGroup newGroup = TransactionGroupStaticFactory.createFromDto(transactionGroupDto, appUser);
         return transactionGroupRepository.save(newGroup);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTransactionGroup(long groupId) {
+        transactionGroupRepository.deleteById(groupId);
+    }
+
+    @Override
+    public TransactionGroup findById(long groupId) {
+        Optional<TransactionGroup> foundTransactionGroup = transactionGroupRepository.findById(groupId);
+
+        if (!foundTransactionGroup.isPresent()) {
+            //TODO DOROBI EXCEPTION
+            throw new RuntimeException();
+        }
+        return foundTransactionGroup.get();
     }
 }
