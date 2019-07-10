@@ -54,7 +54,11 @@
                 <td th:text="${index.count}"></td>
                 <td th:text="${group.gorupName}"></td>
                 <td th:text="${group.groupDescription}"></td>
-                <td class="uk-text-danger"><a href="#" uk-icon="trash"></a></td>
+                <td class="uk-text-danger">
+                    <form method="POST" th:action="@{/transaction/group/delete/{groupId}(groupId=${group.id})}">
+                        <button type="submit"  uk-icon="trash"></button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
