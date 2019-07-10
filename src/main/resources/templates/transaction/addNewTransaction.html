@@ -12,6 +12,17 @@
 </head>
 <body>
 <div class="content">
+    <div class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Maj,2019</h4>
+        <i class="uk-text-meta uk-margin-remove-top">Dzień cyklu : 19/30</i>
+    </div>
+    <hr>
+
+    <div th:if="${transactionGroups.isEmpty()}" class="uk-alert-warning" uk-alert>
+        <i><span class="uk-margin-small-right" uk-icon="icon: warning; ratio : 1.5"></span>Obecnie nie posiadasz dodanej żadnej grupy transakcji przez co nie możesz dodawać nowych transakcji
+            ,aby dodać swoją pierwszą grupę <a href="/transaction/group">kliknij tu</a>.</i>
+    </div>
+
     <div class="uk-flex uk-flex-around">
         <div>
             <div class="uk-card uk-card-default">
@@ -40,7 +51,8 @@
                                 <option th:each ="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
                             </select>
                         </div>
-                        <a th:text="#{add.transaction.save}" class="uk-float-right" onclick="$(this).closest('form').submit()"><span class="uk-margin-small-right" uk-icon="icon: check"></span></a>
+                        <a th:if="${!transactionGroups.isEmpty()}" th:text="#{add.transaction.save}" class="uk-float-right" onclick="$(this).closest('form').submit()"><span class="uk-margin-small-right" uk-icon="icon: check"></span></a>
+                        <a th:if="${transactionGroups.isEmpty()}" th:text="#{add.transaction.save}" class="uk-text-muted uk-float-right"><span class="uk-margin-small-right" uk-icon="icon: check"></span></a>
                     </form>
                 </div>
             </div>
