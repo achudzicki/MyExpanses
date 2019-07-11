@@ -49,4 +49,10 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
     public List<SingleTransaction> findAllByGroupId(long groupId) {
         return singleTransactionRepository.findAllByTransactionGroupId(groupId);
     }
+
+    @Override
+    @Transactional
+    public List<SingleTransaction> findAll() {
+        return singleTransactionRepository.findAll();
+    }
 }
