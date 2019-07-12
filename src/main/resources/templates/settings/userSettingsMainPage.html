@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style></style>
+    <script>
+        $(document).ready(function () {
+            $('.uk-range').on('change',function () {
+                if (parseInt($(this).val()) === 1) {
+                    $('input[name="automaticExtension"]').val(true);
+                    $('#automaticExtTrue').attr('hidden',false);
+                    $('#automaticExtFalse').attr('hidden',true);
+                } else {
+                    $('input[name="automaticExtension"]').val(false);
+                    $('#automaticExtTrue').attr('hidden',true);
+                    $('#automaticExtFalse').attr('hidden',false);
+                }
+            })
+        })
+
+    </script>
+</head>
+<body>
+<div class="content">
+    <div class="uk-width-expand">
+        <h3 style="color: #1e87f0" class="uk-margin-remove-bottom">Ustawienia cyklu</h3>
+        <i class="uk-text-meta uk-margin-remove-top">podstawowe parametry cyklu</i>
+    </div>
+    <hr>
+    <div class="uk-margin" th:if="${userSettings != null}">
+        <div class="uk-alert-primary" uk-alert>
+            <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Aktualne ustawienia cyklu</h4>
+            <p>Rozpoczęcie/Zakończenie danego cyklu <span class="uk-text-bold" th:text="${userSettings.cycleDays}"></span> dnia każdego miesiąca</p>
+            <p>Automatyczne odnawianie się cyków: <span class="uk-text-bold" th:text="${userSettings.automaticExtension ? 'TAK' : 'NIE' }" ></span></p>
+            <p>Zakładana oszczędność podczas cyklu: <span class="uk-text-bold" th:text="${userSettings.cycleSaveGoal}"></span> zł.</p>
+        </div>
+    </div>
+    <hr>
+    <div class="uk-flex uk-flex-center uk-flex-between">
+        <div style="width: 45%">
+            <form class="uk-form-horizontal uk-margin-large" th:object="${userSettingsDto}" method="post" th:action="@{/settings/setup/cycle}">
+                <div class="uk-margin">
+                    <label>Dzień początku/końca cyklu</label>
+                    <input type="number" class="uk-input" name="cycleDays" th:field="*{cycleDays}">
+                </div>
+
+                <div class="uk-margin">
+                    <label>Planowana oszczędnośc podczas cyklu</label>
+                    <input type="number" step="0.01" class="uk-input" name="cycleSaveGoal" th:field="*{cycleSaveGoal}">
+                </div>
+
+                <div class="uk-margin">
+                    <label class="uk-margin-small-left">Automatyczne przedłużanie cylu</label>
+                    <input class="uk-range uk-margin-medium-left" style="width:100px" type="range" value="0" min="0" max="1" step="1">
+                    <span hidden id="automaticExtTrue" class="uk-text-success uk-margin-small-right" uk-icon="icon: check; ratio : 2"></span>
+                    <span id="automaticExtFalse"  class="uk-text-danger uk-margin-small-right" uk-icon="icon: close; ratio : 2"></span>
+                    <input hidden type="text" class="uk-checkbox" name="automaticExtension" th:field="*{automaticExtension}" value="false">
+                </div>
+                <div class="uk-text-center">
+                    <button type="submit" class="uk-button-primary uk-button uk-float-right uk-margin">Zapisz</button>
+                </div>
+            </form>
+        </div>
+
+        <div style="width: 45%">
+            <div class="uk-alert-warning" uk-alert>
+                <div class="uk-text-center uk-margin-small-bottom">
+                    <p class="uk-margin-small-right" uk-icon="icon: info; ratio : 2"></p>
+                </div>
+                <i>
+                    Ustawnienie cyklu jest niezbęną czynnością aby zacząć monitorować swoje wydatki. W formularzu podajemy dzień początku/końca cyklu, w przydaku podania liczby
+                    10, nowy cykl będzie zaczynał się 10 dnia każdego miesiąca. Podane parametry nie są ostateczne, w późniejszym etapie oszczędzania będzie można zmienić dzień początku cyklu.
+                    Przy zaznaczonej opcji automatycznego przedłużenia nowy cykl będzie się otwierał automatycznie w wyznaczonym dniu.
+                </i>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+</div>
+</body>
+</html>
