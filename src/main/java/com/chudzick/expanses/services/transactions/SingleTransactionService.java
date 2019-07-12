@@ -14,4 +14,6 @@ public interface SingleTransactionService {
     int countTransactionsByGroup(long groupId);
 
     List<SingleTransaction> findAllByGroupId(long groupId);
+
+    List<SingleTransaction> findAll();
 }

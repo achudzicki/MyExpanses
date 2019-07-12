@@ -8,6 +8,8 @@ import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionType;
 import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
+import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
+import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import org.slf4j.Logger;
@@ -76,6 +78,16 @@ public class TransactionController {
         LOG.info("New successfully transaction added");
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, successNotification);
         return "redirect:/transaction";
+    }
+
+    @GetMapping(value = "/all")
+    public String viewAllTransactions(Model model) {
+        List<SingleTransaction> allTransactionsPerCycle = singleTransactionService.findAll();
+        ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
+
+        model.addAttribute("transactionsList",allTransactionsPerCycle);
+        model.addAttribute("actualTransactionStats",actualTransactionStats);
+        return "transaction/allCycleTransactions";
     }
 
     @ModelAttribute(NOTIFICATIONS_ATTR_NAME)
