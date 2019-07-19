@@ -1,8 +1,8 @@
 package com.chudzick.expanses.domain.expanses;
 
 public enum TransactionType {
-    INCOME("wydatek"),
-    EXPANSE("przychód");
+    INCOME("przychód"),
+    EXPANSE("wydatek");
 
     private String name;
 

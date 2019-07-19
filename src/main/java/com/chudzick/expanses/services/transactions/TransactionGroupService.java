@@ -10,4 +10,8 @@ public interface TransactionGroupService {
     List<TransactionGroup> getAllGroups();
 
     TransactionGroup addNewTransactionGroup(TransactionGroupDto transactionGroupDto);
+
+    void deleteTransactionGroup(long groupId);
+
+    TransactionGroup findById(long groupId);
 }

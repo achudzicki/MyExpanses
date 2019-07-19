@@ -35,7 +35,9 @@
             height: 100%;
         }
         body {
-            min-height: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         #mainContent {
@@ -109,7 +111,7 @@
                     <a href="#"><span class="uk-margin-small-right" uk-icon="credit-card"></span>Wydatki</a>
                     <ul class="uk-nav-sub">
                         <li><a href="/transaction/">Nowa transakcja</a></li>
-                        <li><a href="#">Wszystkie transakcje</a></li>
+                        <li><a href="/transaction/all">Wszystkie transakcje</a></li>
                         <li><a href="/transaction/group">Kategorie transakcji</a></li>
                     </ul>
                 </li>
@@ -118,6 +120,12 @@
                     <ul class="uk-nav-sub">
                         <li><a href="#">Podsumowanie miesiąca</a></li>
                         <li><a href="#">Podział na kategorie</a></li>
+                    </ul>
+                </li>
+                <li class="uk-parent">
+                    <a href="#"><span class="uk-margin-small-right" uk-icon="cog"></span>Ustawienia</a>
+                    <ul class="uk-nav-sub">
+                        <li><a href="/settings">Ustawienia urzytkownika</a></li>
                     </ul>
                 </li>
             </ul>

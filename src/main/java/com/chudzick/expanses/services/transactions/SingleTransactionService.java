@@ -10,4 +10,10 @@ public interface SingleTransactionService {
     SingleTransaction addNewTransaction(SingleTransactionDto transactionDto);
 
     List<SingleTransaction> findLastSingleTransactionsLimitBy(int limit);
+
+    int countTransactionsByGroup(long groupId);
+
+    List<SingleTransaction> findAllByGroupId(long groupId);
+
+    List<SingleTransaction> findAll();
 }

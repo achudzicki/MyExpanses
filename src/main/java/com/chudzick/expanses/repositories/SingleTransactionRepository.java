@@ -10,4 +10,10 @@ import java.util.List;
 public interface SingleTransactionRepository extends JpaRepository<SingleTransaction, Long> {
 
     List<SingleTransaction> findTop5ByAppUserOrderByIdDesc(AppUser appUser);
+
+    int countSingleTransactioByTransactionGroupId(long groupId);
+
+    List<SingleTransaction> findAllByTransactionGroupId(long groupId);
+
+    List<SingleTransaction> findAllByAppUser(AppUser appUser);
 }
