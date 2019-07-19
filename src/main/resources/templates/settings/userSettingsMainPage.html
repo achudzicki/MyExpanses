@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style></style>
+    <script>
+        $(document).ready(function () {
+            $('.uk-range').on('change',function () {
+                if (parseInt($(this).val()) === 1) {
+                    $('input[name="automaticExtension"]').val(true);
+                    $('#automaticExtTrue').attr('hidden',false);
+                    $('#automaticExtFalse').attr('hidden',true);
+                } else {
+                    $('input[name="automaticExtension"]').val(false);
+                    $('#automaticExtTrue').attr('hidden',true);
+                    $('#automaticExtFalse').attr('hidden',false);
+                }
+            })
+        })
+
+    </script>
+</head>
+<body>
+<div class="content">
+    <div class="uk-width-expand">
+        <h3 style="color: #1e87f0" class="uk-margin-remove-bottom" th:text="#{cycle.main.header}"></h3>
+        <i class="uk-text-meta uk-margin-remove-top" th:text="#{cycle.parameters.header}"></i>
+    </div>
+    <hr>
+    <div class="uk-margin" th:if="${userSettings != null}">
+        <div class="uk-alert-primary" uk-alert>
+            <h4 style="color: #1e87f0" class="uk-margin-remove-bottom" th:text="#{cycle.actual.setings.header}"></h4>
+            <p><span th:text="#{cycle.start.stop.info.header}" th:remove="tag"></span> <span class="uk-text-bold" th:text="${userSettings.cycleDays}"></span> dnia każdego miesiąca</p>
+            <p><span th:text="#{cycle.automatic.extension.info.header}" th:remove="tag"></span> <span class="uk-text-bold" th:text="${userSettings.automaticExtension ? 'TAK' : 'NIE' }" ></span></p>
+            <p><span th:text="#{cycle.saving.goal.info.header}" th:remove="tag"></span> <span class="uk-text-bold" th:text="${userSettings.cycleSaveGoal}"></span> zł.</p>
+        </div>
+    </div>
+    <hr th:if="${userSettings != null}">
+    <div class="uk-flex uk-flex-center uk-flex-between">
+        <div style="width: 45%">
+            <form class="uk-form-horizontal uk-margin-large" th:object="${userSettingsDto}" method="post" th:action="@{/settings/setup/cycle}">
+                <div class="uk-margin">
+                    <label th:text="#{cycle.start.stop.info.header}"></label>
+                    <input type="number" class="uk-input" name="cycleDays" th:field="*{cycleDays}">
+                </div>
+
+                <div class="uk-margin">
+                    <label th:text="#{cycle.saving.goal.info.header}"></label>
+                    <input type="number" step="0.01" class="uk-input" name="cycleSaveGoal" th:field="*{cycleSaveGoal}">
+                </div>
+
+                <div class="uk-margin">
+                    <label class="uk-margin-small-left" th:text="#{cycle.automatic.extension.info.header}"></label>
+                    <input class="uk-range uk-margin-medium-left" style="width:100px" type="range" value="0" min="0" max="1" step="1">
+                    <span hidden id="automaticExtTrue" class="uk-text-success uk-margin-small-right" uk-icon="icon: check; ratio : 2"></span>
+                    <span id="automaticExtFalse"  class="uk-text-danger uk-margin-small-right" uk-icon="icon: close; ratio : 2"></span>
+                    <input hidden type="text" class="uk-checkbox" name="automaticExtension" th:field="*{automaticExtension}" value="false">
+                </div>
+                <div class="uk-text-center">
+                    <button type="submit" class="uk-button-primary uk-button uk-float-right uk-margin" th:text="#{cycle.save}"></button>
+                </div>
+            </form>
+        </div>
+
+        <div style="width: 45%">
+            <div class="uk-alert-warning" uk-alert>
+                <div class="uk-text-center uk-margin-small-bottom">
+                    <p class="uk-margin-small-right" uk-icon="icon: info; ratio : 2"></p>
+                </div>
+                <i th:text="#{cycle.info.text}"></i>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+</div>
+</body>
+</html>

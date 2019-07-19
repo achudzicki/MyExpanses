@@ -14,4 +14,6 @@ public interface SingleTransactionRepository extends JpaRepository<SingleTransac
     int countSingleTransactioByTransactionGroupId(long groupId);
 
     List<SingleTransaction> findAllByTransactionGroupId(long groupId);
+
+    List<SingleTransaction> findAllByAppUser(AppUser appUser);
 }
