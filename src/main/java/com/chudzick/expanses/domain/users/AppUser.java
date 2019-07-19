@@ -1,5 +1,6 @@
 package com.chudzick.expanses.domain.users;
 
+import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.settings.UserSettings;
@@ -54,6 +55,20 @@ public class AppUser {
     )
     private UserSettings userSettings;
 
+    @OneToMany(
+            mappedBy = "appUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Cycle> cycle;
+
+    public List<Cycle> getCycle() {
+        return cycle;
+    }
+
+    public void setCycle(List<Cycle> cycle) {
+        this.cycle = cycle;
+    }
 
     public UserSettings getUserSettings() {
         return userSettings;

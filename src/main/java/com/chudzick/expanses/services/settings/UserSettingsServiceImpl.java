@@ -5,6 +5,7 @@ import com.chudzick.expanses.domain.settings.dto.UserSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.factories.UserSettingsStaticFactory;
 import com.chudzick.expanses.repositories.UserSettingsRepository;
+import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CycleService cycleService;
+
     @Override
     @Transactional
     public UserSettings saveOrUpdate(UserSettingsDto userSettingsDto) {
@@ -32,6 +36,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
             settingToSave = update(userSettings.get(), userSettingsDto);
         } else {
             settingToSave = UserSettingsStaticFactory.createFromDto(userSettingsDto, currentUser);
+            cycleService.createInitialCycle(settingToSave,currentUser);
         }
         return userSettingsRepository.save(settingToSave);
     }

@@ -1,5 +1,7 @@
 package com.chudzick.expanses.domain.expanses;
 
+import com.chudzick.expanses.domain.users.AppUser;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,6 +24,18 @@ public class Cycle {
             mappedBy = "cycle"
     )
     private List<SingleTransaction> cycleTransactions;
+
+    @ManyToOne
+    @JoinColumn(name = "appuser_id")
+    private AppUser appUser;
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
 
     public boolean isActive() {
         return isActive;
