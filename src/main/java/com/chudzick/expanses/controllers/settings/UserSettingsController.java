@@ -52,10 +52,13 @@ public class UserSettingsController {
     public String setUpUserCycle(@ModelAttribute @Valid UserSettingsDto userSettingsDto,BindingResult bindingResult, Model model,RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
+            Optional<UserSettings> userSettings = userSettingsService.findUserSettings();
             notificationMessagesBean.setNotificationsMessages(new NotificationMessageListBuilder()
                     .withFailureNotificationMsg("Błąd podczas zapisywania ustawień")
                     .getNotificationList());
+
             model.addAttribute("notificationMessagesBean", notificationMessagesBean);
+            userSettings.ifPresent(settings -> model.addAttribute("userSettings",settings));
             return "settings/userSettingsMainPage";
         }
 
@@ -64,6 +67,7 @@ public class UserSettingsController {
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_HEADER, new NotificationMessageListBuilder()
                 .withSuccessNotification("Dane poprawnie ustawione")
                 .getNotificationList());
+
         return "redirect:/settings";
     }
 

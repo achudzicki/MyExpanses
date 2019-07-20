@@ -33,7 +33,6 @@ public class LoginControllerTest implements TestUserSupplier {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 

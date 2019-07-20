@@ -1,10 +1,11 @@
-package com.chudzick.expanses.repositories;
+package com.chudzick.expanses.repositories.transactions;
 
 import com.chudzick.expanses.TestUserSupplier;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.UserDto;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
+import com.chudzick.expanses.repositories.TransactionGroupRepository;
 import com.chudzick.expanses.services.users.UserService;
 import org.junit.Assert;
 import org.junit.Test;

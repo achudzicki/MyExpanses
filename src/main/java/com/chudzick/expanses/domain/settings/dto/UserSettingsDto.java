@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 
 public class UserSettingsDto {
 
-    @Min(1)
-    @Max(28)
+    @Min(value = 1, message = "Dzień początku/końca cylku musi być po 1 dniem miesiąca")
+    @Max(value = 28, message = "Dzień początku/końca cylku musi być przed 28 dniem miesiąca")
     private int cycleDays;
 
     @NotNull
