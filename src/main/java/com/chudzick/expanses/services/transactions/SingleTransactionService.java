@@ -16,4 +16,6 @@ public interface SingleTransactionService {
     List<SingleTransaction> findAllByGroupId(long groupId);
 
     List<SingleTransaction> findAll();
+
+    void deleteTransactionById(long transactionId);
 }

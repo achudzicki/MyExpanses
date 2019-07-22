@@ -1,12 +1,12 @@
 package com.chudzick.expanses.controllers.transaction;
 
-import com.chudzick.expanses.beans.UserBean;
+import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionType;
-import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
+import com.chudzick.expanses.domain.responses.AjaxResponse;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
 import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -81,13 +78,20 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/all")
-    public String viewAllTransactions(Model model) {
+    public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model) {
         List<SingleTransaction> allTransactionsPerCycle = singleTransactionService.findAll();
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
 
-        model.addAttribute("transactionsList",allTransactionsPerCycle);
-        model.addAttribute("actualTransactionStats",actualTransactionStats);
+        model.addAttribute("transactionsList", allTransactionsPerCycle);
+        model.addAttribute("actualTransactionStats", actualTransactionStats);
         return "transaction/allCycleTransactions";
+    }
+
+    @PostMapping(value = "/delete/{transactionId}")
+    @ResponseBody
+    public AjaxResponse deleteTransaction(@PathVariable long transactionId) {
+        singleTransactionService.deleteTransactionById(transactionId);
+        return AjaxResponse.successResponseFrom("Płatność usunięta poprawnie");
     }
 
     @ModelAttribute(NOTIFICATIONS_ATTR_NAME)

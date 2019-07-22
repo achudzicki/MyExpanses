@@ -1,7 +1,7 @@
 package com.chudzick.expanses.controllers.settings;
 
+import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
-import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.domain.settings.UserSettings;
 import com.chudzick.expanses.domain.settings.dto.UserSettingsDto;

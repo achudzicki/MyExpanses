@@ -1,4 +1,4 @@
-package com.chudzick.expanses.beans;
+package com.chudzick.expanses.beans.transactions;
 
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import org.springframework.context.annotation.Scope;

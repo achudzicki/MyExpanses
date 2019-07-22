@@ -4,7 +4,12 @@
 <head>
     <title></title>
     <style></style>
-    <script></script>
+    <script>
+        $(document).ready(function () {
+
+
+        })
+    </script>
 </head>
 <body>
 <div class="content">
@@ -34,9 +39,10 @@
             <th th:text="${transaction.transactionType.name}"></th>
             <th th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></th>
             <th th:text="${transaction.transactionDate}"></th>
-            <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
-                <button type="submit"  uk-icon="trash"></button>
-            </form></th>
+            <th>
+                <input hidden class="transaction-id" th:value="${transaction.id}">
+                <button class="delete-transaction-button" uk-icon="trash"></button>
+            </th>
         </tr>
         </tbody>
     </table>

@@ -1,12 +1,12 @@
 package com.chudzick.expanses.controllers.transaction;
 
-import com.chudzick.expanses.beans.TransactionGroupBean;
-import com.chudzick.expanses.beans.TransactionGroupUsageBean;
+import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
+import com.chudzick.expanses.beans.transactions.TransactionGroupBean;
+import com.chudzick.expanses.beans.transactions.TransactionGroupUsageBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
-import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.exceptions.UserDontHavePermissionsToAction;
 import com.chudzick.expanses.services.permissions.PermissionsService;
@@ -79,7 +79,7 @@ public class TransactionGroupController {
     }
 
     @PostMapping(value = "/delete/{groupId}")
-    public String deleteTransactionGroup(@PathVariable long groupId, Model model, RedirectAttributes redirectAttributes) throws UserDontHavePermissionsToAction {
+    public String deleteTransactionGroup(@PathVariable long groupId, RedirectAttributes redirectAttributes) throws UserDontHavePermissionsToAction {
         if (!permissionsService.checkUserPermissionsToDeleteGroup(groupId)) {
             throw new UserDontHavePermissionsToAction("Próba usunięcia grupy transakcyjnej przez nieuprawnionego urzytkownika.");
         }
@@ -87,17 +87,10 @@ public class TransactionGroupController {
         int transactionsToGroup = singleTransactionService.countTransactionsByGroup(groupId);
 
         if (transactionsToGroup > 0) {
-            notificationMessagesBean.setNotificationsMessages(new NotificationMessageListBuilder()
+            redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                     .withFailureNotificationMsg("Usuwanie grupy nie powiodło się.\nLiczba znalezionych powiązań : " + transactionsToGroup)
                     .getNotificationList());
-
-            final List<SingleTransaction> groupTransactions = singleTransactionService.findAllByGroupId(groupId);
-            final TransactionGroup transactionGroup = transactionGroupService.findById(groupId);
-            transactionGroupUsageBean.setGroupTransactions(groupTransactions);
-            transactionGroupUsageBean.setTransactionGroup(transactionGroup);
-            model.addAttribute("transactionGroupUsageBean", transactionGroupUsageBean);
-            model.addAttribute("notificationMessagesBean", notificationMessagesBean);
-            return "transaction/TransactionGroupUsageTable";
+            return "redirect:/transaction/group/usage/" + groupId;
         }
 
         transactionGroupService.deleteTransactionGroup(groupId);
@@ -106,6 +99,20 @@ public class TransactionGroupController {
                 .getNotificationList());
 
         return "redirect:/transaction/group";
+    }
+
+    @GetMapping(value = "/usage/{groupId}")
+    public String viewTransactionsToSelectedGroup(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model
+            , @PathVariable int groupId) {
+
+        final List<SingleTransaction> groupTransactions = singleTransactionService.findAllByGroupId(groupId);
+        final TransactionGroup transactionGroup = transactionGroupService.findById(groupId);
+        transactionGroupUsageBean.setGroupTransactions(groupTransactions);
+        transactionGroupUsageBean.setTransactionGroup(transactionGroup);
+        notificationMessagesBean.setNotificationsMessages(notifications);
+        model.addAttribute("transactionGroupUsageBean", transactionGroupUsageBean);
+        model.addAttribute("notificationMessagesBean", notificationMessagesBean);
+        return "transaction/TransactionGroupUsageTable";
     }
 
     @ModelAttribute(name = NOTIFICATIONS_ATTR_NAME)
