@@ -4,12 +4,7 @@
 <head>
     <title></title>
     <style></style>
-    <script>
-        $(document).ready(function () {
-
-
-        })
-    </script>
+    <script></script>
 </head>
 <body>
 <div class="content">
@@ -22,6 +17,12 @@
     <div class="uk-alert-warning" uk-alert>
         <i><span class="uk-margin-small-right" uk-icon="icon: warning; ratio : 1.5"></span><span th:text="#{group.usage.info.text}" th:remove="tag"></span></i>
     </div>
+
+    <div th:if="${transactionGroupUsageBean.groupTransactions.isEmpty()}" class="uk-alert-success" uk-alert>
+        <i><span class="uk-margin-small-right" uk-icon="icon: check; ratio : 1.5"></span>Usunięto wszystkie powiązane transakcje z daną grupą, aby przejść do widoku wszystkich grup
+        <a href="/transaction/group">kliknij tu</a>.</i>
+    </div>
+
 
     <table class="uk-table uk-table-striped">
         <thead>
@@ -39,10 +40,9 @@
             <th th:text="${transaction.transactionType.name}"></th>
             <th th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></th>
             <th th:text="${transaction.transactionDate}"></th>
-            <th>
-                <input hidden class="transaction-id" th:value="${transaction.id}">
-                <button class="delete-transaction-button" uk-icon="trash"></button>
-            </th>
+            <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+                <button type="submit"  uk-icon="trash"></button>
+            </form></th>
         </tr>
         </tbody>
     </table>

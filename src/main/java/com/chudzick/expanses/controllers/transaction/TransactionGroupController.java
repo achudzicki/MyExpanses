@@ -4,11 +4,12 @@ import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupUsageBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
+import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
-import com.chudzick.expanses.exceptions.UserDontHavePermissionsToAction;
+import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.services.permissions.PermissionsService;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
@@ -79,9 +80,9 @@ public class TransactionGroupController {
     }
 
     @PostMapping(value = "/delete/{groupId}")
-    public String deleteTransactionGroup(@PathVariable long groupId, RedirectAttributes redirectAttributes) throws UserDontHavePermissionsToAction {
+    public String deleteTransactionGroup(@PathVariable long groupId, RedirectAttributes redirectAttributes) throws UserNotPermittedToActionException {
         if (!permissionsService.checkUserPermissionsToDeleteGroup(groupId)) {
-            throw new UserDontHavePermissionsToAction("Próba usunięcia grupy transakcyjnej przez nieuprawnionego urzytkownika.");
+            throw new UserNotPermittedToActionException(ApplicationActions.DELETE_GROUP);
         }
 
         int transactionsToGroup = singleTransactionService.countTransactionsByGroup(groupId);

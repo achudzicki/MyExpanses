@@ -26,27 +26,6 @@
                     UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
                 }
             });
-
-            $('.delete-transaction-button').on('click',function () {
-                var transToDel = $(this).parent().find('.transaction-id').val();
-                $.ajax({
-                    type : 'POST',
-                    url : '/transaction/delete/' + transToDel,
-                    data : {},
-                    success : function (response) {
-                        console.log(response);
-                        if (response.ajaxResponseStatus === 'SUCCESS') {
-                            UIkit.notification({message: '<i style="color: #007000"><span uk-icon=\'icon: check\'></span> ' + response.notificationMessage + '</i>'});
-                        } else  {
-                            UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span> ' + response.notificationMessage + '</i>'});
-                        }
-                    },
-                    error : function () {
-                        UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span>Nie można wykonać żądanego działania</i>'});
-                    }
-                })
-            });
-
         });
     </script>
 

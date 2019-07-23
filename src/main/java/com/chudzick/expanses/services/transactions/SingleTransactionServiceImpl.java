@@ -1,8 +1,10 @@
 package com.chudzick.expanses.services.transactions;
 
+import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
 import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.SingleTransactionStaticFactory;
 import com.chudzick.expanses.repositories.SingleTransactionRepository;
 import com.chudzick.expanses.services.users.UserService;
@@ -60,19 +62,19 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
     }
 
     @Override
-    public void deleteTransactionById(long transactionId) {
+    public boolean deleteTransactionById(long transactionId) throws UserNotPermittedToActionException {
         AppUser currentUser = userService.getCurrentLogInUser();
         Optional<SingleTransaction> singleTransaction = singleTransactionRepository.findById(transactionId);
 
         if (!singleTransaction.isPresent()) {
-            // TODO EXCEPTION ZE NIE ZNALAZŁ TRANSAKCJI
-            throw new RuntimeException();
+            return false;
         }
-        if (singleTransaction.get().getAppUser().getId() != currentUser.getId()) {
-            //TODO EXCEPTION PERRMISION NOOO
-            throw new RuntimeException();
+
+        if (singleTransaction.get().getAppUser().getId().equals(currentUser.getId())) {
+            throw new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION);
         }
 
         singleTransactionRepository.delete(singleTransaction.get());
+        return true;
     }
 }
