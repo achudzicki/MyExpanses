@@ -70,7 +70,7 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
             return false;
         }
 
-        if (singleTransaction.get().getAppUser().getId().equals(currentUser.getId())) {
+        if (!singleTransaction.get().getAppUser().getId().equals(currentUser.getId())) {
             throw new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION);
         }
 

@@ -84,6 +84,9 @@ public class TransactionController {
         List<SingleTransaction> allTransactionsPerCycle = singleTransactionService.findAll();
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
 
+        notificationMessagesBean.setNotificationsMessages(notifications);
+
+        model.addAttribute("notificationMessagesBean",notificationMessagesBean);
         model.addAttribute("transactionsList", allTransactionsPerCycle);
         model.addAttribute("actualTransactionStats", actualTransactionStats);
         return "transaction/allCycleTransactions";

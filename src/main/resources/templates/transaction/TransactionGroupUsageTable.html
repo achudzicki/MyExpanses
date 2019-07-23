@@ -41,7 +41,7 @@
             <th th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></th>
             <th th:text="${transaction.transactionDate}"></th>
             <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
-                <button type="submit"  uk-icon="trash"></button>
+                <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
             </form></th>
         </tr>
         </tbody>
