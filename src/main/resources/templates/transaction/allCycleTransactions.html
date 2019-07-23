@@ -54,6 +54,7 @@
             <th th:text="#{add.transaction.type}"></th>
             <th th:text="#{add.transaction.group}"></th>
             <th th:text="#{add.transaction.date}"></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -62,6 +63,9 @@
             <th th:text="${transaction.transactionType.name}"></th>
             <th th:text="${transaction.transactionGroup.gorupName}"></th>
             <th th:text="${transaction.transactionDate}"></th>
+            <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+                <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
+            </form></th>
         </tr>
         </tbody>
     </table>

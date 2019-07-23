@@ -1,29 +1,28 @@
 package com.chudzick.expanses.controllers.transaction;
 
-import com.chudzick.expanses.beans.UserBean;
+import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionType;
-import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
+import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,13 +80,35 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/all")
-    public String viewAllTransactions(Model model) {
+    public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model) {
         List<SingleTransaction> allTransactionsPerCycle = singleTransactionService.findAll();
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
 
-        model.addAttribute("transactionsList",allTransactionsPerCycle);
-        model.addAttribute("actualTransactionStats",actualTransactionStats);
+        notificationMessagesBean.setNotificationsMessages(notifications);
+
+        model.addAttribute("notificationMessagesBean",notificationMessagesBean);
+        model.addAttribute("transactionsList", allTransactionsPerCycle);
+        model.addAttribute("actualTransactionStats", actualTransactionStats);
         return "transaction/allCycleTransactions";
+    }
+
+    @PostMapping(value = "/delete/{transactionId}")
+    public String deleteTransaction(@PathVariable long transactionId, HttpServletRequest request,
+                                    RedirectAttributes redirectAttributes) throws UserNotPermittedToActionException {
+        boolean success = singleTransactionService.deleteTransactionById(transactionId);
+        String referrerUrl = request.getHeader(HttpHeaders.REFERER);
+
+        if (!success) {
+            redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
+                    .withFailureNotificationMsg("Wystąpił błąd podczas usuwania transakcji")
+                    .getNotificationList());
+        } else {
+            redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
+                    .withSuccessNotification("Płatność usunięta poprawnie")
+                    .getNotificationList());
+        }
+
+        return "redirect:" + referrerUrl;
     }
 
     @ModelAttribute(NOTIFICATIONS_ATTR_NAME)
