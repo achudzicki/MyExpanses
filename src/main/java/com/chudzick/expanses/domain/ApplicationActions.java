@@ -1,8 +1,9 @@
 package com.chudzick.expanses.domain;
 
-public enum  ApplicationActions {
+public enum ApplicationActions {
     DELETE_TRANSACTION("Usunięcie transakcji"),
-    DELETE_GROUP("Usunięcie grupy tansakcji");
+    DELETE_GROUP("Usunięcie grupy tansakcji"),
+    ADD_TRANSACTION("Dodanie nowej transackcji");
 
     private String actionName;
 
