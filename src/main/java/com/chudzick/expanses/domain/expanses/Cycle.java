@@ -18,7 +18,7 @@ public class Cycle {
     private LocalDate dateFrom;
     private LocalDate dateTo;
     private BigDecimal saveGoal;
-    private boolean isActive;
+    private boolean active;
 
     @OneToMany(
             mappedBy = "cycle"
@@ -38,7 +38,7 @@ public class Cycle {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public Long getId() {
@@ -46,7 +46,7 @@ public class Cycle {
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public LocalDate getDateFrom() {
