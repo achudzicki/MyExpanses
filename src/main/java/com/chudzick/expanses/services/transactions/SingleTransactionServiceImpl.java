@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
             throw new NoActiveCycleException(ApplicationActions.ADD_TRANSACTION);
         }
 
-        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser);
+        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser, activeCycle.get());
         return singleTransactionRepository.save(newTransaction);
     }
 
@@ -52,8 +53,13 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
     @Transactional
     public List<SingleTransaction> findLastSingleTransactionsLimitBy(int limit) {
         AppUser current = userService.getCurrentLogInUser();
+        Optional<Cycle> currentCycle = cycleService.findActiveCycle();
 
-        return singleTransactionRepository.findTop5ByAppUserOrderByIdDesc(current);
+        if (!currentCycle.isPresent()) {
+            return Collections.emptyList();
+        }
+
+        return singleTransactionRepository.findTop5ByAppUserAndCycleOrderByIdDesc(current, currentCycle.get());
     }
 
     @Override

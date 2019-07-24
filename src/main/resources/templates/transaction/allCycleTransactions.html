@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="content">
-    <div class="uk-width-expand">
+    <div th:if="${cycleDisplayInfo != null}" class="uk-width-expand">
         <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Statystyki cyklu</h4>
         <i class="uk-text-meta uk-margin-remove-bottom" th:text="${cycleDisplayInfo.cycleDisplayName}"></i><br/>
         <i class="uk-text-meta uk-margin-remove-top">Dzień cyklu : <span th:remove="tag" th:text="${cycleDisplayInfo.currentCycleDay}"></span>/<span th:remove="tag" th:text="${cycleDisplayInfo.allCycleDays}"></span></i>
@@ -36,7 +36,7 @@
                 <p class="uk-margin-remove-bottom uk-text-bold">Bilans:
                     <span th:if="${actualTransactionStats.balance > 0}">+ <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
                     <span th:if="${actualTransactionStats.balance == 0}">0 zł</span>
-                    <span th:if="${actualTransactionStats.balance < 0}">- <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
+                    <span th:if="${actualTransactionStats.balance < 0}"> <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
                 </p>
             </div>
         </div>

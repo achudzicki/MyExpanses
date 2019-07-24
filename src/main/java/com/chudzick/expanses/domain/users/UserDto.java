@@ -1,8 +1,8 @@
 package com.chudzick.expanses.domain.users;
 
-import com.chudzick.expanses.validators.PasswordMatches;
-import com.chudzick.expanses.validators.ValidEmail;
-import com.chudzick.expanses.validators.ValidPassword;
+import com.chudzick.expanses.validators.register.PasswordMatches;
+import com.chudzick.expanses.validators.register.ValidEmail;
+import com.chudzick.expanses.validators.register.ValidPassword;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
