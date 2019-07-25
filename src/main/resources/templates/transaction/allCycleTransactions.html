@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style></style>
+    <script></script>
+</head>
+<body>
+<div class="content">
+    <div th:if="${cycleDisplayInfo != null}" class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Statystyki cyklu</h4>
+        <i class="uk-text-meta uk-margin-remove-bottom" th:text="${cycleDisplayInfo.cycleDisplayName}"></i><br/>
+        <i class="uk-text-meta uk-margin-remove-top">Dzień cyklu : <span th:remove="tag" th:text="${cycleDisplayInfo.currentCycleDay}"></span>/<span th:remove="tag" th:text="${cycleDisplayInfo.allCycleDays}"></span></i>
+    </div>
+    <hr>
+    <div class="uk-child-width-expand@s uk-text-center" uk-grid>
+        <div>
+            <div style="border-top : 5px solid green; border-radius : 5px 5px 0 0;" class="uk-card uk-card-default uk-card-body">
+                <div class="uk-width-expand">
+                    <p class="uk-margin-remove-bottom uk-text-bold">Łącznie przychodu: <span th:text="${actualTransactionStats.incomeSum}"></span> zł</p>
+                    <i class="uk-text-meta uk-margin-remove-top">Liczba transakcji : <span th:text="${actualTransactionStats.incomeCnt}"></span></i>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="border-top : 5px solid red; border-radius : 5px 5px 0 0;" class="uk-card uk-card-default uk-card-body">
+                <div class="uk-width-expand">
+                    <p class="uk-margin-remove-bottom uk-text-bold">Łącznie wydatków: <span th:text="${actualTransactionStats.expensesSum}"></span> zł</p>
+                    <i class="uk-text-meta uk-margin-remove-top">Liczba transakcji : <span th:text="${actualTransactionStats.expensesCnt}"></span></i>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="border-top : 5px solid yellow; border-radius : 5px 5px 0 0; height : 100%" class="uk-card uk-card-default uk-card-body">
+                <p class="uk-margin-remove-bottom uk-text-bold">Bilans:
+                    <span th:if="${actualTransactionStats.balance > 0}">+ <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
+                    <span th:if="${actualTransactionStats.balance == 0}">0 zł</span>
+                    <span th:if="${actualTransactionStats.balance < 0}"> <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <div class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Wszystkie transakcję w danym cyklu</h4>
+        <i class="uk-text-meta uk-margin-remove-top">Dzień cyklu : 19/31</i>
+    </div>
+
+    <table class="uk-table uk-table-striped">
+        <thead>
+        <tr>
+            <th th:text="#{add.transaction.amound}"></th>
+            <th th:text="#{add.transaction.type}"></th>
+            <th th:text="#{add.transaction.group}"></th>
+            <th th:text="#{add.transaction.date}"></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="transaction : ${transactionsList}">
+            <th th:text="${transaction.amound}"></th>
+            <th th:text="${transaction.transactionType.name}"></th>
+            <th th:text="${transaction.transactionGroup.gorupName}"></th>
+            <th th:text="${transaction.transactionDate}"></th>
+            <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+                <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
+            </form></th>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

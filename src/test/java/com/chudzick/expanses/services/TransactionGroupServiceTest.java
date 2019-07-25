@@ -24,6 +24,7 @@ import static org.mockito.Mockito.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class TransactionGroupServiceTest {
 
+    private AppUser appUser = new AppUser();
     @InjectMocks
     private TransactionGroupServiceImpl transactionGroupService;
 
@@ -35,7 +36,9 @@ public class TransactionGroupServiceTest {
 
     @Before
     public void setUp() {
+
         MockitoAnnotations.initMocks(this);
+        when(userService.getCurrentLogInUser()).thenReturn(appUser);
     }
 
     @Test
@@ -63,7 +66,7 @@ public class TransactionGroupServiceTest {
             transactionGroupList.add(new TransactionGroup());
         }
 
-        when(transactionGroupRepository.findAll()).thenReturn(transactionGroupList);
+        when(transactionGroupRepository.findAllByAppUser(appUser)).thenReturn(transactionGroupList);
 
         List<TransactionGroup> result = transactionGroupService.getAllGroups();
 

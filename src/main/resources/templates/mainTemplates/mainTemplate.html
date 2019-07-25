@@ -25,17 +25,17 @@
                 } else {
                     UIkit.notification({message: '<i style="color: #900000"><span uk-icon=\'icon: close\'></span> ' + msg + '</i>'});
                 }
-            })
+            });
         });
     </script>
 
     <style>
 
         html {
-            height: 100%;
+            min-height: 100%;
         }
         body {
-            min-height: 100%;
+            min-height: 100vh;
         }
 
         #mainContent {
@@ -46,7 +46,7 @@
 
         .sidebarMenu {
             height : 100%;
-            min-height : 100%;
+            min-height : 100vh;
             background-color: grey;
             width: 250px;
             max-width: 250px !important;
@@ -86,7 +86,7 @@
             <div class="uk-navbar-left">
 
                 <ul class="uk-navbar-nav">
-                    <li class="uk-active"><a href="#"><span class="uk-margin-small-right" uk-icon="home"></span>HOME</a></li>
+                    <li class="uk-active"><a href="/transaction/all"><span class="uk-margin-small-right" uk-icon="home"></span>HOME</a></li>
                 </ul>
 
             </div>
@@ -94,7 +94,7 @@
             <div class="uk-navbar-right">
 
                 <ul class="uk-navbar-nav">
-                    <li><a href="#"><span class="uk-margin-small-right" uk-icon="user"></span>Andrzej Chudzicki</a></li>
+                    <li><a href="/settings"><span class="uk-margin-small-right" uk-icon="user"></span>[[${#httpServletRequest.remoteUser}]]</a></li>
                     <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Logout</a></li>
                 </ul>
 
@@ -109,7 +109,7 @@
                     <a href="#"><span class="uk-margin-small-right" uk-icon="credit-card"></span>Wydatki</a>
                     <ul class="uk-nav-sub">
                         <li><a href="/transaction/">Nowa transakcja</a></li>
-                        <li><a href="#">Wszystkie transakcje</a></li>
+                        <li><a href="/transaction/all">Wszystkie transakcje</a></li>
                         <li><a href="/transaction/group">Kategorie transakcji</a></li>
                     </ul>
                 </li>
@@ -118,6 +118,12 @@
                     <ul class="uk-nav-sub">
                         <li><a href="#">Podsumowanie miesiąca</a></li>
                         <li><a href="#">Podział na kategorie</a></li>
+                    </ul>
+                </li>
+                <li class="uk-parent">
+                    <a href="#"><span class="uk-margin-small-right" uk-icon="cog"></span>Ustawienia</a>
+                    <ul class="uk-nav-sub">
+                        <li><a href="/settings">Ustawienia urzytkownika</a></li>
                     </ul>
                 </li>
             </ul>

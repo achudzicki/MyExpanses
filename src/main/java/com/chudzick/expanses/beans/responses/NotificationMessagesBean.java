@@ -1,5 +1,6 @@
-package com.chudzick.expanses.domain.responses;
+package com.chudzick.expanses.beans.responses;
 
+import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;

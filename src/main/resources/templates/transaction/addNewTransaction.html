@@ -12,6 +12,21 @@
 </head>
 <body>
 <div class="content">
+    <div th:if="${cycleDisplayInfo != null}" class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom" th:text="${cycleDisplayInfo.cycleDisplayName}"></h4>
+        <i class="uk-text-meta uk-margin-remove-top">Dzień cyklu : <span th:remove="tag" th:text="${cycleDisplayInfo.currentCycleDay}"></span>/<span th:remove="tag" th:text="${cycleDisplayInfo.allCycleDays}"></span></i>
+    </div>
+    <hr>
+
+    <div th:if="${transactionGroups.isEmpty()}" class="uk-alert-warning" uk-alert>
+        <i><span class="uk-margin-small-right" uk-icon="icon: warning; ratio : 1.5"></span>Obecnie nie posiadasz dodanej żadnej grupy transakcji przez co nie możesz dodawać nowych transakcji
+            ,aby dodać swoją pierwszą grupę <a href="/transaction/group">kliknij tu</a>.</i>
+    </div>
+    <div th:if="${activeCycle == null}" class="uk-alert-warning" uk-alert>
+        <i><span class="uk-margin-small-right" uk-icon="icon: warning; ratio : 1.5"></span>Obecnie nie posiadasz aktywnego cyklu przez co nie możesz dodawać nowych transakcji. Aby aktywować cykl należy przejść do <a href="/settings">ustawień urzytkownika</a>.
+         Zaleca się ustawienie automatycznego odnawiania się cyklu, oszczędzi to czasu w przyszłości ponieważ cykle będą sie otwierać automatycznie.</i>
+    </div>
+
     <div class="uk-flex uk-flex-around">
         <div>
             <div class="uk-card uk-card-default">
@@ -40,7 +55,8 @@
                                 <option th:each ="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
                             </select>
                         </div>
-                        <a th:text="#{add.transaction.save}" class="uk-float-right" onclick="$(this).closest('form').submit()"><span class="uk-margin-small-right" uk-icon="icon: check"></span></a>
+                        <a th:if="${!transactionGroups.isEmpty() && activeCycle != null}" th:text="#{add.transaction.save}" class="uk-float-right" onclick="$(this).closest('form').submit()"><span class="uk-margin-small-right" uk-icon="icon: check"></span></a>
+                        <a th:if="${transactionGroups.isEmpty() || activeCycle == null}" th:text="#{add.transaction.save}" class="uk-text-muted uk-float-right"><span class="uk-margin-small-right" uk-icon="icon: check"></span></a>
                     </form>
                 </div>
             </div>

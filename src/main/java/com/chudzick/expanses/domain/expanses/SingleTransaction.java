@@ -30,6 +30,22 @@ public class SingleTransaction {
     @JoinColumn(name = "appuser_id")
     private AppUser appUser;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cycle_id")
+    private Cycle cycle;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Cycle getCycle() {
+        return cycle;
+    }
+
+    public void setCycle(Cycle cycle) {
+        this.cycle = cycle;
+    }
+
     public AppUser getAppUser() {
         return appUser;
     }

@@ -1,7 +1,7 @@
 package com.chudzick.expanses.controllers;
 
+import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
-import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.users.UserDto;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
 import com.chudzick.expanses.services.users.UserService;

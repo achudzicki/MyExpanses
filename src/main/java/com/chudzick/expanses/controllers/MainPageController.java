@@ -1,8 +1,6 @@
 package com.chudzick.expanses.controllers;
 
-import com.chudzick.expanses.beans.UserBean;
-import com.chudzick.expanses.domain.expanses.TransactionGroup;
-import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.beans.users.UserBean;
 import com.chudzick.expanses.repositories.TransactionGroupRepository;
 import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +22,6 @@ public class MainPageController {
 
     @GetMapping(value = "/")
     public String initMainPage(Model model) {
-
-        AppUser currentLogInUser = userService.getCurrentLogInUser();
-
-        userBean.setAppUser(currentLogInUser);
-
-        model.addAttribute("loggedUser", userBean.getAppUser());
         return "mainPage";
     }
 }

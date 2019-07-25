@@ -1,7 +1,9 @@
 package com.chudzick.expanses.domain.users;
 
+import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
+import com.chudzick.expanses.domain.settings.UserSettings;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -46,6 +48,35 @@ public class AppUser {
     )
     private List<TransactionGroup> transactionGroups;
 
+    @OneToOne(
+            mappedBy = "appUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private UserSettings userSettings;
+
+    @OneToMany(
+            mappedBy = "appUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Cycle> cycle;
+
+    public List<Cycle> getCycle() {
+        return cycle;
+    }
+
+    public void setCycle(List<Cycle> cycle) {
+        this.cycle = cycle;
+    }
+
+    public UserSettings getUserSettings() {
+        return userSettings;
+    }
+
+    public void setUserSettings(UserSettings userSettings) {
+        this.userSettings = userSettings;
+    }
 
     public List<SingleTransaction> getTransactionList() {
         return transactionList;
