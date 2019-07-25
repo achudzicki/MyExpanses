@@ -1,4 +1,4 @@
-package com.chudzick.expanses.validators;
+package com.chudzick.expanses.validators.register;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

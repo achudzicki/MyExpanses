@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,7 +37,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
             settingToSave = update(userSettings.get(), userSettingsDto);
         } else {
             settingToSave = UserSettingsStaticFactory.createFromDto(userSettingsDto, currentUser);
-            cycleService.createInitialCycle(settingToSave,currentUser);
+            cycleService.createInitialCycle(settingToSave, currentUser);
         }
         return userSettingsRepository.save(settingToSave);
     }
@@ -45,6 +46,11 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     public Optional<UserSettings> findUserSettings() {
         AppUser currentUser = userService.getCurrentLogInUser();
         return userSettingsRepository.findByAppUser(currentUser);
+    }
+
+    @Override
+    public List<UserSettings> findAllUserSettings() {
+        return userSettingsRepository.findAll();
     }
 
     private UserSettings update(UserSettings userSettings, UserSettingsDto userSettingsDto) {

@@ -11,6 +11,9 @@ import java.util.List;
 @Entity
 public class Cycle {
 
+    @Version
+    Integer version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,6 +31,10 @@ public class Cycle {
     @ManyToOne
     @JoinColumn(name = "appuser_id")
     private AppUser appUser;
+
+    public Integer getVersion() {
+        return version;
+    }
 
     public AppUser getAppUser() {
         return appUser;

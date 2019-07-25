@@ -85,7 +85,7 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/all")
-    public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model) {
+    public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model) throws NoActiveCycleException {
         List<SingleTransaction> allTransactionsPerCycle = singleTransactionService.findAll();
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
