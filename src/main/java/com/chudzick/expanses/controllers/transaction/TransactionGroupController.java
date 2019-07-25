@@ -4,7 +4,6 @@ import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupUsageBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
-import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
@@ -81,9 +80,8 @@ public class TransactionGroupController {
 
     @PostMapping(value = "/delete/{groupId}")
     public String deleteTransactionGroup(@PathVariable long groupId, RedirectAttributes redirectAttributes) throws UserNotPermittedToActionException {
-        if (!permissionsService.checkUserPermissionsToDeleteGroup(groupId)) {
-            throw new UserNotPermittedToActionException(ApplicationActions.DELETE_GROUP);
-        }
+        permissionsService.checkUserPermissionsToDeleteGroup(groupId);
+
 
         int transactionsToGroup = singleTransactionService.countTransactionsByGroup(groupId);
 
