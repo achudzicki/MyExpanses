@@ -3,9 +3,11 @@ package com.chudzick.expanses.controllers.transaction;
 import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupUsageBean;
+import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
 import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
 import com.chudzick.expanses.factories.TransactionGroupStaticFactory;
 import com.chudzick.expanses.services.permissions.PermissionsService;
@@ -114,7 +116,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
     }
 
     @Test
-    public void deleteTransactionGroupTest() throws Exception {
+    public void deleteTransactionGroupTest() throws Exception, UserNotPermittedToActionException {
         int groupId = 1;
 
         when(permissionsService.checkUserPermissionsToDeleteGroup(groupId)).thenReturn(true);
@@ -128,7 +130,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
     }
 
     @Test
-    public void deleteTransactionGroupWithUsageTest() throws Exception {
+    public void deleteTransactionGroupWithUsageTest() throws Exception, UserNotPermittedToActionException {
         int groupId = 1;
 
         when(permissionsService.checkUserPermissionsToDeleteGroup(groupId)).thenReturn(true);
@@ -145,10 +147,10 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
     public ExpectedException exRule = ExpectedException.none();
 
     @Test
-    public void deleteTransactionGroupNotPermittedUserTest() throws Exception {
+    public void deleteTransactionGroupNotPermittedUserTest() throws Exception, UserNotPermittedToActionException {
         exRule.expectCause(IsInstanceOf.instanceOf(IllegalStateException.class));
         int groupId = 1;
-        when(permissionsService.checkUserPermissionsToDeleteGroup(groupId)).thenReturn(false);
+        when(permissionsService.checkUserPermissionsToDeleteGroup(groupId)).thenThrow(new UserNotPermittedToActionException(ApplicationActions.DELETE_GROUP));
 
         mockMvc.perform(post("/transaction/group/delete/" + groupId));
 

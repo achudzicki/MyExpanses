@@ -9,6 +9,7 @@ import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.SingleTransactionStaticFactory;
 import com.chudzick.expanses.repositories.SingleTransactionRepository;
+import com.chudzick.expanses.services.permissions.PermissionsService;
 import com.chudzick.expanses.services.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,9 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
 
     @Autowired
     private CycleService cycleService;
+
+    @Autowired
+    private PermissionsService permissionsService;
 
     @Override
     @Transactional
@@ -84,17 +88,13 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
 
     @Override
     public boolean deleteTransactionById(long transactionId) throws UserNotPermittedToActionException {
-        AppUser currentUser = userService.getCurrentLogInUser();
         Optional<SingleTransaction> singleTransaction = singleTransactionRepository.findById(transactionId);
 
         if (!singleTransaction.isPresent()) {
             return false;
         }
 
-        if (!singleTransaction.get().getAppUser().getId().equals(currentUser.getId())) {
-            throw new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION);
-        }
-
+        permissionsService.checkPermissionToDeleteSingleTransaction(singleTransaction.get());
         singleTransactionRepository.delete(singleTransaction.get());
         return true;
     }
