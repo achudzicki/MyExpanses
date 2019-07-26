@@ -1,7 +1,7 @@
 package com.chudzick.expanses.factories;
 
-import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionType;
+import com.chudzick.expanses.domain.expanses.UserTransactions;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
 
 import java.math.BigDecimal;
@@ -20,10 +20,10 @@ public class ActualTransactionStatsFactory {
         balance = BigDecimal.ZERO;
     }
 
-    public ActualTransactionStats fromTransactionList(List<SingleTransaction> allTransactions) {
+    public ActualTransactionStats fromTransactionList(List<UserTransactions> allTransactions) {
 
 
-        allTransactions.stream().forEach(singleTransaction -> {
+        allTransactions.forEach(singleTransaction -> {
 
             if (singleTransaction.getTransactionType().equals(TransactionType.INCOME)) {
                 incomeCnt++;

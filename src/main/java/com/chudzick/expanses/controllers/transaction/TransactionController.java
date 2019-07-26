@@ -10,8 +10,8 @@ import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
 import com.chudzick.expanses.services.transactions.CycleService;
-import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
+import com.chudzick.expanses.services.transactions.UserTransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class TransactionController {
     private TransactionGroupService transactionGroupService;
 
     @Autowired
-    private SingleTransactionService singleTransactionService;
+    private UserTransactionService userTransactionService;
 
     @Autowired
     private NotificationMessagesBean notificationMessagesBean;
@@ -73,7 +73,7 @@ public class TransactionController {
             return "transaction/addNewTransaction";
         }
 
-        singleTransactionService.addNewTransaction(singleTransactionDto);
+        userTransactionService.addNewTransaction(singleTransactionDto);
 
         List<SimpleNotificationMsg> successNotification = new NotificationMessageListBuilder()
                 .withSuccessNotification("Dodano nową transakcję")
@@ -86,13 +86,12 @@ public class TransactionController {
 
     @GetMapping(value = "/all")
     public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model) throws NoActiveCycleException {
-        List<SingleTransaction> allTransactionsPerCycle = singleTransactionService.findAll();
+        List<UserTransactions> allTransactionsPerCycle = userTransactionService.findAll();
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
 
         notificationMessagesBean.setNotificationsMessages(notifications);
-
-        activeCycle.ifPresent(cycle -> model.addAttribute("cycleDisplayInfo",CycleInformation.fromCycle(cycle)));
+        activeCycle.ifPresent(cycle -> model.addAttribute("cycleDisplayInfo", CycleInformation.fromCycle(cycle)));
         model.addAttribute("notificationMessagesBean", notificationMessagesBean);
         model.addAttribute("transactionsList", allTransactionsPerCycle);
         model.addAttribute("actualTransactionStats", actualTransactionStats);
@@ -102,7 +101,7 @@ public class TransactionController {
     @PostMapping(value = "/delete/{transactionId}")
     public String deleteTransaction(@PathVariable long transactionId, HttpServletRequest request,
                                     RedirectAttributes redirectAttributes) throws UserNotPermittedToActionException {
-        boolean success = singleTransactionService.deleteTransactionById(transactionId);
+        boolean success = userTransactionService.deleteTransactionById(transactionId);
         String referrerUrl = request.getHeader(HttpHeaders.REFERER);
 
         if (!success) {
@@ -124,7 +123,7 @@ public class TransactionController {
     }
 
     private void initBasicAddTransactionModelAttributes(Model model) {
-        List<SingleTransaction> lastFiveTransactions = singleTransactionService.findLastSingleTransactionsLimitBy(NUMBERS_OF_TRANSACTIONS_DISPLAY);
+        List<SingleTransaction> lastFiveTransactions = userTransactionService.findLastSingleTransactionsLimitBy(NUMBERS_OF_TRANSACTIONS_DISPLAY);
         List<TransactionGroup> transactionGroups = transactionGroupService.getAllGroups();
         Optional<Cycle> cycle = cycleService.findActiveCycle();
 

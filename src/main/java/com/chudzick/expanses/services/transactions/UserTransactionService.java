@@ -2,12 +2,13 @@ package com.chudzick.expanses.services.transactions;
 
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
+import com.chudzick.expanses.domain.expanses.UserTransactions;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 
 import java.util.List;
 
-public interface SingleTransactionService {
+public interface UserTransactionService {
 
     SingleTransaction addNewTransaction(SingleTransactionDto transactionDto) throws NoActiveCycleException;
 
@@ -17,7 +18,7 @@ public interface SingleTransactionService {
 
     List<SingleTransaction> findAllByGroupId(long groupId);
 
-    List<SingleTransaction> findAll();
+    List<UserTransactions> findAll();
 
     boolean deleteTransactionById(long transactionId) throws UserNotPermittedToActionException;
 }

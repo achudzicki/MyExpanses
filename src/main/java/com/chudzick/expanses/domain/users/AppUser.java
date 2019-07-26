@@ -1,5 +1,6 @@
 package com.chudzick.expanses.domain.users;
 
+import com.chudzick.expanses.domain.expanses.ConstantTransaction;
 import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
@@ -46,6 +47,14 @@ public class AppUser {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    private List<ConstantTransaction> constantTransactions;
+
+
+    @OneToMany(
+            mappedBy = "appUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<TransactionGroup> transactionGroups;
 
     @OneToOne(
@@ -61,6 +70,15 @@ public class AppUser {
             orphanRemoval = true
     )
     private List<Cycle> cycle;
+
+
+    public List<ConstantTransaction> getConstantTransactions() {
+        return constantTransactions;
+    }
+
+    public void setConstantTransactions(List<ConstantTransaction> constantTransactions) {
+        this.constantTransactions = constantTransactions;
+    }
 
     public List<Cycle> getCycle() {
         return cycle;

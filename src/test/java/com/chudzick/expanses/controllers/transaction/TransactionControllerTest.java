@@ -12,8 +12,8 @@ import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
 import com.chudzick.expanses.factories.SingleTransactionStaticFactory;
 import com.chudzick.expanses.services.transactions.CycleService;
-import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
+import com.chudzick.expanses.services.transactions.UserTransactionService;
 import com.chudzick.expanses.services.users.UserService;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
@@ -57,7 +57,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     private TransactionController transactionController;
 
     @Mock
-    private SingleTransactionService singleTransactionService;
+    private UserTransactionService userTransactionService;
 
     @Mock
     private TransactionGroupService transactionGroupService;
@@ -85,7 +85,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
 
     @Test
     public void getTransactionPageTest() throws Exception {
-        when(singleTransactionService.findLastSingleTransactionsLimitBy(anyInt())).thenReturn(prepareListOfTransactions(TEST_LIST_SIZE, mockCycle, appUser));
+        when(userTransactionService.findLastSingleTransactionsLimitBy(anyInt())).thenReturn(prepareListOfTransactions(TEST_LIST_SIZE, mockCycle, appUser));
         when(transactionGroupService.getAllGroups()).thenReturn(prepareTransactionGroupList(TEST_LIST_SIZE, appUser));
         when(cycleService.findActiveCycle()).thenReturn(Optional.of(mockCycle));
 
@@ -107,7 +107,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
 
     @Test
     public void getTransactionPageNoCycleTest() throws Exception {
-        when(singleTransactionService.findLastSingleTransactionsLimitBy(anyInt())).thenReturn(prepareListOfTransactions(0,mockCycle,appUser));
+        when(userTransactionService.findLastSingleTransactionsLimitBy(anyInt())).thenReturn(prepareListOfTransactions(0,mockCycle,appUser));
         when(transactionGroupService.getAllGroups()).thenReturn(prepareTransactionGroupList(TEST_LIST_SIZE,appUser));
         when(cycleService.findActiveCycle()).thenReturn(Optional.empty());
 
@@ -125,14 +125,14 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
         TransactionGroup transactionGroup = prepareTransactionGroup(appUser);
         SingleTransactionDto validDto = prepareValidSingleTransactionDto(transactionGroup);
 
-        when(singleTransactionService.addNewTransaction(validDto)).thenReturn(SingleTransactionStaticFactory.createFromDto(validDto, appUser, mockCycle));
+        when(userTransactionService.addNewTransaction(validDto)).thenReturn(SingleTransactionStaticFactory.createFromDto(validDto, appUser, mockCycle));
 
         mockMvc.perform(post("/transaction/add")
                 .flashAttr("singleTransactionDto", validDto))
                 .andExpect(flash().attributeExists(NOTIFICATIONS_ATTR_NAME))
                 .andExpect(status().is3xxRedirection());
 
-        verify(singleTransactionService, times(1)).addNewTransaction(validDto);
+        verify(userTransactionService, times(1)).addNewTransaction(validDto);
     }
 
     @Test
@@ -147,12 +147,12 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
                 .andExpect(model().hasErrors())
                 .andExpect(view().name("transaction/addNewTransaction"));
 
-        verify(singleTransactionService, times(0)).addNewTransaction(any(SingleTransactionDto.class));
+        verify(userTransactionService, times(0)).addNewTransaction(any(SingleTransactionDto.class));
     }
 
     @Test
     public void viewAllTransactionsTest() throws Exception {
-        when(singleTransactionService.findAll()).thenReturn(prepareListOfTransactions(10,mockCycle,appUser));
+        when(userTransactionService.findAll()).thenReturn(prepareListOfAllTransactions(10,mockCycle,appUser));
         when(cycleService.findActiveCycle()).thenReturn(Optional.of(mockCycle));
 
         mockMvc.perform(get("/transaction/all"))
@@ -165,7 +165,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     public void deleteTransaction() throws Exception, UserNotPermittedToActionException {
         int transactionId = 1;
 
-        when(singleTransactionService.deleteTransactionById(transactionId)).thenReturn(true);
+        when(userTransactionService.deleteTransactionById(transactionId)).thenReturn(true);
 
 
         mockMvc.perform(post("/transaction/delete/" + transactionId)
@@ -181,7 +181,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     public void deleteTransactionNotPermittedUserTest() throws UserNotPermittedToActionException, Exception {
         int transactionId = 1;
 
-        when(singleTransactionService.deleteTransactionById(transactionId)).thenThrow(new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION));
+        when(userTransactionService.deleteTransactionById(transactionId)).thenThrow(new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION));
         exRule.expectCause(IsInstanceOf.instanceOf(IllegalStateException.class));
 
         mockMvc.perform(post("/transaction/delete/" + transactionId)
