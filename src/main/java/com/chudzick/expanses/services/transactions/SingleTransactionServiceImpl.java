@@ -83,7 +83,7 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
     public List<SingleTransaction> findAll() {
         AppUser currentUser = userService.getCurrentLogInUser();
 
-        return singleTransactionRepository.findAllByAppUser(currentUser);
+        return singleTransactionRepository.findAllByAppUserOrderByIdDesc(currentUser);
     }
 
     @Override
