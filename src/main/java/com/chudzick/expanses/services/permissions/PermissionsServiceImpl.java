@@ -36,7 +36,7 @@ public class PermissionsServiceImpl implements PermissionsService {
     public boolean checkPermissionToDeleteSingleTransaction(SingleTransaction singleTransaction) throws UserNotPermittedToActionException {
         AppUser currentUser = userService.getCurrentLogInUser();
 
-        if (singleTransaction.getAppUser().getId().equals(currentUser.getId())) {
+        if (!singleTransaction.getAppUser().getId().equals(currentUser.getId())) {
             throw new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION);
         }
         return true;
