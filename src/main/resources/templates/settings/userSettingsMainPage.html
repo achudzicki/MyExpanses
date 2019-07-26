@@ -52,13 +52,13 @@
                     <i class="uk-text-danger" th:each="error : ${#fields.errors('cycleSaveGoal')}" th:text="${error}"></i>
                 </div>
 
-                <dimustv class="uk-margin">
+                <div class="uk-margin">
                     <label class="uk-margin-small-left" th:text="#{cycle.automatic.extension.info.header}"></label>
                     <input class="uk-range uk-margin-medium-left" style="width:100px" type="range" value="0" min="0" max="1" step="1">
                     <span hidden id="automaticExtTrue" class="uk-text-success uk-margin-small-right" uk-icon="icon: check; ratio : 2"></span>
                     <span id="automaticExtFalse"  class="uk-text-danger uk-margin-small-right" uk-icon="icon: close; ratio : 2"></span>
                     <input hidden type="text" class="uk-checkbox" name="automaticExtension" th:field="*{automaticExtension}" value="false">
-                </dimustv>
+                </div>
                 <div class="uk-text-center">
                     <button type="submit" class="uk-button-primary uk-button uk-float-right uk-margin" th:text="#{cycle.save}"></button>
                 </div>

@@ -5,6 +5,7 @@ import com.chudzick.expanses.UserSettingsSuplier;
 import com.chudzick.expanses.domain.settings.UserSettings;
 import com.chudzick.expanses.domain.settings.dto.UserSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.exceptions.CycleImpositionException;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
 import com.chudzick.expanses.factories.UserSettingsStaticFactory;
 import com.chudzick.expanses.repositories.UserSettingsRepository;
@@ -51,7 +52,7 @@ public class UserSettingsServiceTest implements TestUserSupplier, UserSettingsSu
 
 
     @Test
-    public void addInitialSettingsTest() {
+    public void addInitialSettingsTest() throws CycleImpositionException {
         UserSettingsDto userSettingsDto = prepareUserSettingsDto(true, true);
 
         when(userSettingsRepository.findByAppUser(appUser)).thenReturn(Optional.empty());
@@ -68,7 +69,7 @@ public class UserSettingsServiceTest implements TestUserSupplier, UserSettingsSu
     }
 
     @Test
-    public void updateCycleIfExistTest() {
+    public void updateCycleIfExistTest() throws CycleImpositionException {
         UserSettingsDto userSettingsDto = prepareUserSettingsDto(true, true);
         UserSettings userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser);
 
