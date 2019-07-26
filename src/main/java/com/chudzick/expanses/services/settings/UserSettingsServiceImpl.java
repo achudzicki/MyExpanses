@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import javax.swing.text.html.Option;
 import java.util.Optional;
 
@@ -29,7 +30,6 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 
     @Autowired
     private CycleService cycleService;
-
 
     @Override
     @Transactional
@@ -56,6 +56,11 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     public Optional<UserSettings> findUserSettings() {
         AppUser currentUser = userService.getCurrentLogInUser();
         return userSettingsRepository.findByAppUser(currentUser);
+    }
+
+    @Override
+    public List<UserSettings> findAllUserSettings() {
+        return userSettingsRepository.findAll();
     }
 
     private UserSettings update(UserSettings userSettings, UserSettingsDto userSettingsDto) {

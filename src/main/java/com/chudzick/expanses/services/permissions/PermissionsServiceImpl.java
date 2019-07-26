@@ -1,7 +1,10 @@
 package com.chudzick.expanses.services.permissions;
 
+import com.chudzick.expanses.domain.ApplicationActions;
+import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.repositories.TransactionGroupRepository;
 import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +22,23 @@ public class PermissionsServiceImpl implements PermissionsService {
     private TransactionGroupRepository transactionGroupRepository;
 
     @Override
-    public boolean checkUserPermissionsToDeleteGroup(long groupId) {
+    public boolean checkUserPermissionsToDeleteGroup(long groupId) throws UserNotPermittedToActionException {
         AppUser appUser = userService.getCurrentLogInUser();
 
         Optional<TransactionGroup> foundTransaction = transactionGroupRepository.findByIdAndAppUser(groupId, appUser);
-        return foundTransaction.isPresent();
+        if (!foundTransaction.isPresent()) {
+            throw new UserNotPermittedToActionException(ApplicationActions.DELETE_GROUP);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkPermissionToDeleteSingleTransaction(SingleTransaction singleTransaction) throws UserNotPermittedToActionException {
+        AppUser currentUser = userService.getCurrentLogInUser();
+
+        if (!singleTransaction.getAppUser().getId().equals(currentUser.getId())) {
+            throw new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION);
+        }
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package com.chudzick.expanses.validators;
+package com.chudzick.expanses.validators.register;
 
 import org.passay.*;
 import org.springframework.context.annotation.PropertySource;

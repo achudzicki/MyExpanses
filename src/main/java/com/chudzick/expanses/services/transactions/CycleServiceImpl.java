@@ -6,6 +6,9 @@ import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.factories.CycleStaticFactory;
 import com.chudzick.expanses.repositories.CycleRepository;
 import com.chudzick.expanses.services.users.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ import java.util.Optional;
 @Service
 public class CycleServiceImpl implements CycleService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CycleServiceImpl.class);
     @Autowired
     private CycleRepository cycleRepository;
 
@@ -32,5 +36,21 @@ public class CycleServiceImpl implements CycleService {
     public Optional<Cycle> findActiveCycle() {
         AppUser appUser = userService.getCurrentLogInUser();
         return cycleRepository.findByAppUserAndActive(appUser, true);
+    }
+
+    @Override
+    public Optional<Cycle> findActiveCycleByAppUser(AppUser appUser) {
+        return cycleRepository.findByAppUserAndActive(appUser, true);
+    }
+
+    @Override
+    public void disableOldCycle(Cycle cycle) {
+        cycle.setActive(false);
+        cycleRepository.save(cycle);
+    }
+
+    @Override
+    public Cycle addRenewalCycle(Cycle newCycle) {
+        return cycleRepository.save(newCycle);
     }
 }

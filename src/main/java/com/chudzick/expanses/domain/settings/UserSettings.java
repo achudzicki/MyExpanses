@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 @Entity
 public class UserSettings {
 
+    @Version
+    private Integer version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -20,6 +23,10 @@ public class UserSettings {
     @OneToOne
     @JoinColumn(name = "appuser_id")
     private AppUser appUser;
+
+    public Integer getVersion() {
+        return version;
+    }
 
     public boolean isAutomaticExtension() {
         return automaticExtension;

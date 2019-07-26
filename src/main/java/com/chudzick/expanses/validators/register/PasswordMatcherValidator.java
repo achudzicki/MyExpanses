@@ -1,4 +1,4 @@
-package com.chudzick.expanses.validators;
+package com.chudzick.expanses.validators.register;
 
 import com.chudzick.expanses.domain.users.UserDto;
 

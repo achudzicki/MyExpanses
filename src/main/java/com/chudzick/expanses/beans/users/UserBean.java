@@ -1,4 +1,4 @@
-package com.chudzick.expanses.beans;
+package com.chudzick.expanses.beans.users;
 
 import com.chudzick.expanses.domain.users.AppUser;
 import org.springframework.context.annotation.Scope;

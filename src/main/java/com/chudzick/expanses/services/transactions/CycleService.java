@@ -11,4 +11,10 @@ public interface CycleService {
     Cycle createInitialCycle(UserSettings settingToSave, AppUser currentUser);
 
     Optional<Cycle> findActiveCycle();
+
+    Optional<Cycle> findActiveCycleByAppUser(AppUser appUser);
+
+    void disableOldCycle(Cycle cycle);
+
+    Cycle addRenewalCycle(Cycle newCycle);
 }
