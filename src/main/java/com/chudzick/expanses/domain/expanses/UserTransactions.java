@@ -65,4 +65,8 @@ public class UserTransactions {
     public void setAppUser(AppUser appUser) {
         this.appUser = appUser;
     }
+
+    public boolean isConstantTransaction() {
+        return this instanceof ConstantTransaction;
+    }
 }

@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "single_transaction")
-public class SingleTransaction extends UserTransactions{
+public final class SingleTransaction extends UserTransactions{
     private LocalDate transactionDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

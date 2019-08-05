@@ -5,6 +5,7 @@ import com.chudzick.expanses.domain.expanses.*;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
+import com.chudzick.expanses.factories.ConstantTransactionStaticFactory;
 import com.chudzick.expanses.factories.SingleTransactionStaticFactory;
 import com.chudzick.expanses.repositories.ConstantTransactionRepository;
 import com.chudzick.expanses.repositories.SingleTransactionRepository;
@@ -45,7 +46,7 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 
     @Override
     @Transactional
-    public SingleTransaction addNewTransaction(SingleTransactionDto transactionDto) throws NoActiveCycleException {
+    public SingleTransaction addNewSingleTransaction(SingleTransactionDto transactionDto) throws NoActiveCycleException {
         AppUser appUser = userService.getCurrentLogInUser();
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
 
@@ -79,7 +80,7 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 
     @Override
     @Transactional
-    public List<SingleTransaction> findAllByGroupId(long groupId) {
+    public List<SingleTransaction> findAllSingleTransactionsByGroupId(long groupId) {
         return singleTransactionRepository.findAllByTransactionGroupId(groupId);
     }
 
@@ -94,15 +95,15 @@ public class UserTransactionServiceImpl implements UserTransactionService {
         }
 
         List<SingleTransaction> singleTransactions = singleTransactionRepository.findAllByAppUserAndCycleOrderByIdDesc(currentUser, activeCycle.get());
-        List<ConstantTransaction> constantTransactions = constantTransactionRepository.findAllByAppUser(currentUser);
+        List<ConstantTransaction> constantTransactions = constantTransactionRepository.findAllByAppUserAndCyclesOrderByIdDesc(currentUser, activeCycle.get());
 
-        return Stream.of(singleTransactions,constantTransactions)
+        return Stream.of(singleTransactions, constantTransactions)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public boolean deleteTransactionById(long transactionId) throws UserNotPermittedToActionException {
+    public boolean deleteSingleTransactionById(long transactionId) throws UserNotPermittedToActionException {
         Optional<SingleTransaction> singleTransaction = singleTransactionRepository.findById(transactionId);
 
         if (!singleTransaction.isPresent()) {
@@ -112,5 +113,29 @@ public class UserTransactionServiceImpl implements UserTransactionService {
         permissionsService.checkPermissionToDeleteSingleTransaction(singleTransaction.get());
         singleTransactionRepository.delete(singleTransaction.get());
         return true;
+    }
+
+    @Override
+    public List<ConstantTransaction> findAllActiveConstantTransactions() {
+        AppUser appUser = userService.getCurrentLogInUser();
+        return constantTransactionRepository.findAllByAppUserAndActiveOrderByIdDesc(appUser, true);
+    }
+
+    @Override
+    public ConstantTransaction addNewConstantTransaction(ConstantTransactionDto constantTransactionDto) throws NoActiveCycleException {
+        AppUser currentUser = userService.getCurrentLogInUser();
+        ConstantTransaction newConstantTransaction;
+        if (constantTransactionDto.isAddToActiveCycle()) {
+            Optional<Cycle> activeCycle = cycleService.findActiveCycle();
+            if (!activeCycle.isPresent()) {
+                throw new NoActiveCycleException(ApplicationActions.ADD_CONSTANT_TRANSACTION);
+            }
+            newConstantTransaction = ConstantTransactionStaticFactory.fromDto(constantTransactionDto, currentUser, activeCycle.get());
+            activeCycle.get().getConstantTransactions().add(newConstantTransaction);
+        } else {
+            newConstantTransaction = ConstantTransactionStaticFactory.fromDto(constantTransactionDto, currentUser);
+        }
+
+        return constantTransactionRepository.save(newConstantTransaction);
     }
 }

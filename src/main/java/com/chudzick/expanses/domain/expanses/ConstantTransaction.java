@@ -1,12 +1,11 @@
 package com.chudzick.expanses.domain.expanses;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "constant_transactions")
-public class ConstantTransaction extends UserTransactions {
+public final class ConstantTransaction extends UserTransactions {
 
     @Column(name = "is_permanent")
     private boolean permanentDuration;
@@ -16,8 +15,33 @@ public class ConstantTransaction extends UserTransactions {
     private Integer cyclesCount;
 
     @Column(name = "appears")
-    private long cyclesAppears;
+    private Integer cyclesAppears;
 
+    @Column(name = "active")
+    private boolean active;
+
+
+    @ManyToMany
+    @JoinTable(name = "cycle_constant",
+            joinColumns = @JoinColumn(name = "constant_transactions_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "cycle_id", referencedColumnName = "id"))
+    private Set<Cycle> cycles;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Set<Cycle> getCycles() {
+        return cycles;
+    }
+
+    public void setCycles(Set<Cycle> cycles) {
+        this.cycles = cycles;
+    }
 
     public boolean isPermanentDuration() {
         return permanentDuration;
@@ -35,11 +59,11 @@ public class ConstantTransaction extends UserTransactions {
         this.cyclesCount = cyclesCount;
     }
 
-    public long getCyclesAppears() {
+    public Integer getCyclesAppears() {
         return cyclesAppears;
     }
 
-    public void setCyclesAppears(long cyclesAppears) {
+    public void setCyclesAppears(Integer cyclesAppears) {
         this.cyclesAppears = cyclesAppears;
     }
 }

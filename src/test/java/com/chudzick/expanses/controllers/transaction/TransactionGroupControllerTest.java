@@ -161,7 +161,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
     public void viewTransactionsToSelectedGroupTest() throws Exception {
         int groupId = 1;
 
-        when(userTransactionService.findAllByGroupId(groupId)).thenReturn(prepareListOfTransactions(5, mockCycle, appUser));
+        when(userTransactionService.findAllSingleTransactionsByGroupId(groupId)).thenReturn(prepareListOfTransactions(5, mockCycle, appUser));
         when(transactionGroupService.findById(groupId)).thenReturn(prepareTransactionGroup(appUser));
 
         mockMvc.perform(get("/transaction/group/usage/" + groupId))

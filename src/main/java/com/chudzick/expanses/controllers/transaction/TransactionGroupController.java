@@ -104,7 +104,7 @@ public class TransactionGroupController {
     public String viewTransactionsToSelectedGroup(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model
             , @PathVariable int groupId) {
 
-        final List<SingleTransaction> groupTransactions = userTransactionService.findAllByGroupId(groupId);
+        final List<SingleTransaction> groupTransactions = userTransactionService.findAllSingleTransactionsByGroupId(groupId);
         final TransactionGroup transactionGroup = transactionGroupService.findById(groupId);
         transactionGroupUsageBean.setGroupTransactions(groupTransactions);
         transactionGroupUsageBean.setTransactionGroup(transactionGroup);

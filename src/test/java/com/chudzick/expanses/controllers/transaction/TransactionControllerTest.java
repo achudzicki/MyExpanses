@@ -92,7 +92,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
         MvcResult mvcResult = mockMvc.perform(get("/transaction")
                 .flashAttr(NOTIFICATIONS_ATTR_NAME, Collections.emptyList()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("transaction/addNewTransaction"))
+                .andExpect(view().name("transaction/addNewSingleTransaction"))
                 .andExpect(model().attributeExists("notificationMessagesBean", "activeCycle", "cycleDisplayInfo", "transactionGroups",
                         "lastTransactions", "singleTransactionDto", "transactionTypes"))
                 .andReturn();
@@ -114,7 +114,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
         mockMvc.perform(get("/transaction")
                 .flashAttr(NOTIFICATIONS_ATTR_NAME, Collections.emptyList()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("transaction/addNewTransaction"))
+                .andExpect(view().name("transaction/addNewSingleTransaction"))
                 .andExpect(model().attributeExists("notificationMessagesBean", "transactionGroups",
                         "lastTransactions", "singleTransactionDto", "transactionTypes"))
                 .andExpect(model().attributeDoesNotExist("activeCycle", "cycleDisplayInfo"));
@@ -125,14 +125,14 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
         TransactionGroup transactionGroup = prepareTransactionGroup(appUser);
         SingleTransactionDto validDto = prepareValidSingleTransactionDto(transactionGroup);
 
-        when(userTransactionService.addNewTransaction(validDto)).thenReturn(SingleTransactionStaticFactory.createFromDto(validDto, appUser, mockCycle));
+        when(userTransactionService.addNewSingleTransaction(validDto)).thenReturn(SingleTransactionStaticFactory.createFromDto(validDto, appUser, mockCycle));
 
         mockMvc.perform(post("/transaction/add")
                 .flashAttr("singleTransactionDto", validDto))
                 .andExpect(flash().attributeExists(NOTIFICATIONS_ATTR_NAME))
                 .andExpect(status().is3xxRedirection());
 
-        verify(userTransactionService, times(1)).addNewTransaction(validDto);
+        verify(userTransactionService, times(1)).addNewSingleTransaction(validDto);
     }
 
     @Test
@@ -145,9 +145,9 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
                 .flashAttr("singleTransactionDto", validDto))
                 .andExpect(status().isOk())
                 .andExpect(model().hasErrors())
-                .andExpect(view().name("transaction/addNewTransaction"));
+                .andExpect(view().name("transaction/addNewSingleTransaction"));
 
-        verify(userTransactionService, times(0)).addNewTransaction(any(SingleTransactionDto.class));
+        verify(userTransactionService, times(0)).addNewSingleTransaction(any(SingleTransactionDto.class));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     public void deleteTransaction() throws Exception, UserNotPermittedToActionException {
         int transactionId = 1;
 
-        when(userTransactionService.deleteTransactionById(transactionId)).thenReturn(true);
+        when(userTransactionService.deleteSingleTransactionById(transactionId)).thenReturn(true);
 
 
         mockMvc.perform(post("/transaction/delete/" + transactionId)
@@ -181,7 +181,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     public void deleteTransactionNotPermittedUserTest() throws UserNotPermittedToActionException, Exception {
         int transactionId = 1;
 
-        when(userTransactionService.deleteTransactionById(transactionId)).thenThrow(new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION));
+        when(userTransactionService.deleteSingleTransactionById(transactionId)).thenThrow(new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION));
         exRule.expectCause(IsInstanceOf.instanceOf(IllegalStateException.class));
 
         mockMvc.perform(post("/transaction/delete/" + transactionId)
