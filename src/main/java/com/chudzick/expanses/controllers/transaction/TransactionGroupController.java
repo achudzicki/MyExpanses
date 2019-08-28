@@ -10,8 +10,8 @@ import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.services.permissions.PermissionsService;
-import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
+import com.chudzick.expanses.services.transactions.UserTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,7 +42,7 @@ public class TransactionGroupController {
     private PermissionsService permissionsService;
 
     @Autowired
-    private SingleTransactionService singleTransactionService;
+    private UserTransactionService userTransactionService;
 
     @Autowired
     private TransactionGroupUsageBean transactionGroupUsageBean;
@@ -83,7 +83,7 @@ public class TransactionGroupController {
         permissionsService.checkUserPermissionsToDeleteGroup(groupId);
 
 
-        int transactionsToGroup = singleTransactionService.countTransactionsByGroup(groupId);
+        int transactionsToGroup = userTransactionService.countTransactionsByGroup(groupId);
 
         if (transactionsToGroup > 0) {
             redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
@@ -104,7 +104,7 @@ public class TransactionGroupController {
     public String viewTransactionsToSelectedGroup(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model
             , @PathVariable int groupId) {
 
-        final List<SingleTransaction> groupTransactions = singleTransactionService.findAllByGroupId(groupId);
+        final List<SingleTransaction> groupTransactions = userTransactionService.findAllSingleTransactionsByGroupId(groupId);
         final TransactionGroup transactionGroup = transactionGroupService.findById(groupId);
         transactionGroupUsageBean.setGroupTransactions(groupTransactions);
         transactionGroupUsageBean.setTransactionGroup(transactionGroup);

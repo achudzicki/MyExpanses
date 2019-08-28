@@ -39,11 +39,6 @@ public class CycleServiceImpl implements CycleService {
     }
 
     @Override
-    public Optional<Cycle> findActiveCycleByAppUser(AppUser appUser) {
-        return cycleRepository.findByAppUserAndActive(appUser, true);
-    }
-
-    @Override
     public void disableOldCycle(Cycle cycle) {
         cycle.setActive(false);
         cycleRepository.save(cycle);

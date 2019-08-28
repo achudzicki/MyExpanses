@@ -34,7 +34,7 @@ public class RenewCycleScheduler {
         List<UserSettings> settings = userSettingsService.findAllUserSettings();
 
         for (UserSettings setting : settings) {
-            Optional<Cycle> oldCycle = cycleService.findActiveCycleByAppUser(setting.getAppUser());
+            Optional<Cycle> oldCycle = cycleService.findActiveCycle();
 
             if (!oldCycle.isPresent()) {
                 continue;

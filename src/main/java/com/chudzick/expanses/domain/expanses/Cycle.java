@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Table(name = "cycle")
 @Entity
@@ -31,6 +32,17 @@ public class Cycle {
     @ManyToOne
     @JoinColumn(name = "appuser_id")
     private AppUser appUser;
+
+    @ManyToMany(mappedBy = "cycles")
+    private Set<ConstantTransaction> constantTransactions;
+
+    public Set<ConstantTransaction> getConstantTransactions() {
+        return constantTransactions;
+    }
+
+    public void setConstantTransactions(Set<ConstantTransaction> constantTransactions) {
+        this.constantTransactions = constantTransactions;
+    }
 
     public Integer getVersion() {
         return version;

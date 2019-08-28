@@ -3,8 +3,6 @@ package com.chudzick.expanses.domain.expanses;
 import com.chudzick.expanses.domain.users.AppUser;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -23,9 +21,23 @@ public class TransactionGroup {
     )
     private List<SingleTransaction> transactions;
 
+    @OneToMany(
+            mappedBy = "transactionGroup"
+    )
+    private List<ConstantTransaction> constantTransactions;
+
     @ManyToOne
     @JoinColumn(name = "appuser_id")
     private AppUser appUser;
+
+
+    public List<ConstantTransaction> getConstantTransactions() {
+        return constantTransactions;
+    }
+
+    public void setConstantTransactions(List<ConstantTransaction> constantTransactions) {
+        this.constantTransactions = constantTransactions;
+    }
 
     public List<SingleTransaction> getTransactions() {
         return transactions;
