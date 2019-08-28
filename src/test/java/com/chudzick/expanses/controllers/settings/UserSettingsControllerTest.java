@@ -1,13 +1,12 @@
 package com.chudzick.expanses.controllers.settings;
 
 import com.chudzick.expanses.UserSettingsSuplier;
-import com.chudzick.expanses.domain.responses.NotificationMessagesBean;
+import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.settings.UserSettings;
 import com.chudzick.expanses.domain.settings.dto.UserSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.factories.UserSettingsStaticFactory;
 import com.chudzick.expanses.services.settings.UserSettingsService;
-import com.chudzick.expanses.services.users.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
