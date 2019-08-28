@@ -1,4 +1,4 @@
-package com.chudzick.expanses.services;
+package com.chudzick.expanses.services.users;
 
 
 import com.chudzick.expanses.TestUserSupplier;

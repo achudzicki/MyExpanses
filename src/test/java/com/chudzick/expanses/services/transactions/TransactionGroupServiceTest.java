@@ -1,4 +1,4 @@
-package com.chudzick.expanses.services;
+package com.chudzick.expanses.services.transactions;
 
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionGroupDto;

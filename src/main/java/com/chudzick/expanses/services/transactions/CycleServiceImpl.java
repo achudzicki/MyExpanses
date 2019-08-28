@@ -8,6 +8,7 @@ import com.chudzick.expanses.repositories.CycleRepository;
 import com.chudzick.expanses.services.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
