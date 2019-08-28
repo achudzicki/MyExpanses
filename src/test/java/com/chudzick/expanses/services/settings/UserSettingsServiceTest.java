@@ -93,7 +93,7 @@ public class UserSettingsServiceTest implements TestUserSupplier, UserSettingsSu
         Optional<UserSettings> result = userSettingsService.findUserSettings();
 
         Assert.assertTrue(result.isPresent());
-        verify(userSettingsRepository,times(1)).findByAppUser(appUser);
+        verify(userSettingsRepository, times(1)).findByAppUser(appUser);
 
     }
 

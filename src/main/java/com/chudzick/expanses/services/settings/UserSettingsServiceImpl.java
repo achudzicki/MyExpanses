@@ -10,6 +10,9 @@ import com.chudzick.expanses.repositories.UserSettingsRepository;
 import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.services.users.UserService;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.MethodInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.util.Optional;
 
 @Service
 public class UserSettingsServiceImpl implements UserSettingsService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserSettingsServiceImpl.class);
 
     @Autowired
     private UserSettingsRepository userSettingsRepository;
@@ -35,6 +39,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Transactional
     public UserSettings saveOrUpdate(UserSettingsDto userSettingsDto) throws CycleImpositionException {
         AppUser currentUser = userService.getCurrentLogInUser();
+        LOG.info("Save or update settings for user {} invoked", currentUser);
         Optional<UserSettings> userSettings = userSettingsRepository.findByAppUser(currentUser);
         UserSettings settingToSave;
 
@@ -46,8 +51,25 @@ public class UserSettingsServiceImpl implements UserSettingsService {
                 settingToSave = update(userSettings.get(), userSettingsDto);
             }
         } else {
+            LOG.info("Create initial cycle for user {} with settings {}", currentUser, userSettings);
             settingToSave = UserSettingsStaticFactory.createFromDto(userSettingsDto, currentUser);
             cycleService.createInitialCycle(settingToSave, currentUser);
+        }
+        LOG.info("Save settings for user {}", currentUser);
+        return userSettingsRepository.save(settingToSave);
+    }
+
+    @Override
+    public UserSettings forceSave(UserSettingsDto userSettingsDto) {
+        AppUser currentUser = userService.getCurrentLogInUser();
+        LOG.info("Force to save setting for user {} invoked.", currentUser);
+        Optional<UserSettings> userSettings = userSettingsRepository.findByAppUser(currentUser);
+        UserSettings settingToSave;
+
+        if (userSettings.isPresent()) {
+            settingToSave = update(userSettings.get(), userSettingsDto);
+        } else {
+            throw new AssertionError("Wrong method invoked, should invoke saveSetting instead forceSave");
         }
         return userSettingsRepository.save(settingToSave);
     }

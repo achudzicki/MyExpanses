@@ -14,4 +14,7 @@ public interface UserSettingsService {
     Optional<UserSettings> findUserSettings();
 
     List<UserSettings> findAllUserSettings();
+
+    //Method to use while user approve changes !
+    UserSettings forceSave(UserSettingsDto userSettingsDto);
 }
