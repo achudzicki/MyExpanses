@@ -17,7 +17,7 @@ public interface SingleTransactionRepository extends JpaRepository<SingleTransac
 
     List<SingleTransaction> findAllByTransactionGroupId(long groupId);
 
-    List<SingleTransaction> findAllByAppUserOrderByIdDesc(AppUser appUser);
+    List<SingleTransaction> findAllByAppUserAndCycleOrderByIdDesc(AppUser appUser, Cycle cycle);
 
     Optional<SingleTransaction> findById(long id);
 }

@@ -11,8 +11,8 @@ import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
 import com.chudzick.expanses.factories.TransactionGroupStaticFactory;
 import com.chudzick.expanses.services.permissions.PermissionsService;
-import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
+import com.chudzick.expanses.services.transactions.UserTransactionService;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Rule;
@@ -56,7 +56,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
     private PermissionsService permissionsService;
 
     @Mock
-    private SingleTransactionService singleTransactionService;
+    private UserTransactionService userTransactionService;
 
     @Mock
     private TransactionGroupUsageBean transactionGroupUsageBean;
@@ -120,7 +120,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
         int groupId = 1;
 
         when(permissionsService.checkUserPermissionsToDeleteGroup(groupId)).thenReturn(true);
-        when(singleTransactionService.countTransactionsByGroup(groupId)).thenReturn(0);
+        when(userTransactionService.countTransactionsByGroup(groupId)).thenReturn(0);
         doNothing().when(transactionGroupService).deleteTransactionGroup(groupId);
 
         mockMvc.perform(post("/transaction/group/delete/" + groupId))
@@ -134,7 +134,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
         int groupId = 1;
 
         when(permissionsService.checkUserPermissionsToDeleteGroup(groupId)).thenReturn(true);
-        when(singleTransactionService.countTransactionsByGroup(groupId)).thenReturn(5);
+        when(userTransactionService.countTransactionsByGroup(groupId)).thenReturn(5);
         doNothing().when(transactionGroupService).deleteTransactionGroup(groupId);
 
         mockMvc.perform(post("/transaction/group/delete/" + groupId))
@@ -161,7 +161,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
     public void viewTransactionsToSelectedGroupTest() throws Exception {
         int groupId = 1;
 
-        when(singleTransactionService.findAllByGroupId(groupId)).thenReturn(prepareListOfTransactions(5, mockCycle, appUser));
+        when(userTransactionService.findAllSingleTransactionsByGroupId(groupId)).thenReturn(prepareListOfTransactions(5, mockCycle, appUser));
         when(transactionGroupService.findById(groupId)).thenReturn(prepareTransactionGroup(appUser));
 
         mockMvc.perform(get("/transaction/group/usage/" + groupId))

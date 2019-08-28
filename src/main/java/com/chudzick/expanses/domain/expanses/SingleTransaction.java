@@ -1,70 +1,16 @@
 package com.chudzick.expanses.domain.expanses;
 
-import com.chudzick.expanses.domain.users.AppUser;
-
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "single_transaction")
-public class SingleTransaction {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    private BigDecimal amound;
-
+public final class SingleTransaction extends UserTransactions{
     private LocalDate transactionDate;
-
-    @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_group_id")
-    private TransactionGroup transactionGroup;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "appuser_id")
-    private AppUser appUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cycle_id")
     private Cycle cycle;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Cycle getCycle() {
-        return cycle;
-    }
-
-    public void setCycle(Cycle cycle) {
-        this.cycle = cycle;
-    }
-
-    public AppUser getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(AppUser appUser) {
-        this.appUser = appUser;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public BigDecimal getAmound() {
-        return amound;
-    }
-
-    public void setAmound(BigDecimal amound) {
-        this.amound = amound;
-    }
 
     public LocalDate getTransactionDate() {
         return transactionDate;
@@ -74,19 +20,11 @@ public class SingleTransaction {
         this.transactionDate = transactionDate;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public Cycle getCycle() {
+        return cycle;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public TransactionGroup getTransactionGroup() {
-        return transactionGroup;
-    }
-
-    public void setTransactionGroup(TransactionGroup transactionGroup) {
-        this.transactionGroup = transactionGroup;
+    public void setCycle(Cycle cycle) {
+        this.cycle = cycle;
     }
 }

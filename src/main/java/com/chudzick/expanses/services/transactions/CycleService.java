@@ -12,8 +12,6 @@ public interface CycleService {
 
     Optional<Cycle> findActiveCycle();
 
-    Optional<Cycle> findActiveCycleByAppUser(AppUser appUser);
-
     void disableOldCycle(Cycle cycle);
 
     Cycle addRenewalCycle(Cycle newCycle);
