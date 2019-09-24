@@ -1,26 +1,24 @@
 package com.chudzick.expanses.services.transactions;
 
-import com.chudzick.expanses.domain.expanses.*;
+import com.chudzick.expanses.domain.expanses.UserTransactions;
+import com.chudzick.expanses.exceptions.AppObjectNotFoundException;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface UserTransactionService {
+public interface UserTransactionService<E extends UserTransactions, T> {
 
-    SingleTransaction addNewSingleTransaction(SingleTransactionDto transactionDto) throws NoActiveCycleException;
-
-    List<SingleTransaction> findLastSingleTransactionsLimitBy(int limit);
+    E addNewTransaction(T dto) throws NoActiveCycleException;
 
     int countTransactionsByGroup(long groupId);
 
-    List<SingleTransaction> findAllSingleTransactionsByGroupId(long groupId);
+    List<E> findAllTransactionsByGroupId(long groupId);
 
-    List<UserTransactions> findAll();
+    boolean deleteTransactionById(long transactionId) throws UserNotPermittedToActionException, AppObjectNotFoundException;
 
-    boolean deleteSingleTransactionById(long transactionId) throws UserNotPermittedToActionException;
+    Optional<E> findTransactionById(long transactionId);
 
-    List<ConstantTransaction> findAllActiveConstantTransactions();
-
-    ConstantTransaction addNewConstantTransaction(ConstantTransactionDto constantTransactionDto) throws NoActiveCycleException;
+    List<E> findAll();
 }

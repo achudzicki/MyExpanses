@@ -7,7 +7,7 @@ import com.chudzick.expanses.domain.informations.CycleInformation;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
 import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
 import com.chudzick.expanses.services.transactions.CycleService;
-import com.chudzick.expanses.services.transactions.UserTransactionService;
+import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +22,7 @@ public class MainPageController {
     private static final int MAIN_PAGE_TRANSACTIONS = 5;
 
     @Autowired
-    private UserTransactionService userTransactionService;
+    private SingleTransactionService singleTransactionService;
 
     @Autowired
     private CycleService cycleService;
@@ -35,8 +35,8 @@ public class MainPageController {
             return "redirect:/settings";
         }
 
-        List<UserTransactions> allTransactions = userTransactionService.findAll();
-        List<SingleTransaction> lastFiveTransactions = userTransactionService.findLastSingleTransactionsLimitBy(MAIN_PAGE_TRANSACTIONS);
+        List<UserTransactions> allTransactions = singleTransactionService.findAll();
+        List<SingleTransaction> lastFiveTransactions = singleTransactionService.findLastSingleTransactionsLimitBy(MAIN_PAGE_TRANSACTIONS);
 
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactions);
         CycleInformation cycleInformation = CycleInformation.fromCycle(activeCycle.get());

@@ -1,5 +1,6 @@
 package com.chudzick.expanses.controllers;
 
+import com.chudzick.expanses.exceptions.AppObjectNotFoundException;
 import com.chudzick.expanses.exceptions.CommonActionExceptions;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
@@ -16,11 +17,12 @@ public class ControllersAdvice {
     @ExceptionHandler(
             {
                     UserNotPermittedToActionException.class,
-                    NoActiveCycleException.class
+                    NoActiveCycleException.class,
+                    AppObjectNotFoundException.class
             }
     )
     public ModelAndView userNotPermittedExceptionHandler(CommonActionExceptions ex) {
-        LOG.warn("Access violation to " + ex.getAction().getActionName(), ex);
+        LOG.warn("ERROR " + ex.getAction().getActionName(), ex);
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.addObject("action", ex.getAction());

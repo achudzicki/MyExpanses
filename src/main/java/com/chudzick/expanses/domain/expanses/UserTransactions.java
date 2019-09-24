@@ -18,6 +18,9 @@ public class UserTransactions {
     @Enumerated(EnumType.STRING)
     protected TransactionType transactionType;
 
+    @Enumerated(EnumType.STRING)
+    protected TransactionDuration transactionDuration;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_group_id")
     protected TransactionGroup transactionGroup;
@@ -67,6 +70,14 @@ public class UserTransactions {
     }
 
     public boolean isConstantTransaction() {
-        return this instanceof ConstantTransaction;
+        return this.transactionDuration.equals(TransactionDuration.CONSTANT);
+    }
+
+    public TransactionDuration getTransactionDuration() {
+        return transactionDuration;
+    }
+
+    public void setTransactionDuration(TransactionDuration transactionDuration) {
+        this.transactionDuration = transactionDuration;
     }
 }
