@@ -50,7 +50,7 @@ public class CycleStaticFactoryTest implements TestUserSupplier {
 
         Assert.assertEquals(newCycle.getSaveGoal(),oldCycle.getSaveGoal());
         Assert.assertEquals(newCycle.getDateFrom(),oldCycle.getDateTo());
-        Assert.assertEquals(newCycle.getDateTo(),oldCycle.getDateTo().plusMonths(1));
+        Assert.assertEquals(newCycle.getDateTo(),oldCycle.getDateTo().plusMonths(1).withDayOfMonth(settings.getCycleDays()));
         Assert.assertEquals(newCycle.getAppUser(),oldCycle.getAppUser());
     }
 

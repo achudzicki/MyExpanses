@@ -1,8 +1,8 @@
 package com.chudzick.expanses.services.permissions;
 
 import com.chudzick.expanses.domain.ApplicationActions;
-import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
+import com.chudzick.expanses.domain.expanses.UserTransactions;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.repositories.TransactionGroupRepository;
@@ -33,7 +33,7 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public boolean checkPermissionToDeleteSingleTransaction(SingleTransaction singleTransaction) throws UserNotPermittedToActionException {
+    public boolean checkPermissionToDeleteTransaction(UserTransactions singleTransaction) throws UserNotPermittedToActionException {
         AppUser currentUser = userService.getCurrentLogInUser();
 
         if (!singleTransaction.getAppUser().getId().equals(currentUser.getId())) {

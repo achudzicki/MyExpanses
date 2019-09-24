@@ -2,7 +2,7 @@ package com.chudzick.expanses.factiories;
 
 import com.chudzick.expanses.TestUserSupplier;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
-import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
+import com.chudzick.expanses.domain.expanses.dto.TransactionGroupDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
 import com.chudzick.expanses.factories.TransactionGroupStaticFactory;

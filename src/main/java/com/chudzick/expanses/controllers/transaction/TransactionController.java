@@ -1,17 +1,24 @@
 package com.chudzick.expanses.controllers.transaction;
 
 import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
+import com.chudzick.expanses.beans.transactions.DeleteConstantTransactionBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
+import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.*;
+import com.chudzick.expanses.domain.expanses.dto.ConstantTransactionDto;
+import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.informations.CycleInformation;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
+import com.chudzick.expanses.exceptions.AppObjectNotFoundException;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
+import com.chudzick.expanses.services.transactions.ConstantTransactionService;
 import com.chudzick.expanses.services.transactions.CycleService;
+import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
-import com.chudzick.expanses.services.transactions.UserTransactionService;
+import com.chudzick.expanses.util.ListsUnion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +48,10 @@ public class TransactionController {
     private TransactionGroupService transactionGroupService;
 
     @Autowired
-    private UserTransactionService userTransactionService;
+    private SingleTransactionService<SingleTransaction, SingleTransactionDto> singleTransactionService;
+
+    @Autowired
+    private ConstantTransactionService<ConstantTransaction, ConstantTransactionDto> constantTransactionService;
 
     @Autowired
     private NotificationMessagesBean notificationMessagesBean;
@@ -85,7 +95,7 @@ public class TransactionController {
             return "transaction/addNewTransaction";
         }
 
-        userTransactionService.addNewSingleTransaction(singleTransactionDto);
+        singleTransactionService.addNewTransaction(singleTransactionDto);
 
         List<SimpleNotificationMsg> successNotification = new NotificationMessageListBuilder()
                 .withSuccessNotification("Dodano nową transakcję")
@@ -109,14 +119,16 @@ public class TransactionController {
             model.addAttribute(NOTIFICATION_MESSAGES_BEAN_NAME, notificationMessagesBean);
             return "transaction/addNewConstantTransaction";
         }
-        userTransactionService.addNewConstantTransaction(constantTransactionDto);
+        constantTransactionService.addNewTransaction(constantTransactionDto);
         LOG.info("New constant transaction successfully added");
         return "redirect:/transaction/constant";
     }
 
     @GetMapping(value = "/all")
     public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model) throws NoActiveCycleException {
-        List<UserTransactions> allTransactionsPerCycle = userTransactionService.findAll();
+        List<SingleTransaction> allSingleTransactions = singleTransactionService.findAll();
+        List<ConstantTransaction> allConstantTransactions = constantTransactionService.findAll();
+        List<UserTransactions> allTransactionsPerCycle = ListsUnion.union(allConstantTransactions, allSingleTransactions);
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
 
@@ -129,9 +141,15 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/delete/{transactionId}")
-    public String deleteTransaction(@PathVariable long transactionId, HttpServletRequest request,
-                                    RedirectAttributes redirectAttributes) throws UserNotPermittedToActionException {
-        boolean success = userTransactionService.deleteSingleTransactionById(transactionId);
+    public String deleteTransaction(@PathVariable long transactionId, @ModelAttribute(name = "transactionDuration") TransactionDuration transactionDuration, HttpServletRequest request,
+                                    RedirectAttributes redirectAttributes) throws UserNotPermittedToActionException, AppObjectNotFoundException {
+        boolean success;
+        if (transactionDuration.equals(TransactionDuration.CONSTANT)) {
+            return "redirect:/transaction/constant/delete/" + transactionId;
+        } else {
+            success = singleTransactionService.deleteTransactionById(transactionId);
+        }
+
         String referrerUrl = request.getHeader(HttpHeaders.REFERER);
 
         if (!success) {
@@ -147,13 +165,43 @@ public class TransactionController {
         return "redirect:" + referrerUrl;
     }
 
+    @GetMapping(value = "/constant/delete/{id}")
+    public String constantTransactionDelete(@PathVariable long id, Model model,
+                                            RedirectAttributes redirectAttributes) throws AppObjectNotFoundException, UserNotPermittedToActionException {
+        ConstantTransaction transaction = constantTransactionService.findTransactionById(id)
+                .orElseThrow(() -> new AppObjectNotFoundException(ApplicationActions.DELETE_CONSTANT_TRANSACTION, "Nie znaleziono transakcji do usunięcia"));
+
+        if (transaction.getCycles().isEmpty() || transaction.getCycles().size() == 1) {
+            constantTransactionService.deleteTransactionById(id);
+            redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
+                    .withSuccessNotification("Transakcja stała poprawnie usunięta")
+                    .getNotificationList());
+            return "redirect:/transaction/all";
+        }
+
+        model.addAttribute("transactionToDelete", transaction);
+        model.addAttribute("cycles", transaction.getCycles());
+        return "transaction/deleteConstantTransaction";
+    }
+
+    @PostMapping(value = "/constant/delete")
+    public String constantTransactionDeletePost(@ModelAttribute("deleteConstantTransactionBean") DeleteConstantTransactionBean deleteBean,
+                                                RedirectAttributes redirectAttributes) throws AppObjectNotFoundException, UserNotPermittedToActionException {
+        constantTransactionService.deleteTransactionsFromCycles(deleteBean.getConstantTransactionId(), deleteBean.getConstantTransDto());
+
+        redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
+                .withSuccessNotification("Transakcja stała poprawnie usunięta")
+                .getNotificationList());
+        return "redirect:/transaction/all";
+    }
+
     @ModelAttribute(NOTIFICATIONS_ATTR_NAME)
     public List<SimpleNotificationMsg> defaultAddSuccessValue() {
         return new ArrayList<>();
     }
 
     private void initBasicAddTransactionModelAttributes(Model model) {
-        List<SingleTransaction> lastFiveTransactions = userTransactionService.findLastSingleTransactionsLimitBy(NUMBERS_OF_TRANSACTIONS_DISPLAY);
+        List<SingleTransaction> lastFiveTransactions = singleTransactionService.findLastSingleTransactionsLimitBy(NUMBERS_OF_TRANSACTIONS_DISPLAY);
         initConstantAndSingleTransactionBasicModel(model);
 
         model.addAttribute("lastTransactions", lastFiveTransactions);
@@ -161,7 +209,7 @@ public class TransactionController {
     }
 
     private void initBasicAddConstantTransactionModelAttributes(Model model) {
-        List<ConstantTransaction> constantTransactions = userTransactionService.findAllActiveConstantTransactions();
+        List<ConstantTransaction> constantTransactions = constantTransactionService.findAllActiveConstantTransactions();
         initConstantAndSingleTransactionBasicModel(model);
 
         model.addAttribute("constantTransactions", constantTransactions);
