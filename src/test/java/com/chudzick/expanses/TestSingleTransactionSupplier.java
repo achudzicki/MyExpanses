@@ -24,7 +24,7 @@ public interface TestSingleTransactionSupplier {
     default SingleTransactionDto prepareValidSingleTransactionDto(TransactionGroup transactionGroup) {
         SingleTransactionDto singleTransactionDto = new SingleTransactionDto();
 
-        singleTransactionDto.setAmound(BigDecimal.ONE);
+        singleTransactionDto.setAmount(BigDecimal.ONE);
         singleTransactionDto.setTransactionDate("2019-01-01");
         singleTransactionDto.setTransactionType(TransactionType.INCOME);
         singleTransactionDto.setTransactionGroup(transactionGroup);

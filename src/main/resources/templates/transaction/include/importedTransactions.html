@@ -1,4 +1,4 @@
-<form xmlns:th="http://www.w3.org/1999/xhtml">
+<form th:action="@{/import/add}" method="POST" xmlns:th="http://www.w3.org/1999/xhtml">
     <table class="uk-table uk-table-striped uk-table-hover">
         <thead>
         <tr>
@@ -14,20 +14,23 @@
         <tbody>
         <tr class="operation-row" th:each="transaction,index : ${importedTransactions}">
             <td th:text="${index.index +1}"></td>
-            <td class="uk-text-uppercase" th:text="${transaction.transactionType.name}">
-                <input hidden th:value="${transaction.transactionType}" name="transactionsDto[${index.index}].transactionType">
+            <td>
+                <p class="uk-text-uppercase" th:text="${transaction.transactionType.name}"></p>
+                <input hidden th:value="${transaction.transactionType}" th:name="|transactionsDto[${index.index}].transactionType|">
             </td>
-            <td th:text = ${transaction.amount} >
-                <input hidden th:value="${transaction.amount}" name = "transactionsDto[${index.index}].amount">
+            <td>
+                <p th:text = ${transaction.amount}></p>
+                <input hidden th:value="${transaction.amount}" th:name = "|transactionsDto[${index.index}].amount|">
             </td>
-            <td th:text="${transaction.date}">
-                <input hidden th:value="${transaction.date}" name="transactionsDto[${index.index}].date">
+            <td>
+                <p th:text="${transaction.date}"></p>
+                <input hidden th:value="${transaction.date}" th:name="|transactionsDto[${index.index}].transactionDate|">
             </td>
             <td class="operation-description" th:title="${transaction.description}"
                 th:text="${transaction.description.length() > 100} ? ${#strings.substring(transaction.description,0,99)} + '...' : ${transaction.description}"></td>
             <td th:text="${transaction.operationType}"></td>
             <td>
-                <select id="transaction-group-template" class="uk-select" name="transactionsDto[${index.index}].transactionGroup">
+                <select id="transaction-group-template" class="uk-select" th:name="|transactionsDto[${index.index}].transactionGroup|">
                     <option th:each ="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
                 </select>
             </td>

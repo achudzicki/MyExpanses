@@ -1,5 +1,6 @@
 package com.chudzick.expanses.controllers.transaction;
 
+import com.chudzick.expanses.beans.transactions.ImportOperationFormBean;
 import com.chudzick.expanses.domain.expanses.AccountOperationDto;
 import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
@@ -18,10 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping(value = "import")
 public class ImportTransactionController {
     private static final Logger LOG = LoggerFactory.getLogger(ImportTransactionController.class);
 
@@ -40,7 +41,10 @@ public class ImportTransactionController {
     @Autowired
     private CycleService cycleService;
 
-    @GetMapping("import/transactions")
+    @Autowired
+
+
+    @GetMapping("transactions")
     public String importTransactionsPage(Model model) {
         Optional<Cycle> cycle = cycleService.findActiveCycle();
 
@@ -51,7 +55,7 @@ public class ImportTransactionController {
         return "transaction/importTransactions";
     }
 
-    @PostMapping("import/transactions")
+    @PostMapping("transactions")
     public String importTransactions(@RequestParam("file") MultipartFile file, Model model) throws IOException {
         boolean xmlValid;
         try {
@@ -80,5 +84,11 @@ public class ImportTransactionController {
         model.addAttribute("transactionGroups", transactionGroups);
         model.addAttribute("transactionTypes", TransactionType.values());
         return "transaction/include/importedTransactions";
+    }
+
+    @PostMapping(value = "add")
+    public String addImportedOperations(@ModelAttribute ImportOperationFormBean importOperationFormBean, RedirectAttributes redirectAttributes) {
+
+        return "transaction/allCycleTransactions";
     }
 }

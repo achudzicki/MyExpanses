@@ -139,7 +139,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     public void notValidTransactionAddTest() throws Exception, NoActiveCycleException {
         TransactionGroup transactionGroup = prepareTransactionGroup(appUser);
         SingleTransactionDto validDto = prepareValidSingleTransactionDto(transactionGroup);
-        validDto.setAmound(BigDecimal.valueOf(-1));
+        validDto.setAmount(BigDecimal.valueOf(-1));
 
         mockMvc.perform(post("/transaction/add")
                 .flashAttr("singleTransactionDto", validDto))

@@ -35,5 +35,6 @@ $(document).ready(function () {
 });
 
 function fillTable(content) {
+    console.log(content);
     $('#result').append(content);
 }

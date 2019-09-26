@@ -27,7 +27,7 @@
     <table class="uk-table uk-table-striped">
         <thead>
         <tr>
-            <th th:text="#{add.transaction.amound}"></th>
+            <th th:text="#{add.transaction.amount}"></th>
             <th th:text="#{add.transaction.type}"></th>
             <th th:text="#{add.transaction.group}"></th>
             <th th:text="#{add.transaction.date}"></th>
@@ -36,7 +36,7 @@
         </thead>
         <tbody>
         <tr th:each="transaction : ${transactionGroupUsageBean.groupTransactions}">
-            <th th:text="${transaction.amound}"></th>
+            <th th:text="${transaction.amount}"></th>
             <th th:text="${transaction.transactionType.name}"></th>
             <th th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></th>
             <th th:text="${transaction.transactionDate}"></th>
