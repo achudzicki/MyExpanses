@@ -27,12 +27,12 @@ public class ActualTransactionStatsFactory {
 
             if (singleTransaction.getTransactionType().equals(TransactionType.INCOME)) {
                 incomeCnt++;
-                incomeSum = incomeSum.add(singleTransaction.getAmound());
-                balance = balance.add(singleTransaction.getAmound());
+                incomeSum = incomeSum.add(singleTransaction.getAmount());
+                balance = balance.add(singleTransaction.getAmount());
             } else {
                 expensesCnt++;
-                expensesSum = expensesSum.add(singleTransaction.getAmound());
-                balance = balance.subtract(singleTransaction.getAmound());
+                expensesSum = expensesSum.add(singleTransaction.getAmount());
+                balance = balance.subtract(singleTransaction.getAmount());
             }
         });
         return new ActualTransactionStats(expensesCnt, incomeCnt, expensesSum, incomeSum, balance);

@@ -1,6 +1,6 @@
 package com.chudzick.expanses.beans.transactions;
 
-import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
+import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 
 import java.util.List;
 

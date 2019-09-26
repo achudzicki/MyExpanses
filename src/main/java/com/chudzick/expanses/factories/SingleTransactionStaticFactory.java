@@ -14,7 +14,7 @@ public class SingleTransactionStaticFactory {
 
     public static SingleTransaction createFromDto(SingleTransactionDto singleTransactionDto, AppUser appUser, Cycle cycle) {
         SingleTransaction singleTransaction = new SingleTransaction();
-        singleTransaction.setAmound(singleTransactionDto.getAmount());
+        singleTransaction.setAmount(singleTransactionDto.getAmount());
         singleTransaction.setAppUser(appUser);
         singleTransaction.setTransactionDate(LocalDate.parse(singleTransactionDto.getTransactionDate(), dateTimeFormatter));
         singleTransaction.setTransactionGroup(singleTransactionDto.getTransactionGroup());

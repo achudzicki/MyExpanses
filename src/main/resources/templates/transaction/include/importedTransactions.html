@@ -20,7 +20,7 @@
             </td>
             <td>
                 <p th:text = ${transaction.amount}></p>
-                <input hidden th:value="${transaction.amount}" th:name = "|transactionsDto[${index.index}].amount|">
+                <input hidden type="number" th:value="${transaction.amount}" th:name = "|transactionsDto[${index.index}].amount|">
             </td>
             <td>
                 <p th:text="${transaction.date}"></p>

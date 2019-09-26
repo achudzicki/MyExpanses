@@ -92,6 +92,15 @@ public class ConstantTransactionServiceImpl implements ConstantTransactionServic
     }
 
     @Override
+    public boolean addAll(List<ConstantTransactionDto> list) {
+        AppUser appUser = userService.getCurrentLogInUser();
+        constantTransactionRepository.saveAll(list.stream()
+                .map(constantTransactionDto -> ConstantTransactionStaticFactory.fromDto(constantTransactionDto,appUser))
+                .collect(Collectors.toList()));
+        return true;
+    }
+
+    @Override
     public List<ConstantTransaction> findAllActiveConstantTransactions() {
         AppUser appUser = userService.getCurrentLogInUser();
         return constantTransactionRepository.findAllByAppUserAndActiveOrderByIdDesc(appUser, true);

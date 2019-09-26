@@ -18,7 +18,7 @@ public interface TestSingleTransactionSupplier {
         singleTransaction.setCycle(cycle);
         singleTransaction.setAppUser(appUser);
         singleTransaction.setTransactionType(TransactionType.INCOME);
-        singleTransaction.setAmound(BigDecimal.ONE);
+        singleTransaction.setAmount(BigDecimal.ONE);
         singleTransaction.setTransactionDate(LocalDate.now());
         singleTransaction.setId(1L);
 
