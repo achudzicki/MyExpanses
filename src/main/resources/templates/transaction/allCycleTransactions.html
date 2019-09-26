@@ -66,6 +66,7 @@
             <th th:text="${transaction.transactionGroup.gorupName}"></th>
             <th th:text="${transaction.isConstantTransaction() ? 'CONST' : transaction.transactionDate}"></th>
             <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+                <input hidden name="transactionDuration" th:value="${transaction.transactionDuration}">
                 <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
             </form></th>
         </tr>

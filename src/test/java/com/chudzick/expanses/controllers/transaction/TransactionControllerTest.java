@@ -2,18 +2,19 @@ package com.chudzick.expanses.controllers.transaction;
 
 import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.ApplicationActions;
-import com.chudzick.expanses.domain.expanses.Cycle;
-import com.chudzick.expanses.domain.expanses.SingleTransaction;
-import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
-import com.chudzick.expanses.domain.expanses.TransactionGroup;
+import com.chudzick.expanses.domain.expanses.*;
+import com.chudzick.expanses.domain.expanses.dto.ConstantTransactionDto;
+import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.exceptions.AppObjectNotFoundException;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
 import com.chudzick.expanses.factories.SingleTransactionStaticFactory;
+import com.chudzick.expanses.services.transactions.ConstantTransactionService;
 import com.chudzick.expanses.services.transactions.CycleService;
+import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
-import com.chudzick.expanses.services.transactions.UserTransactionService;
 import com.chudzick.expanses.services.users.UserService;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
@@ -57,7 +58,10 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     private TransactionController transactionController;
 
     @Mock
-    private UserTransactionService userTransactionService;
+    private SingleTransactionService<SingleTransaction, SingleTransactionDto> singleTransactionService;
+
+    @Mock
+    private ConstantTransactionService<ConstantTransaction, ConstantTransactionDto> constantTransactionService;
 
     @Mock
     private TransactionGroupService transactionGroupService;
@@ -85,14 +89,14 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
 
     @Test
     public void getTransactionPageTest() throws Exception {
-        when(userTransactionService.findLastSingleTransactionsLimitBy(anyInt())).thenReturn(prepareListOfTransactions(TEST_LIST_SIZE, mockCycle, appUser));
+        when(singleTransactionService.findLastSingleTransactionsLimitBy(anyInt())).thenReturn(prepareListOfTransactions(TEST_LIST_SIZE, mockCycle, appUser));
         when(transactionGroupService.getAllGroups()).thenReturn(prepareTransactionGroupList(TEST_LIST_SIZE, appUser));
         when(cycleService.findActiveCycle()).thenReturn(Optional.of(mockCycle));
 
         MvcResult mvcResult = mockMvc.perform(get("/transaction")
                 .flashAttr(NOTIFICATIONS_ATTR_NAME, Collections.emptyList()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("transaction/addNewSingleTransaction"))
+                .andExpect(view().name("transaction/addNewTransaction"))
                 .andExpect(model().attributeExists("notificationMessagesBean", "activeCycle", "cycleDisplayInfo", "transactionGroups",
                         "lastTransactions", "singleTransactionDto", "transactionTypes"))
                 .andReturn();
@@ -107,14 +111,14 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
 
     @Test
     public void getTransactionPageNoCycleTest() throws Exception {
-        when(userTransactionService.findLastSingleTransactionsLimitBy(anyInt())).thenReturn(prepareListOfTransactions(0,mockCycle,appUser));
-        when(transactionGroupService.getAllGroups()).thenReturn(prepareTransactionGroupList(TEST_LIST_SIZE,appUser));
+        when(singleTransactionService.findLastSingleTransactionsLimitBy(anyInt())).thenReturn(prepareListOfTransactions(0, mockCycle, appUser));
+        when(transactionGroupService.getAllGroups()).thenReturn(prepareTransactionGroupList(TEST_LIST_SIZE, appUser));
         when(cycleService.findActiveCycle()).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/transaction")
                 .flashAttr(NOTIFICATIONS_ATTR_NAME, Collections.emptyList()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("transaction/addNewSingleTransaction"))
+                .andExpect(view().name("transaction/addNewTransaction"))
                 .andExpect(model().attributeExists("notificationMessagesBean", "transactionGroups",
                         "lastTransactions", "singleTransactionDto", "transactionTypes"))
                 .andExpect(model().attributeDoesNotExist("activeCycle", "cycleDisplayInfo"));
@@ -125,14 +129,14 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
         TransactionGroup transactionGroup = prepareTransactionGroup(appUser);
         SingleTransactionDto validDto = prepareValidSingleTransactionDto(transactionGroup);
 
-        when(userTransactionService.addNewSingleTransaction(validDto)).thenReturn(SingleTransactionStaticFactory.createFromDto(validDto, appUser, mockCycle));
+        when(singleTransactionService.addNewTransaction(validDto)).thenReturn(SingleTransactionStaticFactory.createFromDto(validDto, appUser, mockCycle));
 
         mockMvc.perform(post("/transaction/add")
                 .flashAttr("singleTransactionDto", validDto))
                 .andExpect(flash().attributeExists(NOTIFICATIONS_ATTR_NAME))
                 .andExpect(status().is3xxRedirection());
 
-        verify(userTransactionService, times(1)).addNewSingleTransaction(validDto);
+        verify(singleTransactionService, times(1)).addNewTransaction(validDto);
     }
 
     @Test
@@ -144,15 +148,15 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
         mockMvc.perform(post("/transaction/add")
                 .flashAttr("singleTransactionDto", validDto))
                 .andExpect(status().isOk())
-                .andExpect(model().hasErrors())
-                .andExpect(view().name("transaction/addNewSingleTransaction"));
+                .andExpect(view().name("transaction/addNewTransaction"));
 
-        verify(userTransactionService, times(0)).addNewSingleTransaction(any(SingleTransactionDto.class));
+        verify(singleTransactionService, times(0)).addNewTransaction(any(SingleTransactionDto.class));
     }
 
     @Test
     public void viewAllTransactionsTest() throws Exception {
-        when(userTransactionService.findAll()).thenReturn(prepareListOfAllTransactions(10,mockCycle,appUser));
+        when(singleTransactionService.findAll()).thenReturn(prepareListOfAllTransactions(10, mockCycle, appUser));
+        when(constantTransactionService.findAll()).thenReturn(Collections.emptyList());
         when(cycleService.findActiveCycle()).thenReturn(Optional.of(mockCycle));
 
         mockMvc.perform(get("/transaction/all"))
@@ -162,14 +166,15 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     }
 
     @Test
-    public void deleteTransaction() throws Exception, UserNotPermittedToActionException {
+    public void deleteTransaction() throws Exception, UserNotPermittedToActionException, AppObjectNotFoundException {
         int transactionId = 1;
 
-        when(userTransactionService.deleteSingleTransactionById(transactionId)).thenReturn(true);
+        when(singleTransactionService.deleteTransactionById(transactionId)).thenReturn(true);
 
 
         mockMvc.perform(post("/transaction/delete/" + transactionId)
-                .header(HttpHeaders.REFERER, "referer"))
+                .header(HttpHeaders.REFERER, "referer")
+                .flashAttr("transactionDuration", TransactionDuration.SINGLE))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(NOTIFICATIONS_ATTR_NAME));
     }
@@ -178,10 +183,10 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
     public ExpectedException exRule = ExpectedException.none();
 
     @Test
-    public void deleteTransactionNotPermittedUserTest() throws UserNotPermittedToActionException, Exception {
+    public void deleteTransactionNotPermittedUserTest() throws UserNotPermittedToActionException, Exception, AppObjectNotFoundException {
         int transactionId = 1;
 
-        when(userTransactionService.deleteSingleTransactionById(transactionId)).thenThrow(new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION));
+        when(singleTransactionService.deleteTransactionById(transactionId)).thenThrow(new UserNotPermittedToActionException(ApplicationActions.DELETE_TRANSACTION));
         exRule.expectCause(IsInstanceOf.instanceOf(IllegalStateException.class));
 
         mockMvc.perform(post("/transaction/delete/" + transactionId)

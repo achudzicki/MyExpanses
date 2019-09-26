@@ -2,7 +2,8 @@ package com.chudzick.expanses.factories;
 
 import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
-import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
+import com.chudzick.expanses.domain.expanses.TransactionDuration;
+import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.users.AppUser;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ public class SingleTransactionStaticFactory {
         singleTransaction.setTransactionGroup(singleTransactionDto.getTransactionGroup());
         singleTransaction.setTransactionType(singleTransactionDto.getTransactionType());
         singleTransaction.setCycle(cycle);
+        singleTransaction.setTransactionDuration(TransactionDuration.SINGLE);
 
         return singleTransaction;
     }

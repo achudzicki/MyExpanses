@@ -1,4 +1,7 @@
-package com.chudzick.expanses.domain.expanses;
+package com.chudzick.expanses.domain.expanses.dto;
+
+import com.chudzick.expanses.domain.expanses.TransactionGroup;
+import com.chudzick.expanses.domain.expanses.TransactionType;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;

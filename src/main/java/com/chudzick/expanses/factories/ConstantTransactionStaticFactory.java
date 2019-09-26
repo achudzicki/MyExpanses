@@ -1,8 +1,9 @@
 package com.chudzick.expanses.factories;
 
 import com.chudzick.expanses.domain.expanses.ConstantTransaction;
-import com.chudzick.expanses.domain.expanses.ConstantTransactionDto;
 import com.chudzick.expanses.domain.expanses.Cycle;
+import com.chudzick.expanses.domain.expanses.TransactionDuration;
+import com.chudzick.expanses.domain.expanses.dto.ConstantTransactionDto;
 import com.chudzick.expanses.domain.users.AppUser;
 
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class ConstantTransactionStaticFactory {
         constantTransaction.setPermanentDuration(constantTransactionDto.isPermanentDuration());
         constantTransaction.setAmound(constantTransactionDto.getAmound());
         constantTransaction.setActive(true);
+        constantTransaction.setTransactionDuration(TransactionDuration.CONSTANT);
 
         if (!constantTransactionDto.isPermanentDuration()) {
             constantTransaction.setCyclesAppears(constantTransactionDto.getCyclesAppears());

@@ -129,6 +129,7 @@
             <th th:if="${transaction.permanentDuration}">WSZYSTKIE CYKLE</th>
             <th th:if="${!transaction.permanentDuration}"><span th:text="${transaction.cyclesAppears}" th:remove="tag"></span>/<span th:text="${transaction.cyclesCount}" th:remove="tag"></span></th>
             <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+                <input hidden name="transactionDuration" th:value="${transaction.transactionDuration}">
                 <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
             </form></th>
         </tr>
