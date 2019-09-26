@@ -1,5 +1,7 @@
 package com.chudzick.expanses.domain.expanses.imports.account_operations.pko_bp;
 
+import com.chudzick.expanses.domain.expanses.imports.account_operations.AccountOperation;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -7,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "operation")
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class AccountOperationsPKO_BP {
+public final class AccountOperationsPKO_BP implements AccountOperation {
 
     @XmlElement(name = "exec-date")
     private String date;
@@ -18,19 +20,23 @@ public final class AccountOperationsPKO_BP {
     @XmlElement(name = "amount")
     private double amount;
 
+    @Override
     public String getDate() {
-        return date;
+        return this.date;
     }
 
+    @Override
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
+    @Override
     public String getOperationType() {
-        return operationType;
+        return this.operationType;
     }
 
+    @Override
     public double getAmount() {
-        return amount;
+        return this.amount;
     }
 }

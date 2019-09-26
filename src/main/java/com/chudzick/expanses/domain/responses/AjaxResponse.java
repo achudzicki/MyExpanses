@@ -1,17 +1,16 @@
 package com.chudzick.expanses.domain.responses;
 
-import java.util.List;
-import java.util.Optional;
+import org.json.JSONObject;
 
-public final class AjaxResponse<T> {
+public final class AjaxResponse {
     private final AjaxResponseStatus ajaxResponseStatus;
     private final String notificationMessage;
-    private Optional<List<T>> content;
+    private String contentHTML;
 
     private AjaxResponse(AjaxResponseBuilder ajaxResponseBuilder) {
         this.ajaxResponseStatus = ajaxResponseBuilder.ajaxResponseStatus;
         this.notificationMessage = ajaxResponseBuilder.notificationMessage;
-        this.content = Optional.ofNullable(ajaxResponseBuilder.content);
+        this.contentHTML = ajaxResponseBuilder.contentHTML;
     }
 
     public AjaxResponseStatus getAjaxResponseStatus() {
@@ -22,28 +21,31 @@ public final class AjaxResponse<T> {
         return notificationMessage;
     }
 
-    public Optional<List<T>> getContent() {
-        return content;
+    public String getContentHTML() {
+        return contentHTML;
     }
 
-    public static final class AjaxResponseBuilder<T> {
+    public static final class AjaxResponseBuilder {
         private AjaxResponseStatus ajaxResponseStatus;
         private String notificationMessage;
-        private List<T> content;
+        private String contentHTML;
 
         public AjaxResponseBuilder(AjaxResponseStatus ajaxResponseStatus, String notificationMessage) {
             this.ajaxResponseStatus = ajaxResponseStatus;
             this.notificationMessage = notificationMessage;
         }
 
-        public AjaxResponseBuilder withContent(List<T> content) {
-            this.content = content;
+        public AjaxResponseBuilder withContent(String content) {
+            this.contentHTML = content;
             return this;
         }
 
         public AjaxResponse build() {
-            AjaxResponse ajaxResponse = new AjaxResponse(this);
-            return ajaxResponse;
+            return new AjaxResponse(this);
+        }
+
+        public String buildAsJson() {
+            return new JSONObject(build()).toString();
         }
     }
 }

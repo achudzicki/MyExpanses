@@ -1,0 +1,40 @@
+<form xmlns:th="http://www.w3.org/1999/xhtml">
+    <table class="uk-table uk-table-striped uk-table-hover">
+        <thead>
+        <tr>
+            <th>Lp</th>
+            <th class="uk-width-small">Typ transakcji</th>
+            <th class="uk-width-small">Kwota</th>
+            <th class="uk-width-medium">Data</th>
+            <th class="uk-width-large">Opis</th>
+            <th class="uk-width-medium">Sposób transakcji</th>
+            <th class="uk-width-medium">Grupa transakcj</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="operation-row" th:each="transaction,index : ${importedTransactions}">
+            <td th:text="${index.index +1}"></td>
+            <td class="uk-text-uppercase" th:text="${transaction.transactionType.name}">
+                <input hidden th:value="${transaction.transactionType}" name="transactionsDto[${index.index}].transactionType">
+            </td>
+            <td th:text = ${transaction.amount} >
+                <input hidden th:value="${transaction.amount}" name = "transactionsDto[${index.index}].amount">
+            </td>
+            <td th:text="${transaction.date}">
+                <input hidden th:value="${transaction.date}" name="transactionsDto[${index.index}].date">
+            </td>
+            <td class="operation-description" th:title="${transaction.description}"
+                th:text="${transaction.description.length() > 100} ? ${#strings.substring(transaction.description,0,99)} + '...' : ${transaction.description}"></td>
+            <td th:text="${transaction.operationType}"></td>
+            <td>
+                <select id="transaction-group-template" class="uk-select" name="transactionsDto[${index.index}].transactionGroup">
+                    <option th:each ="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
+                </select>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="uk-text-center">
+        <button type="submit" class="uk-button uk-button-primary">Importuj</button>
+    </div>
+</form>

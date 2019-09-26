@@ -4,91 +4,23 @@
 <head>
     <title></title>
     <style></style>
-    <script>
-      $(document).ready(function () {
-          const bar = document.getElementById('js-progressbar');
-          UIkit.upload('.js-upload', {
-            name : 'file',
-              url: '/import/transactions',
-              multiple: true,
-
-              loadStart: function (e) {
-                  bar.removeAttribute('hidden');
-                  bar.max = e.total;
-                  bar.value = e.loaded;
-              },
-
-              progress: function (e) {
-                  bar.max = e.total;
-                  bar.value = e.loaded;
-              },
-              loadEnd: function (e) {
-                  bar.max = e.total;
-                  bar.value = e.loaded;
-              },
-              completeAll: function (result) {
-                const jsonResult = JSON.parse(result.response);
-
-                if (jsonResult.ajaxResponseStatus === 'SUCCESS') {
-                    fillTable(jsonResult.content);
-                } else {
-                    UIkit.notification({message: '<i style="color: #900000">' + jsonResult.notificationMessage + '</i>'});
-                }
-                  setTimeout(function () {
-                      bar.setAttribute('hidden', 'hidden');
-                  }, 1000);
-              }
-          });
-      });
-
-      function fillTable(content) {
-          const tbody = $('#operations-table > tbody');
-          $(tbody).empty();
-          for (let i = 0; i < content.length; i++) {
-              $(tbody).append('<tr>' +
-                  '<td>'+(i+1)+'</td>' +
-                  '<td>'+content[i].amount+'</td>' +
-                  '<td>'+content[i].date+'</td>' +
-                  '<td>'+content[i].description+'</td>' +
-                  '<td>'+content[i].operationType+'</td>' +
-                  '<td><select class="uk-select"><option value="1" selected></option></select></td>' +
-                  '</tr>')
-          }
-          $('#operations-table').attr('hidden',false);
-      }
-    </script>
+    <script th:src="@{/js/transactions/importTransactions.js}"></script>
 </head>
 <body>
     <div class="content">
         <h4>Import wydatków z pliku</h4>
         <i class="uk-margin-remove-top">W celu wczytania większej ilości transakcji należy wczytać plik w formacie XML. Taki plik można pobrać poprzez swoje konto bankowe.</i>
-
+        <hr>
         <div class="js-upload uk-placeholder uk-text-center">
             <span uk-icon="icon: cloud-upload"></span>
-            <span class="uk-text-middle">Attach binaries by dropping them here or</span>
+            <span class="uk-text-middle">W celu załadowania pliku upuść tutaj lub</span>
             <div uk-form-custom>
                 <input type="file" multiple>
-                <span class="uk-link">selecting one</span>
+                <span class="uk-link">wyszukaj</span>
             </div>
         </div>
         <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-
-        <table id="operations-table" hidden class="uk-table uk-table-striped uk-table-hover">
-            <thead>
-            <tr>
-                <th>LP</th>
-                <th>Kwota</th>
-                <th>Data</th>
-                <th>Opis</th>
-                <th>Typ transakcji</th>
-                <th>Grupa transakcj</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-        </table>
-
+        <div id="result"></div>
     </div>
 </body>
 </html>
