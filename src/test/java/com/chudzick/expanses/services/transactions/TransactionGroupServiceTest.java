@@ -1,11 +1,10 @@
 package com.chudzick.expanses.services.transactions;
 
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
-import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
+import com.chudzick.expanses.domain.expanses.dto.TransactionGroupDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.factories.TransactionGroupStaticFactory;
 import com.chudzick.expanses.repositories.TransactionGroupRepository;
-import com.chudzick.expanses.services.transactions.TransactionGroupServiceImpl;
 import com.chudzick.expanses.services.users.UserService;
 import org.junit.Assert;
 import org.junit.Before;

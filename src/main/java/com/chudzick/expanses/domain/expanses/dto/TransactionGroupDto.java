@@ -1,4 +1,4 @@
-package com.chudzick.expanses.domain.expanses;
+package com.chudzick.expanses.domain.expanses.dto;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

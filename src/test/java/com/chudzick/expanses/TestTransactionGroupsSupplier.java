@@ -1,7 +1,7 @@
 package com.chudzick.expanses;
 
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
-import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
+import com.chudzick.expanses.domain.expanses.dto.TransactionGroupDto;
 import com.chudzick.expanses.domain.users.AppUser;
 
 public interface TestTransactionGroupsSupplier {
