@@ -18,7 +18,7 @@ public interface TestSingleTransactionSupplier {
         singleTransaction.setCycle(cycle);
         singleTransaction.setAppUser(appUser);
         singleTransaction.setTransactionType(TransactionType.INCOME);
-        singleTransaction.setAmound(BigDecimal.ONE);
+        singleTransaction.setAmount(BigDecimal.ONE);
         singleTransaction.setTransactionDate(LocalDate.now());
         singleTransaction.setId(1L);
 
@@ -28,7 +28,7 @@ public interface TestSingleTransactionSupplier {
     default SingleTransactionDto prepareValidSingleTransactionDto(TransactionGroup transactionGroup) {
         SingleTransactionDto singleTransactionDto = new SingleTransactionDto();
 
-        singleTransactionDto.setAmound(BigDecimal.ONE);
+        singleTransactionDto.setAmount(BigDecimal.ONE);
         singleTransactionDto.setTransactionDate("2019-01-01");
         singleTransactionDto.setTransactionType(TransactionType.INCOME);
         singleTransactionDto.setTransactionGroup(transactionGroup);

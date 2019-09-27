@@ -11,7 +11,7 @@ public class SingleTransactionDto {
 
     @NotNull(message = "{form.validation.not.empty}")
     @DecimalMin( value = "0.01", message = "Kwota nie może być mniejsza od zera")
-    private BigDecimal amound;
+    private BigDecimal amount;
 
     private String transactionDate;
 
@@ -19,12 +19,12 @@ public class SingleTransactionDto {
 
     private TransactionGroup transactionGroup;
 
-    public BigDecimal getAmound() {
-        return amound;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setAmound(BigDecimal amound) {
-        this.amound = amound;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getTransactionDate() {

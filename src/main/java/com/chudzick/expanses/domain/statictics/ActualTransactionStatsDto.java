@@ -24,7 +24,8 @@ public class ActualTransactionStatsDto {
     }
 
     public void updateExpensesSum(BigDecimal expensesSum) {
-        this.expensesSum = this.incomeSum.subtract(expensesSum);
+        System.out.println();
+        this.expensesSum = this.expensesSum.subtract(expensesSum);
     }
 
     public void updateIncomeSum(BigDecimal incomeSum) {

@@ -13,7 +13,7 @@ public class UserTransactions {
     @GeneratedValue
     protected Long id;
 
-    protected BigDecimal amound;
+    protected BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     protected TransactionType transactionType;
@@ -37,12 +37,12 @@ public class UserTransactions {
         this.id = id;
     }
 
-    public BigDecimal getAmound() {
-        return amound;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setAmound(BigDecimal amound) {
-        this.amound = amound;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public TransactionType getTransactionType() {

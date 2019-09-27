@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -38,7 +39,7 @@ public class MainPageController {
         List<UserTransactions> allTransactions = singleTransactionService.findAll();
         List<SingleTransaction> lastFiveTransactions = singleTransactionService.findLastSingleTransactionsLimitBy(MAIN_PAGE_TRANSACTIONS);
 
-        ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactions);
+        Map<String, ActualTransactionStats> actualTransactionStats = new ActualTransactionStatsFactory().combineTransactionsFromList(allTransactions);
         CycleInformation cycleInformation = CycleInformation.fromCycle(activeCycle.get());
 
 
