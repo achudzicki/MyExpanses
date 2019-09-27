@@ -54,11 +54,11 @@
                 <table class="uk-table uk-width-2-3">
                     <tr>
                         <td class="uk-text-bold">Przychód bieżący:</td>
-                        <td><span th:text="${actualTransactionStats.incomeSum}"></span> zł</td>
+                        <td><span th:text="${actualTransactionStats.get('SINGLE').getIncomeSum()}"></span> zł</td>
                     </tr>
                     <tr>
                         <td class="uk-text-bold">Przychód stały:</td>
-                        <td>0,00 zł</td>
+                        <td><span th:text="${actualTransactionStats.get('CONSTANT').getIncomeSum()}"></span> zł</td>
                     </tr>
                 </table>
                 <i class="uk-margin-small-right uk-text-danger" uk-icon="icon: minus; ratio : 1.3"></i>
@@ -66,15 +66,16 @@
                 <table class="uk-table uk-width-2-3">
                     <tr>
                         <td class="uk-text-bold">Wydatki bieżące:</td>
-                        <td><span th:text="${actualTransactionStats.expensesSum}"></span> zł</td>
+                        <td><span th:text="${actualTransactionStats.get('SINGLE').getExpensesSum()}"></span> zł</td>
                     </tr>
                     <tr>
                         <td class="uk-text-bold">Wydatki stałe:</td>
-                        <td>0,00 zł</td>
+                        <td><span th:text="${actualTransactionStats.get('CONSTANT').getExpensesSum()}"></span> zł</td>
                     </tr>
                 </table>
                 <hr>
-                <p><span class="uk-text-bold">Bilans budżetu</span> : <span class="uk-text-success" th:text="${actualTransactionStats.balance}"></span> zł</p>
+                <p><span class="uk-text-bold">Bilans budżetu</span> : <span class="uk-text-success" th:text="${actualTransactionStats.get('SINGLE').getBalance() +
+                actualTransactionStats.get('CONSTANT').getBalance()}"></span> zł</p>
             </div>
         </div>
         <div style="width : 55%; height: 100%">
