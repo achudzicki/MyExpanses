@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 public class XmlStructureValidator {
-    private static final String schemaUriTemplate = "xmlSchemas/%s.xsd";
+    private static final String schemaUriTemplate = "/xmlSchemas/%s.xsd";
 
     public static boolean validateStructure(String schemaName, String xmlToValidate) throws SAXException, ParserConfigurationException, IOException {
         DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -27,7 +27,7 @@ public class XmlStructureValidator {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
         //CREATE SCHEMA
-        Source schemaFile = new StreamSource(new ClassPathResource(String.format(schemaUriTemplate,schemaName)).getFile());
+        Source schemaFile = new StreamSource(new ClassPathResource(String.format(schemaUriTemplate, schemaName)).getFile());
         Schema schema = schemaFactory.newSchema(schemaFile);
 
         //CREATE VALIDATOR

@@ -37,7 +37,7 @@ public class ActualTransactionStatsFactory {
                     } else {
                         stats.incrementExpensesCnt();
                         stats.updateExpensesSum(transaction.getAmount());
-                        stats.updateBalance(transaction.getAmount());
+                        stats.updateBalance(transaction.getAmount().negate());
                     }
                 });
         return ActualTransactionStats.fromDto(stats);
@@ -59,7 +59,7 @@ public class ActualTransactionStatsFactory {
                         ActualTransactionStatsDto stats = transaction.isConstantTransaction() ? combineMap.get(TransactionDuration.CONSTANT) : combineMap.get(TransactionDuration.SINGLE);
                         stats.incrementExpensesCnt();
                         stats.updateExpensesSum(transaction.getAmount());
-                        stats.updateBalance(transaction.getAmount());
+                        stats.updateBalance(transaction.getAmount().negate());
                         combineMap.put(transaction.getTransactionDuration(), stats);
                     }
                 }

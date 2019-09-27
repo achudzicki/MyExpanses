@@ -25,15 +25,15 @@ public class ActualTransactionStatsDto {
 
     public void updateExpensesSum(BigDecimal expensesSum) {
         System.out.println();
-        this.expensesSum = this.expensesSum.subtract(expensesSum);
+        this.expensesSum = this.expensesSum.add(expensesSum);
     }
 
     public void updateIncomeSum(BigDecimal incomeSum) {
-        this.incomeSum = this.incomeSum.subtract(incomeSum);
+        this.incomeSum = this.incomeSum.add(incomeSum);
     }
 
     public void updateBalance(BigDecimal balance) {
-        this.balance = this.balance.subtract(balance);
+        this.balance = this.balance.add(balance);
     }
 
     public int getExpensesCnt() {
