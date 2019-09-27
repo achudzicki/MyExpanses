@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style></style>
+    <script th:src="@{/js/transactions/importTransactions.js}"></script>
+</head>
+<body>
+    <div class="content">
+        <h4>Import wydatków z pliku</h4>
+        <i class="uk-margin-remove-top">W celu wczytania większej ilości transakcji należy wczytać plik w formacie XML. Taki plik można pobrać poprzez swoje konto bankowe.</i>
+        <hr>
+        <div class="js-upload uk-placeholder uk-text-center">
+            <span uk-icon="icon: cloud-upload"></span>
+            <span class="uk-text-middle">W celu załadowania pliku upuść tutaj lub</span>
+            <div uk-form-custom>
+                <input type="file" multiple>
+                <span class="uk-link">wyszukaj</span>
+            </div>
+        </div>
+        <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
+        <div id="result"></div>
+    </div>
+</body>
+</html>

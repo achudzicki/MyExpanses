@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SingleTransactionServiceImpl implements SingleTransactionService<SingleTransaction, SingleTransactionDto> {
@@ -101,74 +102,14 @@ public class SingleTransactionServiceImpl implements SingleTransactionService<Si
         return singleTransactionRepository.findAllByAppUserAndCycleOrderByIdDesc(currentUser, activeCycle.get());
     }
 
-    /*@Override
-
     @Override
-    @Transactional
-    public int countTransactionsByGroup(long groupId) {
-        return singleTransactionRepository.countSingleTransactionByTransactionGroupId(groupId);
-    }
-
-    @Override
-    @Transactional
-    public List<SingleTransaction> findAllSingleTransactionsByGroupId(long groupId) {
-        return singleTransactionRepository.findAllByTransactionGroupId(groupId);
-    }
-
-    @Override
-    @Transactional
-    public List<UserTransactions> findAll() {
-        AppUser currentUser = userService.getCurrentLogInUser();
-        Optional<Cycle> activeCycle = cycleService.findActiveCycle();
-
-        if (!activeCycle.isPresent()) {
-            return Collections.emptyList();
-        }
-
-        List<SingleTransaction> singleTransactions = singleTransactionRepository.findAllByAppUserAndCycleOrderByIdDesc(currentUser, activeCycle.get());
-        List<ConstantTransaction> constantTransactions = constantTransactionRepository.findAllByAppUserAndCyclesOrderByIdDesc(currentUser, activeCycle.get());
-
-        return Stream.of(singleTransactions, constantTransactions)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean deleteSingleTransactionById(long transactionId) throws UserNotPermittedToActionException {
-        Optional<SingleTransaction> singleTransaction = singleTransactionRepository.findById(transactionId);
-
-        if (!singleTransaction.isPresent()) {
-            return false;
-        }
-
-        permissionsService.checkPermissionToDeleteTransaction(singleTransaction.get());
-        singleTransactionRepository.delete(singleTransaction.get());
+    public boolean addAll(List<SingleTransactionDto> list) throws NoActiveCycleException {
+        AppUser appUser = userService.getCurrentLogInUser();
+        Cycle currentCycle = cycleService.findActiveCycle().orElseThrow(() -> new NoActiveCycleException(ApplicationActions.ADD_TRANSACTION));
+        singleTransactionRepository.saveAll(list.stream()
+                .map(dto -> SingleTransactionStaticFactory.createFromDto(dto,appUser,currentCycle))
+                .collect(Collectors.toList()));
+        LOG.info("Successfully imported %d operations for user with login : ",list.size(),appUser.getLogin());
         return true;
     }
-
-    @Override
-    public List<ConstantTransaction> findAllActiveConstantTransactions() {
-        AppUser appUser = userService.getCurrentLogInUser();
-        return constantTransactionRepository.findAllByAppUserAndActiveOrderByIdDesc(appUser, true);
-    }
-
-    @Override
-    public ConstantTransaction addNewConstantTransaction(ConstantTransactionDto constantTransactionDto) throws NoActiveCycleException {
-        AppUser currentUser = userService.getCurrentLogInUser();
-        ConstantTransaction newConstantTransaction;
-        if (constantTransactionDto.isAddToActiveCycle()) {
-            Optional<Cycle> activeCycle = cycleService.findActiveCycle();
-            if (!activeCycle.isPresent()) {
-                throw new NoActiveCycleException(ApplicationActions.ADD_CONSTANT_TRANSACTION);
-            }
-            newConstantTransaction = ConstantTransactionStaticFactory.fromDto(constantTransactionDto, currentUser, activeCycle.get());
-            activeCycle.get().getConstantTransactions().add(newConstantTransaction);
-        } else {
-            newConstantTransaction = ConstantTransactionStaticFactory.fromDto(constantTransactionDto, currentUser);
-        }
-
-        return constantTransactionRepository.save(newConstantTransaction);
-    }
-    */
-
 }

@@ -28,7 +28,7 @@ public class ConstantTransactionStaticFactory {
         constantTransaction.setTransactionGroup(constantTransactionDto.getTransactionGroup());
         constantTransaction.setAppUser(appUser);
         constantTransaction.setPermanentDuration(constantTransactionDto.isPermanentDuration());
-        constantTransaction.setAmound(constantTransactionDto.getAmound());
+        constantTransaction.setAmount(constantTransactionDto.getAmount());
         constantTransaction.setActive(true);
         constantTransaction.setTransactionDuration(TransactionDuration.CONSTANT);
 
