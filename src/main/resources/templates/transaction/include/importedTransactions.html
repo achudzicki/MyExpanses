@@ -1,3 +1,13 @@
+<style>
+    .label-radius{
+        border-radius: 5px;
+    }
+
+    .uk-label, .uk-label-danger , .uk-label-success {
+        padding: 2px 5px;
+        width: 70px !important;
+    }
+</style>
 <form th:action="@{/import/add}" method="POST" xmlns:th="http://www.w3.org/1999/xhtml">
     <table class="uk-table uk-table-striped uk-table-hover">
         <thead>
@@ -15,7 +25,9 @@
         <tr class="operation-row" th:each="transaction,index : ${importedTransactions}">
             <td th:text="${index.index +1}"></td>
             <td>
-                <p class="uk-text-uppercase" th:text="${transaction.transactionType.name}"></p>
+                <span class="label-radius"
+                      th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                      th:text="${transaction.transactionType.name}"></span>
                 <input hidden th:value="${transaction.transactionType}" th:name="|transactionsDto[${index.index}].transactionType|">
             </td>
             <td>

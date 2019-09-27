@@ -3,7 +3,16 @@
       th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
 <head>
     <title></title>
-    <style></style>
+    <style>
+        .label-radius{
+            border-radius: 5px;
+        }
+
+        .uk-label, .uk-label-danger , .uk-label-success {
+            padding: 2px 5px;
+            width: 70px !important;
+        }
+    </style>
     <script></script>
 </head>
 <body>
@@ -52,20 +61,25 @@
     <table class="uk-table uk-table-striped">
         <thead>
         <tr>
-            <th th:text="#{add.transaction.amount}"></th>
-            <th th:text="#{add.transaction.type}"></th>
-            <th th:text="#{add.transaction.group}"></th>
-            <th th:text="#{add.transaction.date}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.amount}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.type}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.group}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.date}"></th>
             <th></th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="uk-text-bold">
         <tr th:each="transaction : ${transactionsList}">
-            <th th:text="${transaction.amount}"></th>
-            <th th:text="${transaction.transactionType.name}"></th>
-            <th th:text="${transaction.transactionGroup.gorupName}"></th>
-            <th th:text="${transaction.isConstantTransaction() ? 'CONST' : transaction.transactionDate}"></th>
-            <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+            <th class="uk-text-center"><span th:text="${transaction.amount}" th:remove="tag"></span> zł</th>
+            <th class="uk-text-center">
+                <span class="label-radius"
+                th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                th:text="${transaction.transactionType.name}"></span>
+            </th>
+            <th class="uk-text-center" th:text="${transaction.transactionGroup.gorupName}"></th>
+            <th class="uk-text-center" th:if="${transaction.isConstantTransaction()}"><span class="label-radius uk-label">STAŁA</span></th>
+            <th class="uk-text-center" th:if="${!transaction.isConstantTransaction()}" th:text="${transaction.transactionDate}"></th>
+            <th class="uk-text-center"><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
                 <input hidden name="transactionDuration" th:value="${transaction.transactionDuration}">
                 <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
             </form></th>

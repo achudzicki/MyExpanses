@@ -3,7 +3,16 @@
       th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
 <head>
     <title>Add constant transaction</title>
-    <style></style>
+    <style>
+        .label-radius{
+            border-radius: 5px;
+        }
+
+        .uk-label, .uk-label-danger , .uk-label-success {
+            padding: 2px 5px;
+            width: 70px !important;
+        }
+    </style>
     <script>
         $(document).ready(function () {
 
@@ -123,7 +132,11 @@
         <tbody>
         <tr th:each="transaction : ${constantTransactions}">
             <th th:text="${transaction.amount}"></th>
-            <th th:text="${transaction.transactionType.name}"></th>
+            <th>
+                <span class="label-radius"
+                      th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                      th:text="${transaction.transactionType.name}"></span>
+            </th>
             <th th:text="${transaction.transactionGroup.gorupName}"></th>
             <th th:text="${transaction.permanentDuration} ? 'TAK' : 'NIE'"></th>
             <th th:if="${transaction.permanentDuration}">WSZYSTKIE CYKLE</th>

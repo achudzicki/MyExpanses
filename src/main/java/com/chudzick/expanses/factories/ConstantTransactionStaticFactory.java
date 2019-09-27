@@ -34,7 +34,7 @@ public class ConstantTransactionStaticFactory {
 
         if (!constantTransactionDto.isPermanentDuration()) {
             constantTransaction.setCyclesAppears(constantTransactionDto.getCyclesAppears());
-            constantTransaction.setCyclesCount(constantTransaction.getCyclesCount());
+            constantTransaction.setCyclesCount(constantTransactionDto.getCyclesCount());
         }
         return constantTransaction;
     }

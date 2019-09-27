@@ -60,7 +60,7 @@ public class ConstantTransactionDto {
     }
 
     public Integer getCyclesAppears() {
-        return CYCLES_APPEARS;
+        return this.addToActiveCycle ? CYCLES_APPEARS : 0;
     }
 
     public boolean isAddToActiveCycle() {
