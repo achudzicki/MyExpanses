@@ -58,6 +58,40 @@
         <i class="uk-text-meta uk-margin-remove-top">Dzień cyklu : <span th:remove="tag" th:text="${cycleDisplayInfo.currentCycleDay}"></span>/<span th:remove="tag" th:text="${cycleDisplayInfo.allCycleDays}"></span></i>
     </div>
 
+    <h5 style="color: #1e87f0" class="uk-margin-remove-bottom">Transakcje stałe</h5>
+    <hr class="uk-margin-remove-top">
+
+    <table class="uk-table uk-table-striped">
+        <thead>
+        <tr>
+            <th class="uk-text-center" th:text="#{add.transaction.amount}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.type}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.group}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.date}"></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="constant : ${constantTransactions}">
+                <th class="uk-text-center"><span th:text="${constant.amount}" th:remove="tag"></span> zł</th>
+                <th class="uk-text-center">
+                <span class="label-radius"
+                      th:classappend="${constant.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                      th:text="${constant.transactionType.name}"></span>
+                </th>
+                <th class="uk-text-center" th:text="${constant.transactionGroup.gorupName}"></th>
+                <th class="uk-text-center"><span class="label-radius uk-label">STAŁA</span></th>
+                <th class="uk-text-center"><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${constant.id})}">
+                    <input hidden name="transactionDuration" th:value="${constant.transactionDuration}">
+                    <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
+                </form></th>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5 style="color: #1e87f0" class="uk-margin-remove-bottom">Transakcje cyklu</h5>
+    <hr class="uk-margin-remove-top">
+
     <table class="uk-table uk-table-striped">
         <thead>
         <tr>
@@ -69,7 +103,7 @@
         </tr>
         </thead>
         <tbody class="uk-text-bold">
-        <tr th:each="transaction : ${transactionsList}">
+        <tr th:each="transaction : ${transactionPage.getContent()}">
             <th class="uk-text-center"><span th:text="${transaction.amount}" th:remove="tag"></span> zł</th>
             <th class="uk-text-center">
                 <span class="label-radius"
@@ -86,6 +120,11 @@
         </tr>
         </tbody>
     </table>
+    <ul th:if="${transactionPage.getTotalPages() > 1}" class="uk-pagination uk-flex-center" uk-margin>
+        <li th:each="index : ${#numbers.sequence( 1,transactionPage.getTotalPages(),1)}">
+            <a th:classappend="${(transactionPage.getNumber() + 1) == index} ? 'uk-text-bold' "  th:href="@{/transaction/all/{pageNumber} (pageNumber = ${index-1})}" th:text="${index}"></a>
+        </li>
+    </ul>
 
 </div>
 </body>

@@ -22,6 +22,7 @@ import com.chudzick.expanses.util.ListsUnion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,18 +126,22 @@ public class TransactionController {
         return "redirect:/transaction/constant";
     }
 
-    @GetMapping(value = "/all")
-    public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model) throws NoActiveCycleException {
-        List<SingleTransaction> allSingleTransactions = singleTransactionService.findAll();
+    @GetMapping(value = "/all/{pageNumber}")
+    public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, @PathVariable int pageNumber,
+                                      Model model) {
+        //TODO DO USUNIECIA JAK STATYSTYKI BEDA DO BAZY ZAPOISYWANE
+        List<SingleTransaction> allSingleTransactions = Collections.emptyList();
         List<ConstantTransaction> allConstantTransactions = constantTransactionService.findAll();
         List<UserTransactions> allTransactionsPerCycle = ListsUnion.union(allConstantTransactions, allSingleTransactions);
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
+        Page<SingleTransaction> pageSingle = singleTransactionService.getTransactionsPage(pageNumber);
 
         notificationMessagesBean.setNotificationsMessages(notifications);
         activeCycle.ifPresent(cycle -> model.addAttribute("cycleDisplayInfo", CycleInformation.fromCycle(cycle)));
         model.addAttribute(NOTIFICATION_MESSAGES_BEAN_NAME, notificationMessagesBean);
-        model.addAttribute("transactionsList", allTransactionsPerCycle);
+        model.addAttribute("transactionPage", pageSingle);
+        model.addAttribute("constantTransactions", allConstantTransactions);
         model.addAttribute("actualTransactionStats", actualTransactionStats);
         return "transaction/allCycleTransactions";
     }
@@ -176,7 +182,7 @@ public class TransactionController {
             redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                     .withSuccessNotification("Transakcja stała poprawnie usunięta")
                     .getNotificationList());
-            return "redirect:/transaction/all";
+            return "redirect:/transaction/all/0";
         }
 
         model.addAttribute("transactionToDelete", transaction);
@@ -192,7 +198,7 @@ public class TransactionController {
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                 .withSuccessNotification("Transakcja stała poprawnie usunięta")
                 .getNotificationList());
-        return "redirect:/transaction/all";
+        return "redirect:/transaction/all/0";
     }
 
     @ModelAttribute(NOTIFICATIONS_ATTR_NAME)
