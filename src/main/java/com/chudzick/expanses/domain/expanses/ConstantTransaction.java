@@ -21,7 +21,7 @@ public final class ConstantTransaction extends UserTransactions {
     private boolean active;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "cycle_constant",
             joinColumns = @JoinColumn(name = "constant_transactions_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "cycle_id", referencedColumnName = "id"))
