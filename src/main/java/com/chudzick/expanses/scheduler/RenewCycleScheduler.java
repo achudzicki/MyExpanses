@@ -34,14 +34,13 @@ public class RenewCycleScheduler {
         List<UserSettings> settings = userSettingsService.findAllUserSettings();
 
         for (UserSettings setting : settings) {
-            Optional<Cycle> oldCycle = cycleService.findActiveCycle();
+            Optional<Cycle> oldCycle = cycleService.findActiveCycleByUser(setting.getAppUser());
 
             if (!oldCycle.isPresent()) {
                 continue;
             }
-
             //1.Check if it is end cycle day
-            if (DAYS.between(oldCycle.get().getDateTo(), LocalDate.now()) == 0) {
+            if (DAYS.between(oldCycle.get().getDateTo(), LocalDate.now()) >= 0) {
                 // IF USER HAS AUTOMATIC EXTENSION ON -> RENEW CYCLE ELSE CLOSE ACTIVE AND LEAVE USER WITH NO ACTIVE CYCLE
                 if (setting.isAutomaticExtension()) {
                     LOG.info("Renew cycle for user : {}", setting.getAppUser().getLogin());
@@ -50,7 +49,7 @@ public class RenewCycleScheduler {
 
                     //3. set old setting not active, add new setting
                     cycleService.disableOldCycle(oldCycle.get());
-                    cycleService.addRenewalCycle(newCycle);
+                    cycleService.addRenewalCycle(newCycle, setting.getAppUser());
                 } else {
                     cycleService.disableOldCycle(oldCycle.get());
                 }

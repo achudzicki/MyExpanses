@@ -122,4 +122,27 @@ public class ConstantTransactionServiceImpl implements ConstantTransactionServic
         );
         constantTransactionRepository.save(constantTransaction);
     }
+
+    @Override
+    public List<ConstantTransaction> renewConstantTransactions(Cycle newCycle, AppUser appUser) {
+        List<ConstantTransaction> renewalTransactions = findAllActiveByAppUser(appUser);
+        renewalTransactions.forEach(transaction -> {
+            if (transaction.isPermanentDuration()) {
+                transaction.getCycles().add(newCycle);
+            } else {
+                if (transaction.getCyclesAppears() < transaction.getCyclesCount()) {
+                    transaction.setCyclesAppears(transaction.getCyclesAppears() + 1);
+                    transaction.getCycles().add(newCycle);
+                } else {
+                    transaction.setActive(false);
+                }
+            }
+        });
+        constantTransactionRepository.saveAll(renewalTransactions);
+        return renewalTransactions;
+    }
+
+    private List<ConstantTransaction> findAllActiveByAppUser(AppUser appUser) {
+        return constantTransactionRepository.findAllByAppUserAndActiveOrderByIdDesc(appUser,true);
+    }
 }
