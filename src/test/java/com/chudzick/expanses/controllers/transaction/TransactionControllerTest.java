@@ -27,6 +27,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -155,14 +156,15 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
 
     @Test
     public void viewAllTransactionsTest() throws Exception {
+        PageImpl<SingleTransaction> page  = new PageImpl<>(prepareListOfAllTransactions(10, mockCycle, appUser));
         when(singleTransactionService.findAll()).thenReturn(prepareListOfAllTransactions(10, mockCycle, appUser));
         when(constantTransactionService.findAll()).thenReturn(Collections.emptyList());
         when(cycleService.findActiveCycle()).thenReturn(Optional.of(mockCycle));
 
-        mockMvc.perform(get("/transaction/all"))
+        mockMvc.perform(get("/transaction/all/0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("transaction/allCycleTransactions"))
-                .andExpect(model().attributeExists("cycleDisplayInfo", "transactionsList", "actualTransactionStats"));
+                .andExpect(model().attributeExists("cycleDisplayInfo", "transactionPage", "actualTransactionStats","constantTransactions"));
     }
 
     @Test

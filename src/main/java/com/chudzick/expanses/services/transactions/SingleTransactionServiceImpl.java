@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class SingleTransactionServiceImpl implements SingleTransactionService<SingleTransaction, SingleTransactionDto> {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleTransactionServiceImpl.class);
+    private static final int DEFAULT_PAGE_SIZE = 15;
 
     @Autowired
     private UserService userService;

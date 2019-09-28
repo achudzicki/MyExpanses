@@ -90,6 +90,6 @@ public class ImportTransactionController {
                 .withSuccessNotification(String.format("Poprawnie zaimportowano %d %s", operationLisSize,
                         operationLisSize > 1 ? "transakcji" : "transakcje"))
                 .getNotificationList());
-        return "redirect:/transaction/all";
+        return "redirect:/transaction/all/0";
     }
 }
