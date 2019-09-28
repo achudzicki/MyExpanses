@@ -159,7 +159,6 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
         PageImpl<SingleTransaction> page  = new PageImpl<>(prepareListOfAllTransactions(10, mockCycle, appUser));
         when(singleTransactionService.findAll()).thenReturn(prepareListOfAllTransactions(10, mockCycle, appUser));
         when(constantTransactionService.findAll()).thenReturn(Collections.emptyList());
-        when(singleTransactionService.getTransactionsPage(anyInt())).thenReturn(page);
         when(cycleService.findActiveCycle()).thenReturn(Optional.of(mockCycle));
 
         mockMvc.perform(get("/transaction/all/0"))

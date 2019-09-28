@@ -14,9 +14,6 @@ import com.chudzick.expanses.services.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -115,10 +112,5 @@ public class SingleTransactionServiceImpl implements SingleTransactionService<Si
                 .collect(Collectors.toList()));
         LOG.info("Successfully imported %d operations for user with login : ",list.size(),appUser.getLogin());
         return true;
-    }
-
-    public Page<SingleTransaction> getTransactionsPage(int pageNumber) {
-        Pageable pageRequest = PageRequest.of(pageNumber, DEFAULT_PAGE_SIZE);
-        return singleTransactionRepository.findAll(pageRequest);
     }
 }

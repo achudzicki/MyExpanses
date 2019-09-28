@@ -8,21 +8,23 @@ import com.chudzick.expanses.domain.expanses.*;
 import com.chudzick.expanses.domain.expanses.dto.ConstantTransactionDto;
 import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.informations.CycleInformation;
+import com.chudzick.expanses.domain.paging.RequestPage;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
 import com.chudzick.expanses.exceptions.AppObjectNotFoundException;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
+import com.chudzick.expanses.factories.paging.PageFactory;
 import com.chudzick.expanses.services.transactions.ConstantTransactionService;
 import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import com.chudzick.expanses.util.ListsUnion;
+import com.chudzick.expanses.util.paging.PagingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +35,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,18 +130,17 @@ public class TransactionController {
     @GetMapping(value = "/all/{pageNumber}")
     public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, @PathVariable int pageNumber,
                                       Model model) {
-        //TODO DO USUNIECIA JAK STATYSTYKI BEDA DO BAZY ZAPOISYWANE
-        List<SingleTransaction> allSingleTransactions = Collections.emptyList();
+        List<SingleTransaction> allSingleTransactions = singleTransactionService.findAll();
         List<ConstantTransaction> allConstantTransactions = constantTransactionService.findAll();
         List<UserTransactions> allTransactionsPerCycle = ListsUnion.union(allConstantTransactions, allSingleTransactions);
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
-        Page<SingleTransaction> pageSingle = singleTransactionService.getTransactionsPage(pageNumber);
+        RequestPage<SingleTransaction> transactionPage = new PageFactory<SingleTransaction>(new PagingUtils<>()).getRequestPage(allSingleTransactions,pageNumber,15);
 
         notificationMessagesBean.setNotificationsMessages(notifications);
         activeCycle.ifPresent(cycle -> model.addAttribute("cycleDisplayInfo", CycleInformation.fromCycle(cycle)));
         model.addAttribute(NOTIFICATION_MESSAGES_BEAN_NAME, notificationMessagesBean);
-        model.addAttribute("transactionPage", pageSingle);
+        model.addAttribute("transactionPage", transactionPage);
         model.addAttribute("constantTransactions", allConstantTransactions);
         model.addAttribute("actualTransactionStats", actualTransactionStats);
         return "transaction/allCycleTransactions";

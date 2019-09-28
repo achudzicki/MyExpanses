@@ -122,7 +122,7 @@
     </table>
     <ul th:if="${transactionPage.getTotalPages() > 1}" class="uk-pagination uk-flex-center" uk-margin>
         <li th:each="index : ${#numbers.sequence( 1,transactionPage.getTotalPages(),1)}">
-            <a th:classappend="${(transactionPage.getNumber() + 1) == index} ? 'uk-text-bold' "  th:href="@{/transaction/all/{pageNumber} (pageNumber = ${index-1})}" th:text="${index}"></a>
+            <a th:classappend="${(transactionPage.getCurrentPage() + 1) == index} ? 'uk-text-bold' "  th:href="@{/transaction/all/{pageNumber} (pageNumber = ${index-1})}" th:text="${index}"></a>
         </li>
     </ul>
 
