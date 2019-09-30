@@ -8,21 +8,7 @@
 </head>
 <body>
 <div class="content">
-
-    <div style="border-top: 3px solid #f0506e; color: #f0506e;" class="uk-card uk-card-default uk-width-1-1">
-        <div class="uk-card-header uk-text-center">
-            <p class="uk-margin-small-right" uk-icon="icon: warning; ratio : 2"></p><br/>
-            <h4 class="uk-margin-remove-top">Wystąpił błąd</h4>
-        </div>
-        <div class="uk-card-body">
-            <h4 class="uk-margin-small"><span class="uk-text-bold">Przyczyna :</span> <span th:text="${message}"></span></h4>
-            <h4 class="uk-margin-small"><span class="uk-text-bold">Akcja :</span> <span th:text="${action.actionName}"></span></h4>
-        </div>
-        <div class="uk-card-footer">
-            <a class="uk-text-muted" onclick="history.back(-1)">Powrót do poprzedniej strony</a>
-        </div>
-    </div>
-
+    <div th:insert="alerts/include/exceptionMessageView.html"></div>
 </div>
 </body>
 </html>
