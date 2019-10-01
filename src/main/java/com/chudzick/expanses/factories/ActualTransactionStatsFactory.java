@@ -1,5 +1,6 @@
 package com.chudzick.expanses.factories;
 
+import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.TransactionDuration;
 import com.chudzick.expanses.domain.expanses.TransactionType;
 import com.chudzick.expanses.domain.expanses.UserTransactions;
@@ -9,24 +10,25 @@ import com.chudzick.expanses.domain.statictics.ActualTransactionStatsDto;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ActualTransactionStatsFactory {
 
     /*RETURN STATISTICS ONLY FOR SELECTED TYPE OF TRANSACTION -> CONSTANT OR SINGLE*/
-    public ActualTransactionStats fromTransactionList(List<UserTransactions> allTransactions, TransactionDuration duration) {
+    public ActualTransactionStats fromTransactionList(List<UserTransactions> allTransactions, TransactionDuration duration, Optional<Cycle> cycle) {
         return prepareStatFromList(allTransactions
                 .stream()
                 .filter(userTransaction -> userTransaction.getTransactionDuration().equals(duration))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()), cycle);
     }
 
     /*RETURN STATISTIC OF BOTH TYPES OF TRANSACTIONS SINGLE AND CONSTANT AS UNION OF STATISTIC*/
-    public ActualTransactionStats fromTransactionList(List<UserTransactions> allTransactions) {
-        return prepareStatFromList(allTransactions);
+    public ActualTransactionStats fromTransactionList(List<UserTransactions> allTransactions, Optional<Cycle> cycle) {
+        return prepareStatFromList(allTransactions,cycle);
     }
 
-    private ActualTransactionStats prepareStatFromList(List<UserTransactions> allTransactions) {
+    private ActualTransactionStats prepareStatFromList(List<UserTransactions> allTransactions,Optional<Cycle> activeCycle) {
         ActualTransactionStatsDto stats = new ActualTransactionStatsDto();
         allTransactions
                 .forEach(transaction -> {
@@ -40,6 +42,7 @@ public class ActualTransactionStatsFactory {
                         stats.updateBalance(transaction.getAmount().negate());
                     }
                 });
+        activeCycle.ifPresent(cycle -> stats.updateBalance(cycle.getSaveGoal().negate()));
         return ActualTransactionStats.fromDto(stats);
     }
 

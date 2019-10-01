@@ -33,20 +33,29 @@
             </div>
         </div>
         <div>
-            <div style="border-top : 5px solid red; border-radius : 5px 5px 0 0;" class="uk-card uk-card-default uk-card-body">
+            <div style="border-top : 5px solid red; border-radius : 5px 5px 0 0; height:100%" class="uk-card uk-card-default uk-card-body">
                 <div class="uk-width-expand">
                     <p class="uk-margin-remove-bottom uk-text-bold">Łącznie wydatków: <span th:text="${actualTransactionStats.expensesSum}"></span> zł</p>
                     <i class="uk-text-meta uk-margin-remove-top">Liczba transakcji : <span th:text="${actualTransactionStats.expensesCnt}"></span></i>
                 </div>
             </div>
         </div>
+        <div th:if="${saveGoal != null}" >
+            <div style="border-top : 5px solid #1e87f0; border-radius : 5px 5px 0 0;height:100%" class="uk-card uk-card-default uk-card-body">
+                <div class="uk-width-expand">
+                    <p class="uk-margin-remove-bottom uk-text-bold">Zakładana oszczędność:
+                        <span th:remove="tag" th:text="${saveGoal}"></span> zł
+                    </p>
+                </div>
+            </div>
+        </div>
         <div>
             <div style="border-top : 5px solid yellow; border-radius : 5px 5px 0 0; height : 100%" class="uk-card uk-card-default uk-card-body">
-                <p class="uk-margin-remove-bottom uk-text-bold">Bilans:
+                <h4 class="uk-margin-remove-bottom uk-text-bold">Bilans:
                     <span th:if="${actualTransactionStats.balance > 0}">+ <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
                     <span th:if="${actualTransactionStats.balance == 0}">0 zł</span>
                     <span th:if="${actualTransactionStats.balance < 0}"> <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
-                </p>
+                </h4>
             </div>
         </div>
     </div>

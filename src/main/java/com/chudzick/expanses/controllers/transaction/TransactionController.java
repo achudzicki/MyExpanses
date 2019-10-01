@@ -133,12 +133,15 @@ public class TransactionController {
         List<SingleTransaction> allSingleTransactions = singleTransactionService.findAll();
         List<ConstantTransaction> allConstantTransactions = constantTransactionService.findAll();
         List<UserTransactions> allTransactionsPerCycle = ListsUnion.union(allConstantTransactions, allSingleTransactions);
-        ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle);
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
+        ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle,activeCycle);
         RequestPage<SingleTransaction> transactionPage = new PageFactory<SingleTransaction>(new PagingUtils<>()).getRequestPage(allSingleTransactions,pageNumber,15);
 
         notificationMessagesBean.setNotificationsMessages(notifications);
-        activeCycle.ifPresent(cycle -> model.addAttribute("cycleDisplayInfo", CycleInformation.fromCycle(cycle)));
+        activeCycle.ifPresent(cycle -> {
+            model.addAttribute("cycleDisplayInfo", CycleInformation.fromCycle(cycle));
+            model.addAttribute("saveGoal",activeCycle.get().getSaveGoal());
+        });
         model.addAttribute(NOTIFICATION_MESSAGES_BEAN_NAME, notificationMessagesBean);
         model.addAttribute("transactionPage", transactionPage);
         model.addAttribute("constantTransactions", allConstantTransactions);

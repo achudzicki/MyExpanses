@@ -62,6 +62,7 @@ public class MainPageController {
         CycleInformation cycleInformation = CycleInformation.fromCycle(activeCycle.get());
 
 
+        model.addAttribute("saveGoal",activeCycle.get().getSaveGoal());
         model.addAttribute("lastTransactions", lastFiveTransactions);
         model.addAttribute("actualTransactionStats", actualTransactionStats);
         model.addAttribute("cycleInformation", cycleInformation);
