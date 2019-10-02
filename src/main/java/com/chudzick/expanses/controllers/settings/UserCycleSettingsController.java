@@ -32,9 +32,9 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/settings")
-public class UserSettingsController {
+public class UserCycleSettingsController {
     private final static String NOTIFICATIONS_ATTR_HEADER = "notifications";
-    private final static Logger LOG = LoggerFactory.getLogger(UserSettingsController.class);
+    private final static Logger LOG = LoggerFactory.getLogger(UserCycleSettingsController.class);
     private static final String USER_SETTINGS_DTO_ATTR_NAME = "userSettingsDto";
 
     @Autowired

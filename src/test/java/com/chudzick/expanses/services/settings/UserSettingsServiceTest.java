@@ -7,7 +7,7 @@ import com.chudzick.expanses.domain.settings.dto.UserSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.exceptions.CycleImpositionException;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
-import com.chudzick.expanses.factories.UserSettingsStaticFactory;
+import com.chudzick.expanses.factories.settings.UserSettingsStaticFactory;
 import com.chudzick.expanses.repositories.UserSettingsRepository;
 import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.services.users.UserService;

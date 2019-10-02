@@ -5,7 +5,7 @@ import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.domain.settings.UserSettings;
 import com.chudzick.expanses.domain.settings.dto.UserSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
-import com.chudzick.expanses.factories.UserSettingsStaticFactory;
+import com.chudzick.expanses.factories.settings.UserSettingsStaticFactory;
 import com.chudzick.expanses.services.settings.UserSettingsService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,13 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
-public class UserSettingsControllerTest implements UserSettingsSuplier {
+public class UserCycleSettingsControllerTest implements UserSettingsSuplier {
 
     private MockMvc mockMvc;
     private AppUser appUser;
 
     @InjectMocks
-    private UserSettingsController userSettingsController;
+    private UserCycleSettingsController userCycleSettingsController;
 
     @Mock
     private UserSettingsService userSettingsService;
@@ -53,7 +53,7 @@ public class UserSettingsControllerTest implements UserSettingsSuplier {
         this.appUser = appUser;
 
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(userSettingsController)
+        mockMvc = MockMvcBuilders.standaloneSetup(userCycleSettingsController)
                 .build();
     }
 
