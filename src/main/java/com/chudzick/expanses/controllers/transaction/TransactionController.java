@@ -21,7 +21,6 @@ import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import com.chudzick.expanses.util.ListsUnion;
-import com.chudzick.expanses.util.paging.PagingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,7 +134,7 @@ public class TransactionController {
         List<UserTransactions> allTransactionsPerCycle = ListsUnion.union(allConstantTransactions, allSingleTransactions);
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
         ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle,activeCycle);
-        RequestPage<SingleTransaction> transactionPage = new PageFactory<SingleTransaction>(new PagingUtils<>()).getRequestPage(allSingleTransactions,pageNumber,15);
+        RequestPage<SingleTransaction> transactionPage = new PageFactory<SingleTransaction>().getRequestPage(allSingleTransactions,pageNumber,15);
 
         notificationMessagesBean.setNotificationsMessages(notifications);
         activeCycle.ifPresent(cycle -> {
