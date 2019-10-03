@@ -14,10 +14,9 @@
                type: 'POST',
                mime: 'image/*',
                completeAll: function (result) {
-                console.log('sdasdasdasdasdasd')
+                location.reload();
                }
            });
-
        });
     </script>
 </head>
@@ -37,7 +36,7 @@
                         <div>
                             <i class="uk-text-middle">Dodaj nowe</i>
                             <div class="js-upload" uk-form-custom>
-                                <input type="file">
+                                <input id="upload" type="file">
                                 <i class="uk-link">zdjęcie</i>
                             </div>
                         </div>

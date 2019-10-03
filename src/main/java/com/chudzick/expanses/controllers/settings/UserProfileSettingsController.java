@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sun.misc.BASE64Encoder;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -68,9 +69,10 @@ public class UserProfileSettingsController {
 
     @PostMapping(value = "/profile/picture")
     @ResponseBody
-    public boolean saveProfilePicture(@RequestParam("file") MultipartFile file) {
+    public String saveProfilePicture(@RequestParam("file") MultipartFile file) {
         LOG.info("Update user picture controller invoked");
-        return userPictureService.updatePicture(file);
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(userPictureService.updatePicture(file).getContent());
     }
 
     @ModelAttribute(NOTIFICATIONS_ATTR_HEADER)

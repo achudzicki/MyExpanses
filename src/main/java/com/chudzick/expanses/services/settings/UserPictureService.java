@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserPictureService {
 
-    boolean updatePicture(MultipartFile multipartFile);
+    UserAvatar updatePicture(MultipartFile multipartFile);
 
     Optional<UserAvatar> getPictureByAppUser();
 }

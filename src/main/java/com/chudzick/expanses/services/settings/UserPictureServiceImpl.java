@@ -24,15 +24,20 @@ public class UserPictureServiceImpl implements UserPictureService {
     private UserPictureRepository userPictureRepository;
 
     @Override
-    public boolean updatePicture(MultipartFile multipartFile) {
+    public UserAvatar updatePicture(MultipartFile multipartFile) {
         AppUser currentUser = userService.getCurrentLogInUser();
-        Optional<UserAvatar> userAvatar = UserAvatarStaticFactory.fromMultipartFile(multipartFile, currentUser);
-        if (!userAvatar.isPresent()) {
-            return false;
+        deleteOldAvatar(currentUser);
+        Optional<UserAvatar> newAvatar = UserAvatarStaticFactory.fromMultipartFile(multipartFile, currentUser);
+        if (!newAvatar.isPresent()) {
+           return null;
         }
-        userPictureRepository.save(userAvatar.get());
         LOG.info(String.format("Successfully updated picture for user %s", currentUser.getLogin()));
-        return true;
+        return userPictureRepository.save(newAvatar.get());
+    }
+
+    private void deleteOldAvatar(AppUser currentUser) {
+        userPictureRepository.findByAppUser(currentUser)
+                .ifPresent(userAvatar -> userPictureRepository.delete(userAvatar));
     }
 
     @Override
