@@ -33,19 +33,19 @@ public class ExpansesApplication implements CommandLineRunner {
 
     @Autowired
     private TransactionGroupRepository transactionGroupRepository;
+
     @Override
     public void run(String... args) throws Exception {
         renewCycleScheduler.renewCycles();
 
-/*
-        LocalDate localDate = LocalDate.of(2019,1,28);
+ /*       LocalDate localDate = LocalDate.of(2019, 1, 28);
 
         Optional<AppUser> appUser = userService.findUserByUserName("admin1");
         TransactionGroup transactionGroup = new TransactionGroup();
         transactionGroup.setAppUser(appUser.get());
         transactionGroup.setGroupDescription("sadasd");
         transactionGroup.setGorupName("TESTOWA_AAAA");
-       TransactionGroup savedTransactionGroup =  transactionGroupRepository.save(transactionGroup);
+        TransactionGroup savedTransactionGroup = transactionGroupRepository.save(transactionGroup);
 
         for (int i = 0; i < 5; i++) {
             Cycle cycle = new Cycle();
@@ -56,12 +56,15 @@ public class ExpansesApplication implements CommandLineRunner {
             cycle.setSaveGoal(BigDecimal.valueOf(1000));
             Cycle saved = cycleRepository.save(cycle);
 
-
+            Random random = new Random();
             for (int j = 0; j < 10; j++) {
                 SingleTransaction singleTransaction = new SingleTransaction();
                 singleTransaction.setCycle(saved);
-                singleTransaction.setTransactionDate(LocalDate.now());
-                singleTransaction.setAmount(BigDecimal.TEN);
+
+                long randomDay = ThreadLocalRandom.current().nextLong(cycle.getDateFrom().toEpochDay(), cycle.getDateTo().toEpochDay());
+                singleTransaction.setTransactionDate(LocalDate.ofEpochDay(randomDay));
+                double randomVal = random.nextDouble() * 1000;
+                singleTransaction.setAmount(BigDecimal.valueOf(randomVal));
                 singleTransaction.setAppUser(appUser.get());
                 singleTransaction.setTransactionDuration(TransactionDuration.SINGLE);
                 singleTransaction.setTransactionType(TransactionType.EXPANSE);
@@ -71,6 +74,5 @@ public class ExpansesApplication implements CommandLineRunner {
 
             localDate = localDate.plusMonths(1);
         }*/
-
     }
 }
