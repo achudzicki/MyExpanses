@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -22,8 +22,8 @@ public class ChartServiceImpl implements ChartService {
 
     @Override
     public TransactionPerDayChartBean prepareTransactionPerDayChart(Cycle cycle, Collection<SingleTransaction> singleTransactions, Collection<ConstantTransaction> constantTransactions) {
-        Map<String, BigDecimal> incomesMap = new HashMap<>();
-        Map<String, BigDecimal> expansesMap = new HashMap<>();
+        Map<String, BigDecimal> incomesMap = new LinkedHashMap<>();
+        Map<String, BigDecimal> expansesMap = new LinkedHashMap<>();
         String firstKey = null;
         for (LocalDate i = cycle.getDateFrom(); i.isBefore(cycle.getDateTo()); i = i.plusDays(1)) {
             if (firstKey == null) {

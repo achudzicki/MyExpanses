@@ -19,7 +19,7 @@ public class SingleTransactionStaticFactory {
         singleTransaction.setTransactionDate(LocalDate.parse(singleTransactionDto.getTransactionDate(), dateTimeFormatter));
         singleTransaction.setTransactionGroup(singleTransactionDto.getTransactionGroup());
         singleTransaction.setTransactionType(singleTransactionDto.getTransactionType());
-        singleTransaction.setCycle(cycle);
+        singleTransaction.setCycle(singleTransactionDto.getCycle() == null ? cycle : singleTransactionDto.getCycle());
         singleTransaction.setTransactionDuration(TransactionDuration.SINGLE);
 
         return singleTransaction;

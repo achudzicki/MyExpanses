@@ -1,5 +1,6 @@
 package com.chudzick.expanses.domain.expanses.dto;
 
+import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionType;
 
@@ -18,6 +19,23 @@ public class SingleTransactionDto {
     private TransactionType transactionType;
 
     private TransactionGroup transactionGroup;
+
+    private Cycle cycle;
+
+    public SingleTransactionDto() {
+    }
+
+    public SingleTransactionDto(Cycle cycle) {
+        this.cycle = cycle;
+    }
+
+    public void setCycle(Cycle cycle) {
+        this.cycle = cycle;
+    }
+
+    public Cycle getCycle() {
+        return cycle;
+    }
 
     public BigDecimal getAmount() {
         return amount;

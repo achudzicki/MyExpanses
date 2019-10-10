@@ -47,18 +47,19 @@
         }
 
         .sidebarMenu {
+            position: fixed;
             height : 100%;
             min-height : 100vh;
             background-color: grey;
             width: 250px;
             max-width: 250px !important;
-            position: absolute;
         }
 
-        .uk-container {
-            margin-left: 280px !important;
+        .page-content{
+            height : 100%;
+            min-height : 100vh;
+            margin-top: 50px;
         }
-
         .uk-nav-default > li > a {
             color: white!important;
             text-decoration: bold;
@@ -88,7 +89,7 @@
             <div class="uk-navbar-left">
 
                 <ul class="uk-navbar-nav">
-                    <li class="uk-active"><a href="/transaction/all/0"><span class="uk-margin-small-right" uk-icon="home"></span>HOME</a></li>
+                    <li class="uk-active"><a href="/transaction/all/0"><img th:src="@{/img/logo.png}" alt=""></a></li>
                 </ul>
 
             </div>
@@ -105,52 +106,61 @@
         </nav>
     </div>
 
-    <div class="uk-position-absolute sidebarMenu">
-        <div style="margin-left: 15px;">
-            <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
-                <li class="uk-parent">
-                    <a href="#"><span class="uk-margin-small-right" uk-icon="credit-card"></span>Wydatki</a>
-                    <ul class="uk-nav-sub">
-                        <li><a href="/transaction/">Nowa transakcja</a></li>
-                        <li><a href="/transaction/constant">Stałe transakcje</a></li>
-                        <li><a href="/transaction/all/0">Wszystkie transakcje</a></li>
-                        <li><a href="/transaction/group">Kategorie transakcji</a></li>
-                        <li><a href="/import/transactions">Import transakcji z pliku</a></li>
+    <div class="uk-flex">
+        <div style="width: 250px">
+            <div class="sidebarMenu">
+                <div style="margin-left: 15px;">
+                    <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
+                        <li class="uk-parent">
+                            <a href="#"><span class="uk-margin-small-right" uk-icon="credit-card"></span>Wydatki</a>
+                            <ul class="uk-nav-sub">
+                                <li><a href="/transaction/">Nowa transakcja</a></li>
+                                <li><a href="/transaction/constant">Stałe transakcje</a></li>
+                                <li><a href="/transaction/all/0">Wszystkie transakcje</a></li>
+                                <li><a href="/transaction/group">Kategorie transakcji</a></li>
+                                <li><a href="/import/transactions">Import transakcji z pliku</a></li>
+                            </ul>
+                        </li>
+                        <li class="uk-parent">
+                            <a href="#"><span class="uk-margin-small-right" uk-icon="grid"></span>Cykle</a>
+                            <ul class="uk-nav-sub">
+                                <li><a href="/cycle/archive">Wszystkie cykle</a></li>
+                            </ul>
+                        </li>
+                        <li class="uk-parent">
+                            <a href="#"><span class="uk-margin-small-right" uk-icon="settings"></span>Analizy</a>
+                            <ul class="uk-nav-sub">
+                                <li><a href="#">Podsumowanie miesiąca</a></li>
+                                <li><a href="#">Podział na kategorie</a></li>
+                            </ul>
+                        </li>
+                        <li class="uk-parent">
+                            <a href="#"><span class="uk-margin-small-right" uk-icon="cog"></span>Ustawienia</a>
+                            <ul class="uk-nav-sub">
+                                <li><a href="/settings">Ustawienia cyklu</a></li>
+                                <li><a href="/settings/profile">Ustawienia profilu</a></li>
+                            </ul>
+                        </li>
                     </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="uk-width-expand page-content">
+            <div hidden id="notifications" th:if="${notificationMessagesBean != null}">
+                <li th:each="notification : ${notificationMessagesBean.notificationsMessages}">
+                    <input name="success" th:value="${notification.success}">
+                    <input name="msg" th:value="${notification.message}">
                 </li>
-                <li class="uk-parent">
-                    <a href="#"><span class="uk-margin-small-right" uk-icon="grid"></span>Cykle</a>
-                    <ul class="uk-nav-sub">
-                        <li><a href="/cycle/archive">Wszystkie cykle</a></li>
-                    </ul>
-                </li>
-                <li class="uk-parent">
-                    <a href="#"><span class="uk-margin-small-right" uk-icon="settings"></span>Analizy</a>
-                    <ul class="uk-nav-sub">
-                        <li><a href="#">Podsumowanie miesiąca</a></li>
-                        <li><a href="#">Podział na kategorie</a></li>
-                    </ul>
-                </li>
-                <li class="uk-parent">
-                    <a href="#"><span class="uk-margin-small-right" uk-icon="cog"></span>Ustawienia</a>
-                    <ul class="uk-nav-sub">
-                        <li><a href="/settings">Ustawienia cyklu</a></li>
-                        <li><a href="/settings/profile">Ustawienia profilu</a></li>
-                    </ul>
-                </li>
-            </ul>
+            </div>
+
+            <div class="uk-container uk-margin-medium" th:insert="${content}"></div>
         </div>
     </div>
 
-    <div hidden id="notifications" th:if="${notificationMessagesBean != null}">
-        <li th:each="notification : ${notificationMessagesBean.notificationsMessages}">
-            <input name="success" th:value="${notification.success}">
-            <input name="msg" th:value="${notification.message}">
-        </li>
-    </div>
 
-    <div class="uk-container uk-margin-medium" th:insert="${content}">
-    </div>
+
+
 </div>
 </body>
 </html>

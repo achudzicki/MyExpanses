@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -48,7 +45,9 @@ public class CyclesController {
     @GetMapping(value = "/manage/{cycleId}")
     public String manageArchiveCycle(@PathVariable int cycleId, Model model) throws NoActiveCycleException {
         Cycle cycle = cycleService.findById(cycleId);
-        List<SingleTransaction> singleTransactions = cycle.getCycleTransactions();
+        List<SingleTransaction> singleTransactions = cycle.getCycleTransactions().stream()
+                .sorted(Comparator.comparing(SingleTransaction::getTransactionDate))
+                .collect(Collectors.toList());
         Set<ConstantTransaction> constantTransactions = cycle.getConstantTransactions();
         List<UserTransactions> allTransactions = ListsUnion.union(singleTransactions, new ArrayList<>(constantTransactions));
         ActualTransactionStats stats = new ActualTransactionStatsFactory().fromTransactionList(allTransactions, Optional.of(cycle));
