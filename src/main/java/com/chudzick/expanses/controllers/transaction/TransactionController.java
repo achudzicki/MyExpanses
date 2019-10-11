@@ -8,6 +8,7 @@ import com.chudzick.expanses.domain.expanses.*;
 import com.chudzick.expanses.domain.expanses.dto.ConstantTransactionDto;
 import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.informations.CycleInformation;
+import com.chudzick.expanses.domain.paging.PageSettings;
 import com.chudzick.expanses.domain.paging.RequestPage;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
@@ -126,26 +127,34 @@ public class TransactionController {
         return "redirect:/transaction/constant";
     }
 
-    @GetMapping(value = "/all/{pageNumber}")
-    public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, @PathVariable int pageNumber,
-                                      Model model) {
+    @GetMapping(value = "/all")
+    public String viewAllTransactions(@ModelAttribute(NOTIFICATIONS_ATTR_NAME) List<SimpleNotificationMsg> notifications, Model model) {
         List<SingleTransaction> allSingleTransactions = singleTransactionService.findAll();
         List<ConstantTransaction> allConstantTransactions = constantTransactionService.findAll();
         List<UserTransactions> allTransactionsPerCycle = ListsUnion.union(allConstantTransactions, allSingleTransactions);
         Optional<Cycle> activeCycle = cycleService.findActiveCycle();
-        ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle,activeCycle);
-        RequestPage<SingleTransaction> transactionPage = new PageFactory<SingleTransaction>().getRequestPage(allSingleTransactions,pageNumber,15);
+        ActualTransactionStats actualTransactionStats = new ActualTransactionStatsFactory().fromTransactionList(allTransactionsPerCycle, activeCycle);
+        RequestPage<SingleTransaction> transactionPage = new PageFactory<SingleTransaction>().getRequestPage(allSingleTransactions, PageSettings.FIRST_PAGE.getValue(), PageSettings.PAGE_CONTENT_SIZE.getValue());
 
         notificationMessagesBean.setNotificationsMessages(notifications);
         activeCycle.ifPresent(cycle -> {
             model.addAttribute("cycleDisplayInfo", CycleInformation.fromCycle(cycle));
-            model.addAttribute("saveGoal",activeCycle.get().getSaveGoal());
+            model.addAttribute("saveGoal", activeCycle.get().getSaveGoal());
         });
         model.addAttribute(NOTIFICATION_MESSAGES_BEAN_NAME, notificationMessagesBean);
         model.addAttribute("transactionPage", transactionPage);
         model.addAttribute("constantTransactions", allConstantTransactions);
         model.addAttribute("actualTransactionStats", actualTransactionStats);
         return "transaction/allCycleTransactions";
+    }
+
+    @GetMapping(value = "single/page/{pageNumber}")
+    public String getSingleTransactionPage(@PathVariable int pageNumber, Model model) {
+        List<SingleTransaction> allSingleTransactions = singleTransactionService.findAll();
+        RequestPage<SingleTransaction> transactionPage = new PageFactory<SingleTransaction>().getRequestPage(allSingleTransactions, pageNumber, PageSettings.PAGE_CONTENT_SIZE.getValue());
+
+        model.addAttribute("transactionPage", transactionPage);
+        return "transaction/include/singleTransactionPageableTable";
     }
 
     @PostMapping(value = "/delete/{transactionId}")
@@ -184,7 +193,7 @@ public class TransactionController {
             redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                     .withSuccessNotification("Transakcja stała poprawnie usunięta")
                     .getNotificationList());
-            return "redirect:/transaction/all/0";
+            return "redirect:/transaction/all";
         }
 
         model.addAttribute("transactionToDelete", transaction);
@@ -200,7 +209,7 @@ public class TransactionController {
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                 .withSuccessNotification("Transakcja stała poprawnie usunięta")
                 .getNotificationList());
-        return "redirect:/transaction/all/0";
+        return "redirect:/transaction/all";
     }
 
     @ModelAttribute(NOTIFICATIONS_ATTR_NAME)

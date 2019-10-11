@@ -161,7 +161,7 @@ public class TransactionControllerTest extends BasicTransactionsControllerTestCl
         when(constantTransactionService.findAll()).thenReturn(Collections.emptyList());
         when(cycleService.findActiveCycle()).thenReturn(Optional.of(mockCycle));
 
-        mockMvc.perform(get("/transaction/all/0"))
+        mockMvc.perform(get("/transaction/all"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("transaction/allCycleTransactions"))
                 .andExpect(model().attributeExists("cycleDisplayInfo", "transactionPage", "actualTransactionStats","constantTransactions"));

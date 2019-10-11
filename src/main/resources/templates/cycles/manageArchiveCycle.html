@@ -36,6 +36,19 @@
                     ]
                 },
             });
+
+            $(document).on('click','.page-select',function () {
+                var pageNumber = $(this).parent().find('input[class="page-number"]').val();
+                var cycleId = $(this).parent().find('input[class="cycle-id"]').val();
+                $.ajax({
+                    type: "GET",
+                    url: "/cycle/archive/transaction/page/"+ cycleId +"/"+pageNumber,
+                    success : function (response) {
+                        $('#table-content').empty();
+                        $('#table-content').append(response);
+                    }
+                });
+            });
         });
 
     </script>
@@ -121,45 +134,9 @@
         </table>
     </div>
 
-    <div th:if="${transactionPage.getContent() != null && !transactionPage.getContent().isEmpty()}">
         <h5 style="color: #1e87f0" class="uk-margin-remove-bottom">Transakcje cyklu</h5>
         <hr class="uk-margin-remove-top">
-
-        <table class="uk-table uk-table-striped">
-            <thead>
-            <tr>
-                <th class="uk-text-center" th:text="#{add.transaction.amount}"></th>
-                <th class="uk-text-center" th:text="#{add.transaction.type}"></th>
-                <th class="uk-text-center" th:text="#{add.transaction.group}"></th>
-                <th class="uk-text-center" th:text="#{add.transaction.date}"></th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody class="uk-text-bold">
-            <tr th:each="transaction : ${transactionPage.getContent()}">
-                <th class="uk-text-center"><span th:text="${transaction.amount}" th:remove="tag"></span> zł</th>
-                <th class="uk-text-center">
-                <span class="label-radius"
-                      th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
-                      th:text="${transaction.transactionType.name}"></span>
-                </th>
-                <th class="uk-text-center" th:text="${transaction.transactionGroup.gorupName}"></th>
-                <th class="uk-text-center" th:if="${transaction.isConstantTransaction()}"><span class="label-radius uk-label">STAŁA</span></th>
-                <th class="uk-text-center" th:if="${!transaction.isConstantTransaction()}" th:text="${transaction.transactionDate}"></th>
-                <th class="uk-text-center"><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
-                    <input hidden name="transactionDuration" th:value="${transaction.transactionDuration}">
-                    <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
-                </form></th>
-            </tr>
-            </tbody>
-        </table>
-        <ul th:if="${transactionPage.getTotalPages() > 1}" class="uk-pagination uk-flex-center" uk-margin>
-            <li th:each="index : ${#numbers.sequence( 1,transactionPage.getTotalPages(),1)}">
-                <a th:classappend="${(transactionPage.getCurrentPage() + 1) == index} ? 'uk-text-bold' "  th:href="@{/transaction/all/{pageNumber} (pageNumber = ${index-1})}" th:text="${index}"></a>
-            </li>
-        </ul>
+        <div id="table-content" th:insert="transaction/include/singleTransactionPageableTable.html"></div>
     </div>
-
-</div>
 </body>
 </html>

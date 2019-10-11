@@ -2,15 +2,15 @@ package com.chudzick.expanses.controllers.transaction;
 
 import com.chudzick.expanses.beans.transactions.ImportOperationFormBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
+import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.AccountOperationDto;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.TransactionType;
 import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.expanses.imports.account_operations.pko_bp.AccountHistoryPKO_BP;
-import com.chudzick.expanses.domain.responses.AjaxResponse;
-import com.chudzick.expanses.domain.responses.AjaxResponseStatus;
 import com.chudzick.expanses.domain.xml.Banks;
+import com.chudzick.expanses.exceptions.ImportTransactionException;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
@@ -45,26 +45,23 @@ public class ImportTransactionController {
 
 
     @GetMapping("transactions")
-    public String importTransactionsPage() {
+    public String importTransactionsPage(Model model) {
+        List<TransactionGroup> transactionGroups = transactionGroupService.getAllGroups();
+        model.addAttribute("transactionGroups",transactionGroups);
         return "transaction/importTransactions";
     }
 
     @PostMapping("transactions")
-    public String importTransactions(@RequestParam("file") MultipartFile file, Model model) throws IOException {
+    public String importTransactions(@RequestParam("file") MultipartFile file, Model model) throws IOException, ImportTransactionException {
         boolean xmlValid;
         try {
             xmlValid = XmlStructureValidator.validateStructure(Banks.PKO_BP.getSchemaName(), new String(file.getBytes()));
         } catch (SAXException | ParserConfigurationException e) {
-            LOG.error(e.getMessage(), e);
-            return new AjaxResponse.AjaxResponseBuilder(
-                    AjaxResponseStatus.ERROR, "Błąd podczas wczytywania pliku"
-            ).buildAsJson();
+          throw new ImportTransactionException(ApplicationActions.IMPORT_TRANSACTIONS,"Błąd podczas wczytywania pliku, zły format wczytanego dokumentu");
         }
 
         if (!xmlValid) {
-            return new AjaxResponse.AjaxResponseBuilder(
-                    AjaxResponseStatus.ERROR, "Zły format wczytanego dokumentu"
-            ).buildAsJson();
+            throw new ImportTransactionException(ApplicationActions.IMPORT_TRANSACTIONS,"Nieprawidłowa struktutra wczytanego dokumentu");
         }
 
         List<AccountOperationDto> operations = CustomXmlUtils.unmarshalToList(AccountHistoryPKO_BP.class,
@@ -90,6 +87,6 @@ public class ImportTransactionController {
                 .withSuccessNotification(String.format("Poprawnie zaimportowano %d %s", operationLisSize,
                         operationLisSize > 1 ? "transakcji" : "transakcje"))
                 .getNotificationList());
-        return "redirect:/transaction/all/0";
+        return "redirect:/transaction/all";
     }
 }
