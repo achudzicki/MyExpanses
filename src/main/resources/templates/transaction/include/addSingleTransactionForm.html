@@ -6,7 +6,7 @@
     </div>
     <div class="uk-margin">
         <label th:text="#{add.transaction.date}"></label>
-        <input id="transactionDate" type="date" th:min="${activeCycle.dateFrom}" th:max="${activeCycle.dateTo}" name="transactionDate" class="uk-input" th:field="*{transactionDate}">
+        <input id="transactionDate" type="text" name="transactionDate" class="uk-input" th:field="*{transactionDate}">
     </div>
     <div class="uk-margin">
         <label th:text="#{add.transaction.type}"></label>

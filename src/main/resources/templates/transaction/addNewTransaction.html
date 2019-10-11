@@ -12,10 +12,24 @@
             padding: 2px 5px;
             width: 70px !important;
         }
+
+        .uk-input:hover {
+            cursor: pointer;
+        }
     </style>
-    <script>
+    <script th:inline="javascript">
         $(document).ready(function () {
-            $('#transactionDate').val(new Date().toISOString().substr(0, 10));
+            var dateFrom = /*[[ ${activeCycle.dateFrom} ]]*/;
+            var dateTo = /*[[ ${activeCycle.dateTo} ]]*/;
+            $('#transactionDate').flatpickr({
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+                minDate : dateFrom,
+                maxDate : dateTo,
+                locale : 'pl',
+                defaultDate : new Date().toISOString().substr(0, 10)
+            })
         })
     </script>
 </head>
