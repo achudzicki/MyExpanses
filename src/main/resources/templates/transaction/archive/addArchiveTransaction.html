@@ -13,9 +13,19 @@
             width: 250px !important;
         }
     </style>
-    <script>
+    <script th:inline="javascript">
         $(document).ready(function () {
-            $('#transactionDate').val($('#cycle-start-date').val());
+            var dateFrom = /*[[ ${activeCycle.dateFrom} ]]*/;
+            var dateTo = /*[[ ${activeCycle.dateTo} ]]*/;
+            $('#transactionDate').flatpickr({
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+                minDate : dateFrom,
+                maxDate : dateTo,
+                locale : 'pl',
+                defaultDate : dateFrom
+            })
         })
     </script>
 </head>
@@ -28,7 +38,6 @@
         </div>
     </div>
     <hr>
-    <input hidden id="cycle-start-date" th:value="${activeCycle.dateFrom}">
     <div th:if="${transactionGroups.isEmpty()}" class="uk-alert-warning" uk-alert>
         <i><span class="uk-margin-small-right" uk-icon="icon: warning; ratio : 1.5"></span>Obecnie nie posiadasz dodanej żadnej grupy transakcji przez co nie możesz dodawać nowych transakcji
             ,aby dodać swoją pierwszą grupę <a href="/transaction/group">kliknij tu</a>.</i>
