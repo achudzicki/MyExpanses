@@ -5,6 +5,7 @@ import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.UserTransactions;
 import com.chudzick.expanses.domain.informations.CycleInformation;
+import com.chudzick.expanses.domain.paging.PageSettings;
 import com.chudzick.expanses.domain.paging.RequestPage;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
@@ -51,15 +52,30 @@ public class CyclesController {
         Set<ConstantTransaction> constantTransactions = cycle.getConstantTransactions();
         List<UserTransactions> allTransactions = ListsUnion.union(singleTransactions, new ArrayList<>(constantTransactions));
         ActualTransactionStats stats = new ActualTransactionStatsFactory().fromTransactionList(allTransactions, Optional.of(cycle));
-        RequestPage<SingleTransaction> page = new PageFactory<SingleTransaction>().getRequestPage(singleTransactions, 0, 100);
+        RequestPage<SingleTransaction> page = new PageFactory<SingleTransaction>().getRequestPage(singleTransactions, PageSettings.FIRST_PAGE.getValue(), PageSettings.PAGE_CONTENT_SIZE.getValue());
 
 
         model.addAttribute("chartData", chartService.prepareTransactionPerDayChart(cycle, singleTransactions, constantTransactions));
         model.addAttribute("cycleDisplayInfo", CycleInformation.fromCycle(cycle));
+        model.addAttribute("archiveCycle",cycle);
         model.addAttribute("saveGoal", cycle.getSaveGoal());
         model.addAttribute("transactionPage", page);
         model.addAttribute("constantTransactions", constantTransactions);
         model.addAttribute("actualTransactionStats", stats);
         return "cycles/manageArchiveCycle";
     }
+
+    @GetMapping(value = "/archive/transaction/page/{cycleId}/{pageNumber}")
+    public String getArchiveTransactionsPage(@PathVariable int cycleId, @PathVariable int pageNumber, Model model) throws NoActiveCycleException {
+        Cycle cycle = cycleService.findById(cycleId);
+        List<SingleTransaction> singleTransactions = cycle.getCycleTransactions().stream()
+                .sorted(Comparator.comparing(SingleTransaction::getTransactionDate))
+                .collect(Collectors.toList());
+        RequestPage<SingleTransaction> page = new PageFactory<SingleTransaction>().getRequestPage(singleTransactions, pageNumber, PageSettings.PAGE_CONTENT_SIZE.getValue());
+        model.addAttribute("transactionPage", page);
+        model.addAttribute("archiveCycle",cycle);
+        return "transaction/include/singleTransactionPageableTable";
+    }
+
+
 }
