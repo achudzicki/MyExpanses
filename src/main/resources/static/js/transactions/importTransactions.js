@@ -1,24 +1,13 @@
 $(document).ready(function () {
-    var bar = document.getElementById('js-progressbar');
     UIkit.upload('.js-upload', {
         name: 'file',
         url: '/import/transactions',
         multiple: true,
 
-        loadStart: function (e) {
-            bar.removeAttribute('hidden');
-            bar.max = e.total;
-            bar.value = e.loaded;
+        beforeAll : function () {
+            $('#result').empty();
         },
 
-        progress: function (e) {
-            bar.max = e.total;
-            bar.value = e.loaded;
-        },
-        loadEnd: function (e) {
-            bar.max = e.total;
-            bar.value = e.loaded;
-        },
         completeAll: function (result) {
             var jsonResult;
             try {
@@ -35,6 +24,5 @@ $(document).ready(function () {
 });
 
 function fillTable(content) {
-    console.log(content);
     $('#result').append(content);
 }

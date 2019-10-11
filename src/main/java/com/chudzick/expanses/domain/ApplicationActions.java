@@ -6,7 +6,8 @@ public enum ApplicationActions {
     DELETE_GROUP("Usunięcie grupy tansakcji"),
     ADD_TRANSACTION("Dodanie nowej transackcji"),
     ADD_CONSTANT_TRANSACTION("Dodanie nowych wydatków stałych"),
-    UPDATE_CYCLE_SETTINGS("Uaktualnienie ustawień cyklu");
+    UPDATE_CYCLE_SETTINGS("Uaktualnienie ustawień cyklu"),
+    IMPORT_TRANSACTIONS("Importowanie transakcji z pliku");
 
 
     private String actionName;
