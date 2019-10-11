@@ -1,4 +1,4 @@
-package com.chudzick.expanses.factories;
+package com.chudzick.expanses.factories.settings;
 
 import com.chudzick.expanses.domain.settings.UserSettings;
 import com.chudzick.expanses.domain.settings.dto.UserSettingsDto;

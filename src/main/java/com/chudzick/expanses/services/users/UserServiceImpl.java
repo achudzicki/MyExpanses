@@ -1,5 +1,7 @@
 package com.chudzick.expanses.services.users;
 
+import com.chudzick.expanses.beans.users.UserBean;
+import com.chudzick.expanses.domain.settings.dto.UserProfileSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.Role;
 import com.chudzick.expanses.domain.users.UserDto;
@@ -37,6 +39,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDtoToAppUserMapper userDtoToAppUserMapper;
+
+    @Autowired
+    private UserBean userBean;
 
     private String loginAlreadyExistMessage = "Login already exist";
 
@@ -84,7 +89,16 @@ public class UserServiceImpl implements UserService {
         return foundUser.get();
     }
 
-    public void setUserRoles(AppUser userToRegister) {
+    @Override
+    public AppUser updateUserProfileInformation(UserProfileSettingsDto userDto, AppUser currentUser) {
+        currentUser.setName(userDto.getName());
+        currentUser.setLastName(userDto.getLastName());
+        currentUser.setEmail(userDto.getEmail());
+        userBean.setAppUser(currentUser);
+        return userRepository.save(currentUser);
+    }
+
+    private void setUserRoles(AppUser userToRegister) {
         Set<Role> userRole = new HashSet<>();
 
         Optional<Role> role = roleRepository.findByName("ROLE_USER");

@@ -27,7 +27,7 @@ public class RenewCycleScheduler {
     @Autowired
     private UserSettingsService userSettingsService;
 
-    @Scheduled(cron = "0 50 23 * * ?")
+    @Scheduled(cron = "0 1 0 * * ?")
     public void renewCycles() {
         LOG.info("RenewCycleScheduler invoked");
 

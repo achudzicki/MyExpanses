@@ -1,5 +1,6 @@
 package com.chudzick.expanses.services.users;
 
+import com.chudzick.expanses.domain.settings.dto.UserProfileSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.UserDto;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
@@ -12,4 +13,6 @@ public interface UserService {
     void register(UserDto appUser) throws LoginAlreadyExistException;
 
     AppUser getCurrentLogInUser();
+
+    AppUser updateUserProfileInformation(UserProfileSettingsDto userDto, AppUser currentUser);
 }

@@ -7,8 +7,8 @@ public enum ApplicationActions {
     ADD_TRANSACTION("Dodanie nowej transackcji"),
     ADD_CONSTANT_TRANSACTION("Dodanie nowych wydatków stałych"),
     UPDATE_CYCLE_SETTINGS("Uaktualnienie ustawień cyklu"),
-    IMPORT_TRANSACTIONS("Importowanie transakcji z pliku");
-
+    IMPORT_TRANSACTIONS("Importowanie transakcji z pliku"),
+    MANAGE_ARCHIVE_CYCLES("Zarządzanie cyklami");
 
     private String actionName;
 

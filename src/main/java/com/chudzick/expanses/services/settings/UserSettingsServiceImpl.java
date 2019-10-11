@@ -5,21 +5,17 @@ import com.chudzick.expanses.domain.settings.UserSettings;
 import com.chudzick.expanses.domain.settings.dto.UserSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.exceptions.CycleImpositionException;
-import com.chudzick.expanses.factories.UserSettingsStaticFactory;
+import com.chudzick.expanses.factories.settings.UserSettingsStaticFactory;
 import com.chudzick.expanses.repositories.UserSettingsRepository;
 import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.services.users.UserService;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.MethodInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
