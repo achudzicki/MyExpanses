@@ -2,13 +2,129 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
 <head>
-    <title>Main Page</title>
-    <style></style>
+    <title>MyExpanses</title>
+    <style>
+        .label-radius{
+            border-radius: 5px;
+        }
+
+        .uk-label, .uk-label-danger , .uk-label-success {
+            padding: 2px 5px;
+            width: 70px !important;
+        }
+    </style>
     <script></script>
 </head>
 <body>
 <div class="content">
-<h1>DASDASDSAD</h1>
+
+    <div style="border-top : 2px solid grey" class="uk-card uk-card-default uk-width-1-1 uk-margin-medium">
+        <div class="uk-card-header">
+            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                <div class="uk-width-auto uk-text-success">
+                    <span uk-icon="icon: check; ratio: 2"></span>
+                </div>
+                <div class="uk-width-expand">
+                    <div class="uk-flex uk-flex-between uk-flex-center">
+                        <div>
+                            <h3 class="uk-card-title uk-margin-remove-bottom">Aktywny cykl</h3>
+                            <p class="uk-text-meta uk-margin-remove-top" th:text="${cycleInformation.cycleDisplayName}"></p>
+                        </div>
+                        <div>
+                            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                <div class="uk-width-auto">
+                                    <h1 th:text="${cycleInformation.allCycleDays - cycleInformation.currentCycleDay}"></h1>
+                                </div>
+                                <div>
+                                    <h4 class="uk-margin-remove-bottom">DNI</h4>
+                                    <p class="uk-text-meta uk-margin-remove-top">DO KOŃCA</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-body">
+            <div class="uk-flex uk-flex-around">
+                <div style="margin-top: 10px;width : 85%"><progress class="uk-progress" th:value="${cycleInformation.currentCycleDay}" th:max="${cycleInformation.allCycleDays}"></progress></div>
+                <div class="uk-text-bold" style="width : 10%"><h3><span th:remove="tag" th:text="${#numbers.formatDecimal(((cycleInformation.currentCycleDay * 100)/cycleInformation.allCycleDays), 2, 0)}"></span>%</h3></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="uk-flex uk-flex-between" style="height: 640px">
+        <div style="width : 40%; height: 100%">
+            <div style="border-top : 2px solid grey;height: 100%" class="uk-card uk-card-default uk-card-body uk-width-1-1">
+                <h3 class="uk-card-title"><span class="uk-margin-small-right" uk-icon="icon: cart"></span>Wydatki w liczbach</h3>
+                <i class="uk-margin-small-right uk-text-success" uk-icon="icon: plus; ratio : 1.3"></i>
+                <hr class="uk-margin-small-top">
+                <table class="uk-table uk-width-5-6">
+                    <tr>
+                        <td class="uk-text-bold">Przychód bieżący:</td>
+                        <td><span th:text="${actualTransactionStats.get('SINGLE').getIncomeSum()}"></span> zł</td>
+                    </tr>
+                    <tr>
+                        <td class="uk-text-bold">Przychód stały:</td>
+                        <td><span th:text="${actualTransactionStats.get('CONSTANT').getIncomeSum()}"></span> zł</td>
+                    </tr>
+                </table>
+                <i class="uk-margin-small-right uk-text-danger" uk-icon="icon: minus; ratio : 1.3"></i>
+                <hr class="uk-margin-small-top">
+                <table class="uk-table uk-width-5-6">
+                    <tr>
+                        <td class="uk-text-bold">Wydatki bieżące:</td>
+                        <td><span th:text="${actualTransactionStats.get('SINGLE').getExpensesSum()}"></span> zł</td>
+                    </tr>
+                    <tr>
+                        <td class="uk-text-bold">Wydatki stałe:</td>
+                        <td><span th:text="${actualTransactionStats.get('CONSTANT').getExpensesSum()}"></span> zł</td>
+                    </tr>
+                    <tr>
+                        <td class="uk-text-bold">Panowana oszczędność:</td>
+                        <td><span th:text="${saveGoal}"></span> zł</td>
+                    </tr>
+                </table>
+                <hr>
+                <p><span class="uk-text-bold">Bilans budżetu</span> : <span class="uk-text-success" th:text="${actualTransactionStats.get('SINGLE').getBalance() +
+                actualTransactionStats.get('CONSTANT').getBalance() - saveGoal}"></span> zł</p>
+            </div>
+        </div>
+        <div style="width : 55%; height: 100%">
+            <div style="border-top : 2px solid grey; height: 100%" class="uk-card uk-card-default uk-card-body uk-width-1-1">
+                <div class="uk-card-header">
+                    <h3 class="uk-card-title" th:text="#{add.transaction.last.five}"></h3>
+                </div>
+                <div class="uk-card-body">
+                    <table class="uk-table uk-table-striped">
+                        <thead>
+                        <tr>
+                            <th th:text="#{add.transaction.amount}"></th>
+                            <th th:text="#{add.transaction.type}"></th>
+                            <th th:text="#{add.transaction.group}"></th>
+                            <th th:text="#{add.transaction.date}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transaction : ${lastTransactions}">
+                            <th th:text="${transaction.amount}"></th>
+                            <th>
+                                <span class="label-radius"
+                                      th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                                      th:text="${transaction.transactionType.name}"></span>
+                            </th>
+                            <th th:text="${transaction.transactionGroup.gorupName}"></th>
+                            <th th:text="${transaction.transactionDate}"></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 </body>
 </html>

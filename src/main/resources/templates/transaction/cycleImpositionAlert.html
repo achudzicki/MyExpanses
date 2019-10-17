@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style></style>
+    <script></script>
+</head>
+<body>
+<div class="content">
+
+    <div class="uk-alert-warning" uk-alert>
+        <div class="uk-text-center uk-margin-small-bottom">
+            <p class="uk-margin-small-right" uk-icon="icon: info; ratio : 2"></p>
+            <h4 class="uk-margin-remove-top" th:text="#{cycle.change.title}"></h4>
+        </div>
+        <i><span th:remove="tag" th:text="#{cycle.change.info.1}"></span> <span th:text="${#temporals.format(activeCycle.dateTo, 'dd-MM-yyyy')}"></span>. <span th:remove="tag" th:text="#{cycle.change.info.2}"></span> <span  th:text="${userSettingsDto.cycleDays}"></span> <span th:remove="tag" th:text="#{cycle.change.info.3}"></span></i>
+    </div>
+
+
+    <div class="uk-flex uk-flex-around ">
+        <div style="width: 25%" class="uk-card uk-card-default uk-card-body">
+            <div class="uk-width-expand">
+                <h5 class="uk-margin-remove-bottom" th:text="${#temporals.format(activeCycle.dateFrom, 'dd-MM-yyyy')}"></h5>
+                <p class="uk-text-meta uk-margin-remove-top" th:text="#{cycle.change.start}"></p>
+            </div>
+        </div>
+
+        <div class="uk-margin uk-text-warning">
+            <p style="margin-top : 50%" uk-icon="icon: arrow-right; ratio : 3"></p>
+        </div>
+
+        <div  style="width: 25%"  class="uk-card uk-card-default uk-card-body uk-margin-left">
+            <div class="uk-width-expand">
+                <h5 class="uk-margin-remove-bottom" th:text="${#temporals.format(activeCycle.dateTo, 'dd-MM-yyyy')}"></h5>
+                <p class="uk-text-meta uk-margin-remove-top" th:text="#{cycle.change.end}"></p>
+            </div>
+        </div>
+
+        <div class="uk-margin uk-text-success">
+            <p style="margin-top : 50%" uk-icon="icon: arrow-right; ratio : 3"></p>
+        </div>
+
+        <div style="width: 25%" class="uk-card uk-card-default uk-card-body uk-margin-left">
+            <div class="uk-width-expand">
+                <h5 class="uk-margin-remove-bottom" th:text="${#temporals.format(newCyclePreView.dateTo, 'dd-MM-yyyy')}"></h5>
+                <p class="uk-text-meta uk-margin-remove-top" th:text="#{cycle.change.new.cycle.start}"></p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <form hidden th:object="${userSettingsDto}" method="post" th:action="@{/settings/setup/cycle/force}">
+            <input type="number" class="uk-input" name="cycleDays" th:field="*{cycleDays}" th:value="${userSettingsDto.cycleDays}">
+            <input type="number" step="0.01" class="uk-input" name="cycleSaveGoal" th:field="*{cycleSaveGoal}" th:value="${userSettingsDto.cycleSaveGoal}">
+            <input type="text" name="automaticExtension" th:field="*{automaticExtension}" th:value="${userSettingsDto.automaticExtension}" >
+     </form>
+
+    <div class="uk-text-center">
+        <form method="POST" th:action="@{/settings/setup/cycle/approve/change}">
+            <button type="submit" class="uk-button uk-button-primary" th:text="#{application.save}"></button>
+            <button type="button" onclick="window.history.back()" class="uk-button uk-button-danger" th:text="#{application.cancel}"></button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

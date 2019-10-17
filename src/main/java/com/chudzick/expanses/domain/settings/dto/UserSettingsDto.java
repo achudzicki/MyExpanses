@@ -1,12 +1,13 @@
 package com.chudzick.expanses.domain.settings.dto;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class UserSettingsDto {
+public class UserSettingsDto implements Serializable {
 
-    @Min(1)
-    @Max(28)
+    @Min(value = 1, message = "Dzień początku/końca cylku musi być po 1 dniem miesiąca")
+    @Max(value = 28, message = "Dzień początku/końca cylku musi być przed 28 dniem miesiąca")
     private int cycleDays;
 
     @NotNull

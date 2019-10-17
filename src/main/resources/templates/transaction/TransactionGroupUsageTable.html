@@ -3,7 +3,16 @@
       th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
 <head>
     <title></title>
-    <style></style>
+    <style>
+        .label-radius{
+            border-radius: 5px;
+        }
+
+        .uk-label, .uk-label-danger , .uk-label-success {
+            padding: 2px 5px;
+            width: 70px !important;
+        }
+    </style>
     <script></script>
 </head>
 <body>
@@ -27,7 +36,7 @@
     <table class="uk-table uk-table-striped">
         <thead>
         <tr>
-            <th th:text="#{add.transaction.amound}"></th>
+            <th th:text="#{add.transaction.amount}"></th>
             <th th:text="#{add.transaction.type}"></th>
             <th th:text="#{add.transaction.group}"></th>
             <th th:text="#{add.transaction.date}"></th>
@@ -36,11 +45,17 @@
         </thead>
         <tbody>
         <tr th:each="transaction : ${transactionGroupUsageBean.groupTransactions}">
-            <th th:text="${transaction.amound}"></th>
-            <th th:text="${transaction.transactionType.name}"></th>
+            <th th:text="${transaction.amount}"></th>
+            <th>
+                <span class="label-radius"
+                      th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                      th:text="${transaction.transactionType.name}"></span>
+            </th>
             <th th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></th>
             <th th:text="${transaction.transactionDate}"></th>
+
             <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+                <input hidden name="transactionDuration" th:value="${transaction.transactionDuration}">
                 <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
             </form></th>
         </tr>

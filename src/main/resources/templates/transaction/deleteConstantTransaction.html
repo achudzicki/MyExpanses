@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style></style>
+    <script></script>
+</head>
+<body>
+<div class="content">
+    <div class="uk-width-expand">
+        <h4>Usuwanie transakcji stałych</h4>
+        <i class="uk-text-meta uk-margin-remove-top">Proszę zaznaczyć cykle z których transakcja zostanie usunięta</i>
+    </div>
+    <hr>
+
+    <div style="border-top : 2px solid grey" class="uk-card uk-card-default uk-margin">
+        <div class="uk-card-header">
+            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    <span class="uk-label">CONST</span>
+                </div>
+                <div class="uk-width-expand">
+                    <h3 class="uk-card-title uk-margin-remove-bottom">Transakcja stała</h3>
+                    <p th:text="${transactionToDelete.permanentDuration}? 'TRANSAKCJA BEZ OGRANIECZNIA CZASOWEGO' : 'TRANSAKCJA Z OGRANICZENIEM CZASOWYM'" class="uk-text-meta uk-margin-remove-top"></p>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-body">
+            <ul class="uk-list uk-list-bullet">
+                <li>Kwota transakcji: <span th:remove="tag" th:text="${transactionToDelete.amount}"></span> zł</li>
+                <li>Grupa transakcji: <span th:remove="tag" th:text="${transactionToDelete.transactionGroup.gorupName}"></span></li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div  th:if="${!cycles.isEmpty()}" style="border-top : 2px solid grey" class="uk-card uk-card-default uk-margin">
+        <div class="uk-card-header">
+            <h3 class="uk-card-title uk-margin-remove-bottom">Wystąpienia transakcji w cyklach</h3>
+        </div>
+        <div class="uk-card-body">
+            <form th:action="@{/transaction/constant/delete}" method="POST">
+                <input hidden type="number" name="constantTransactionId" th:value="${transactionToDelete.id}">
+                <table class="uk-table uk-table-striped uk-table-middle">
+                    <thead>
+                    <tr class="uk-text-center">
+                        <th class="uk-text-center">LP.</th>
+                        <th class="uk-text-center">Data od</th>
+                        <th class="uk-text-center">Data do</th>
+                        <th class="uk-text-center">Zakładana oszczędność</th>
+                        <th class="uk-text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cycle,iter : ${cycles}">
+                        <th class="uk-text-center" th:text ="${iter.index + 1}"></th>
+                        <th class="uk-text-center" th:text="${cycle.dateFrom}"></th>
+                        <th class="uk-text-center" th:text="${cycle.dateTo}"></th>
+                        <th class="uk-text-center" th:text="${cycle.saveGoal}"></th>
+                        <th>
+                            <input hidden th:name="|constantTransDto[${iter.index}].cycleId|" th:value="${cycle.id}">
+                            <input th:name="|constantTransDto[${iter.index}].delete|" class="uk-checkbox" type="checkbox">
+                        </th>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="uk-text-center">
+                    <button class="uk-button uk-button-primary" type="submit">Usuń płatność z zaznaczonych cyklów</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

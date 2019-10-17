@@ -5,7 +5,9 @@ import com.chudzick.expanses.beans.transactions.TransactionGroupBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupUsageBean;
 import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.Cycle;
-import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
+import com.chudzick.expanses.domain.expanses.SingleTransaction;
+import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
+import com.chudzick.expanses.domain.expanses.dto.TransactionGroupDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.factories.AppUserStaticFactory;
@@ -56,7 +58,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
     private PermissionsService permissionsService;
 
     @Mock
-    private SingleTransactionService singleTransactionService;
+    private SingleTransactionService<SingleTransaction, SingleTransactionDto> singleTransactionService;
 
     @Mock
     private TransactionGroupUsageBean transactionGroupUsageBean;
@@ -161,7 +163,7 @@ public class TransactionGroupControllerTest extends BasicTransactionsControllerT
     public void viewTransactionsToSelectedGroupTest() throws Exception {
         int groupId = 1;
 
-        when(singleTransactionService.findAllByGroupId(groupId)).thenReturn(prepareListOfTransactions(5, mockCycle, appUser));
+        when(singleTransactionService.findAllTransactionsByGroupId(groupId)).thenReturn(prepareListOfTransactions(5, mockCycle, appUser));
         when(transactionGroupService.findById(groupId)).thenReturn(prepareTransactionGroup(appUser));
 
         mockMvc.perform(get("/transaction/group/usage/" + groupId))

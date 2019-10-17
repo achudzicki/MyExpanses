@@ -1,0 +1,61 @@
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="account-history">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="search">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:integer" name="account"/>
+              <xs:element name="date">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:date" name="since"/>
+                      <xs:attribute type="xs:date" name="to"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:string" name="filtering"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="operations">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="operation" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:date" name="exec-date"/>
+                    <xs:element type="xs:date" name="order-date"/>
+                    <xs:element type="xs:string" name="type"/>
+                    <xs:element type="xs:string" name="description"/>
+                    <xs:element name="amount">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:float">
+                            <xs:attribute type="xs:string" name="curr" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ending-balance">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:float">
+                            <xs:attribute type="xs:string" name="curr" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+

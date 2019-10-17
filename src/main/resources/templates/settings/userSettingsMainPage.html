@@ -43,11 +43,13 @@
                 <div class="uk-margin">
                     <label th:text="#{cycle.start.stop.info.header}"></label>
                     <input type="number" class="uk-input" name="cycleDays" th:field="*{cycleDays}">
+                    <i class="uk-text-danger" th:each="error : ${#fields.errors('cycleDays')}" th:text="${error}"></i>
                 </div>
 
                 <div class="uk-margin">
                     <label th:text="#{cycle.saving.goal.info.header}"></label>
                     <input type="number" step="0.01" class="uk-input" name="cycleSaveGoal" th:field="*{cycleSaveGoal}">
+                    <i class="uk-text-danger" th:each="error : ${#fields.errors('cycleSaveGoal')}" th:text="${error}"></i>
                 </div>
 
                 <div class="uk-margin">

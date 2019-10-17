@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style></style>
+    <script th:src="@{/js/transactions/importTransactions.js}"></script>
+</head>
+<body>
+    <div class="content">
+        <h4>Import wydatków z pliku</h4>
+        <i class="uk-margin-remove-top">W celu wczytania większej ilości transakcji należy wczytać plik w formacie XML. Taki plik można pobrać poprzez swoje konto bankowe.</i>
+        <hr>
+        <div th:if="${!transactionGroups.isEmpty()}" class="js-upload uk-placeholder uk-text-center">
+            <span uk-icon="icon: cloud-upload"></span>
+            <span class="uk-text-middle">W celu załadowania pliku upuść tutaj lub</span>
+            <div uk-form-custom>
+                <input type="file" multiple>
+                <span class="uk-link">wyszukaj</span>
+            </div>
+        </div>
+
+        <div th:if="${transactionGroups.isEmpty()}" class="uk-card uk-card-default uk-alert-warning">
+            <div class="uk-card-body">
+                <i><span class="uk-margin-small-right" uk-icon="icon: warning; ratio : 1.5"></span>Obecnie nie posiadasz dodanej żadnej grupy transakcji przez co nie możesz dodawać nowych transakcji
+                    ,aby dodać swoją pierwszą grupę <a href="/transaction/group">kliknij tu</a>.</i>
+            </div>
+        </div>
+        <div id="result"></div>
+    </div>
+</body>
+</html>

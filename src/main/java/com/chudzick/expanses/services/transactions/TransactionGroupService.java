@@ -1,7 +1,7 @@
 package com.chudzick.expanses.services.transactions;
 
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
-import com.chudzick.expanses.domain.expanses.TransactionGroupDto;
+import com.chudzick.expanses.domain.expanses.dto.TransactionGroupDto;
 
 import java.util.List;
 

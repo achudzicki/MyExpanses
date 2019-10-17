@@ -3,7 +3,7 @@ package com.chudzick.expanses.services.transactions;
 import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
-import com.chudzick.expanses.domain.expanses.SingleTransactionDto;
+import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
@@ -16,15 +16,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class SingleTransactionServiceImpl implements SingleTransactionService {
+public class SingleTransactionServiceImpl implements SingleTransactionService<SingleTransaction, SingleTransactionDto> {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleTransactionServiceImpl.class);
+    private static final int DEFAULT_PAGE_SIZE = 15;
 
     @Autowired
     private UserService userService;
@@ -39,22 +40,6 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
     private PermissionsService permissionsService;
 
     @Override
-    @Transactional
-    public SingleTransaction addNewTransaction(SingleTransactionDto transactionDto) throws NoActiveCycleException {
-        AppUser appUser = userService.getCurrentLogInUser();
-        Optional<Cycle> activeCycle = cycleService.findActiveCycle();
-
-        if (!activeCycle.isPresent()) {
-            LOG.warn("Try to add new transaction with no active cycle");
-            throw new NoActiveCycleException(ApplicationActions.ADD_TRANSACTION);
-        }
-
-        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(transactionDto, appUser, activeCycle.get());
-        return singleTransactionRepository.save(newTransaction);
-    }
-
-    @Override
-    @Transactional
     public List<SingleTransaction> findLastSingleTransactionsLimitBy(int limit) {
         AppUser current = userService.getCurrentLogInUser();
         Optional<Cycle> currentCycle = cycleService.findActiveCycle();
@@ -67,23 +52,27 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
     }
 
     @Override
-    @Transactional
+    public SingleTransaction addNewTransaction(SingleTransactionDto dto) throws NoActiveCycleException {
+        AppUser appUser = userService.getCurrentLogInUser();
+        Optional<Cycle> activeCycle = cycleService.findActiveCycle();
+
+        if (!activeCycle.isPresent()) {
+            LOG.warn("Try to add new transaction with no active cycle");
+            throw new NoActiveCycleException(ApplicationActions.ADD_TRANSACTION);
+        }
+
+        SingleTransaction newTransaction = SingleTransactionStaticFactory.createFromDto(dto, appUser, activeCycle.get());
+        return singleTransactionRepository.save(newTransaction);
+    }
+
+    @Override
     public int countTransactionsByGroup(long groupId) {
         return singleTransactionRepository.countSingleTransactionByTransactionGroupId(groupId);
     }
 
     @Override
-    @Transactional
-    public List<SingleTransaction> findAllByGroupId(long groupId) {
+    public List<SingleTransaction> findAllTransactionsByGroupId(long groupId) {
         return singleTransactionRepository.findAllByTransactionGroupId(groupId);
-    }
-
-    @Override
-    @Transactional
-    public List<SingleTransaction> findAll() {
-        AppUser currentUser = userService.getCurrentLogInUser();
-
-        return singleTransactionRepository.findAllByAppUser(currentUser);
     }
 
     @Override
@@ -94,8 +83,34 @@ public class SingleTransactionServiceImpl implements SingleTransactionService {
             return false;
         }
 
-        permissionsService.checkPermissionToDeleteSingleTransaction(singleTransaction.get());
+        permissionsService.checkPermissionToDeleteTransaction(singleTransaction.get());
         singleTransactionRepository.delete(singleTransaction.get());
+        return true;
+    }
+
+    @Override
+    public Optional<SingleTransaction> findTransactionById(long transactionId) {
+        return singleTransactionRepository.findById(transactionId);
+    }
+
+    @Override
+    public List<SingleTransaction> findAll() {
+        AppUser currentUser = userService.getCurrentLogInUser();
+        Optional<Cycle> activeCycle = cycleService.findActiveCycle();
+        if (!activeCycle.isPresent()) {
+            return Collections.emptyList();
+        }
+        return singleTransactionRepository.findAllByAppUserAndCycleOrderByIdDesc(currentUser, activeCycle.get());
+    }
+
+    @Override
+    public boolean addAll(List<SingleTransactionDto> list) throws NoActiveCycleException {
+        AppUser appUser = userService.getCurrentLogInUser();
+        Cycle currentCycle = cycleService.findActiveCycle().orElseThrow(() -> new NoActiveCycleException(ApplicationActions.ADD_TRANSACTION));
+        singleTransactionRepository.saveAll(list.stream()
+                .map(dto -> SingleTransactionStaticFactory.createFromDto(dto,appUser,currentCycle))
+                .collect(Collectors.toList()));
+        LOG.info("Successfully imported %d operations for user with login : ",list.size(),appUser.getLogin());
         return true;
     }
 }

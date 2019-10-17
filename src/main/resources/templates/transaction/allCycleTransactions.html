@@ -3,8 +3,33 @@
       th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
 <head>
     <title></title>
-    <style></style>
-    <script></script>
+    <style>
+        .label-radius{
+            border-radius: 5px;
+        }
+
+        .uk-label, .uk-label-danger , .uk-label-success {
+            padding: 2px 5px;
+            width: 70px !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+
+            $(document).on('click','.page-select',function () {
+                var pageNumber = $(this).parent().find('input[class="page-number"]').val();
+                $.ajax({
+                    type: "GET",
+                    url: "/transaction/single/page/"+pageNumber,
+                    success : function (response) {
+                        $('#table-content').empty();
+                        $('#table-content').append(response);
+                    }
+                });
+            });
+
+        })
+    </script>
 </head>
 <body>
 <div class="content">
@@ -24,20 +49,29 @@
             </div>
         </div>
         <div>
-            <div style="border-top : 5px solid red; border-radius : 5px 5px 0 0;" class="uk-card uk-card-default uk-card-body">
+            <div style="border-top : 5px solid red; border-radius : 5px 5px 0 0; height:100%" class="uk-card uk-card-default uk-card-body">
                 <div class="uk-width-expand">
                     <p class="uk-margin-remove-bottom uk-text-bold">Łącznie wydatków: <span th:text="${actualTransactionStats.expensesSum}"></span> zł</p>
                     <i class="uk-text-meta uk-margin-remove-top">Liczba transakcji : <span th:text="${actualTransactionStats.expensesCnt}"></span></i>
                 </div>
             </div>
         </div>
+        <div th:if="${saveGoal != null}" >
+            <div style="border-top : 5px solid #1e87f0; border-radius : 5px 5px 0 0;height:100%" class="uk-card uk-card-default uk-card-body">
+                <div class="uk-width-expand">
+                    <p class="uk-margin-remove-bottom uk-text-bold">Zakładana oszczędność:
+                        <span th:remove="tag" th:text="${saveGoal}"></span> zł
+                    </p>
+                </div>
+            </div>
+        </div>
         <div>
             <div style="border-top : 5px solid yellow; border-radius : 5px 5px 0 0; height : 100%" class="uk-card uk-card-default uk-card-body">
-                <p class="uk-margin-remove-bottom uk-text-bold">Bilans:
+                <h4 class="uk-margin-remove-bottom uk-text-bold">Bilans:
                     <span th:if="${actualTransactionStats.balance > 0}">+ <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
                     <span th:if="${actualTransactionStats.balance == 0}">0 zł</span>
                     <span th:if="${actualTransactionStats.balance < 0}"> <span th:remove="tag" th:text="${actualTransactionStats.balance}"></span></span>
-                </p>
+                </h4>
             </div>
         </div>
     </div>
@@ -45,31 +79,43 @@
     <hr>
     <div class="uk-width-expand">
         <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Wszystkie transakcję w danym cyklu</h4>
-        <i class="uk-text-meta uk-margin-remove-top">Dzień cyklu : 19/31</i>
     </div>
+
+    <h5 style="color: #1e87f0" class="uk-margin-remove-bottom">Transakcje stałe</h5>
+    <hr class="uk-margin-remove-top">
 
     <table class="uk-table uk-table-striped">
         <thead>
         <tr>
-            <th th:text="#{add.transaction.amound}"></th>
-            <th th:text="#{add.transaction.type}"></th>
-            <th th:text="#{add.transaction.group}"></th>
-            <th th:text="#{add.transaction.date}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.amount}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.type}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.group}"></th>
+            <th class="uk-text-center" th:text="#{add.transaction.date}"></th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="transaction : ${transactionsList}">
-            <th th:text="${transaction.amound}"></th>
-            <th th:text="${transaction.transactionType.name}"></th>
-            <th th:text="${transaction.transactionGroup.gorupName}"></th>
-            <th th:text="${transaction.transactionDate}"></th>
-            <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
-                <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
-            </form></th>
-        </tr>
+            <tr th:each="constant : ${constantTransactions}">
+                <th class="uk-text-center"><span th:text="${constant.amount}" th:remove="tag"></span> zł</th>
+                <th class="uk-text-center">
+                <span class="label-radius"
+                      th:classappend="${constant.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                      th:text="${constant.transactionType.name}"></span>
+                </th>
+                <th class="uk-text-center" th:text="${constant.transactionGroup.gorupName}"></th>
+                <th class="uk-text-center"><span class="label-radius uk-label">STAŁA</span></th>
+                <th class="uk-text-center"><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${constant.id})}">
+                    <input hidden name="transactionDuration" th:value="${constant.transactionDuration}">
+                    <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
+                </form></th>
+            </tr>
         </tbody>
     </table>
+
+    <h5 style="color: #1e87f0" class="uk-margin-remove-bottom">Transakcje cyklu</h5>
+    <hr class="uk-margin-remove-top">
+
+    <div id="table-content" th:insert="transaction/include/singleTransactionPageableTable.html"></div>
 
 </div>
 </body>

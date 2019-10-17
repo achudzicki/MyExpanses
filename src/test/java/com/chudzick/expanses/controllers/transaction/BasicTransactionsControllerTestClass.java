@@ -34,6 +34,14 @@ public abstract class BasicTransactionsControllerTestClass implements TestSingle
         return transactions;
     }
 
+    protected List<SingleTransaction> prepareListOfAllTransactions(int listSize, Cycle mockCycle, AppUser appUser) {
+        List<SingleTransaction> transactions = new ArrayList<>();
+        for (int i = 0; i < listSize; i++) {
+            transactions.add(prepareSingleTransaction(mockCycle, appUser));
+        }
+        return transactions;
+    }
+
     protected Cycle prepareMockCycle(AppUser appUser) {
         Cycle cycle = new Cycle();
 
