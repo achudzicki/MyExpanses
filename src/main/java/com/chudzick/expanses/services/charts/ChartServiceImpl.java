@@ -25,7 +25,7 @@ public class ChartServiceImpl implements ChartService {
         Map<String, BigDecimal> incomesMap = new LinkedHashMap<>();
         Map<String, BigDecimal> expansesMap = new LinkedHashMap<>();
         String firstKey = null;
-        for (LocalDate i = cycle.getDateFrom(); i.isBefore(cycle.getDateTo()); i = i.plusDays(1)) {
+        for (LocalDate i = cycle.getDateFrom(); i.isBefore(cycle.getDateTo()) || i.isEqual(cycle.getDateTo()); i = i.plusDays(1)) {
             if (firstKey == null) {
                 firstKey = i.toString();
             }
