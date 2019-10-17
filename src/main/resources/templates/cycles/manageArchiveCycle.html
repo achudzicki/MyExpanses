@@ -97,9 +97,7 @@
     </div>
 
     <div class="uk-margin">
-        <p><a th:href="@{/transaction/${cycleId}" class="uk-margin uk-text-muted uk-text-uppercase"><span uk-icon="plus" class="uk-margin-small-right"></span> Dodaj pojedyńczą transakcje do tego cyklu</a></p>
-        <p><a class="uk-margin uk-text-muted uk-text-uppercase"><span uk-icon="pull" class="uk-margin-small-right"></span> Importuj transakcje z pliku do tego cyklu</a></p>
-
+        <p><a th:href="@{/archive/transaction/{id}(id=${cycleId})}" class="uk-margin uk-text-muted uk-text-uppercase"><span uk-icon="plus" class="uk-margin-small-right"></span> Dodaj pojedyńczą transakcje do tego cyklu</a></p>
     </div>
 
     <div th:if="${constantTransactions != null && !constantTransactions.isEmpty()}">

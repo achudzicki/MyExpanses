@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style>
+        .label-radius{
+            border-radius: 5px;
+        }
+
+        .uk-label, .uk-label-danger , .uk-label-success {
+            padding: 2px 5px;
+            width: 250px !important;
+        }
+    </style>
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            var ctx = document.getElementById("savings-per-cycle-chart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: /*[[ ${chartData.cycleName} ]]*/,
+                    datasets: [
+                        {
+                            label:'AKTUALNE OSZCZĘDNOŚCI',
+                            data: /*[[ ${chartData.actualSavings} ]]*/,
+                            backgroundColor: 'rgba(50,210,150,0.7)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'PLANOWANE OSZCZĘDNOŚCI',
+                            data: /*[[ ${chartData.planningSavings} ]]*/,
+                            backgroundColor: 'grey',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+            });
+        });
+
+    </script>
+</head>
+<body>
+    <div class="content">
+        <div style="border-top : 2px solid grey" class="uk-card uk-card-default uk-width-1-1 uk-margin-medium">
+            <div class="uk-card-header">
+                <h3 class="uk-margin-remove-bottom uk-text-primary uk-text-uppercase">Tabela oszczędzania</h3>
+            </div>
+            <div class="uk-card-body">
+                <table class="uk-table uk-table-striped uk-text-center">
+                    <thead>
+                        <tr>
+                            <th class="uk-text-center">Cykl</th>
+                            <th class="uk-text-center">Planowana oszczędność</th>
+                            <th class="uk-text-center">Zaoszczędzono</th>
+                            <th class="uk-text-center">Wynik</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="saving : ${statisticsPerCycle}">
+                            <td th:text="${saving.key}"></td>
+                            <td th:inline="text">
+                                [[${#numbers.formatDecimal((saving.value.incomeSum - saving.value.expensesSum - saving.value.balance), 0, 'COMMA', 2, 'POINT')}]] zł
+                            </td>
+                            <td th:inline="text">
+                                [[${#numbers.formatDecimal(saving.value.balance, 0, 'COMMA', 2, 'POINT')}]] zł
+                            </td>
+                            <td th:if="${saving.value.balance > 0}"><span class="uk-text-center uk-label uk-label-success">SUKCESS</span></td>
+                            <td th:if="${saving.value.balance<= 0}"><span class="uk-text-center uk-label uk-label-danger">PORAŻKA</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="border-top : 2px solid grey" class="uk-card uk-card-default uk-width-1-1 uk-margin-medium">
+            <div class="uk-card-header">
+                <h3 class="uk-margin-remove-bottom uk-text-primary uk-text-uppercase">Wykres oszczędności podczas wszystkich cyklów</h3>
+            </div>
+            <div class="uk-card-body">
+                <div class="uk-flex uk-flex-between uk-flex-center uk-flex-middle uk-margin-medium-bottom">
+                    <div style="width: 45%">
+                        <div style="border-top : 5px solid gray; border-radius : 5px 5px 0 0; height:100%" class="uk-card uk-card-default uk-card-body">
+                            <div class="uk-width-expand">
+                                <i>PLANOWANA OSZCZĘDNOŚĆ PODCZAS WSZYSTKICH CYKLÓW: <span class="uk-text-bold" th:inline="text">
+                                    [[${#numbers.formatDecimal(planningSavings, 0, 'COMMA', 2, 'POINT')}]]</span> zł</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 45%">
+                        <div style="border-top : 5px solid #32d296; border-radius : 5px 5px 0 0; height:100%" class="uk-card uk-card-default uk-card-body">
+                            <div class="uk-width-expand">
+                                <i>ZAOSZCZĘDZONO PODCZAS WSZYSTKICH CYKLÓW: <span class="uk-text-bold" th:inline="text">
+                                    [[${#numbers.formatDecimal(actualSavings, 0, 'COMMA', 2, 'POINT')}]]</span> zł</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <canvas id="savings-per-cycle-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
