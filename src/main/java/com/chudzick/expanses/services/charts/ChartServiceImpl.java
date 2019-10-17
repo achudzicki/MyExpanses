@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ChartServiceImpl implements ChartService {
@@ -68,13 +69,18 @@ public class ChartServiceImpl implements ChartService {
             BigDecimal temp = expansesPerGroupMap.getOrDefault(groupName, BigDecimal.ZERO);
             if (transaction.getTransactionType().equals(TransactionType.INCOME)) {
                 expansesPerGroupMap.put(groupName, temp.add(transaction.getAmount()));
-            } else  {
+            } else {
                 expansesPerGroupMap.put(groupName, temp.subtract(transaction.getAmount()));
             }
         }
 
-        expansePerTransactionGroupBean.setExpansePerGroup(expansesPerGroupMap.values().toArray(new BigDecimal[]{}));
-        expansePerTransactionGroupBean.setTransactionGroupNames(expansesPerGroupMap.keySet().toArray(new String[]{}));
+        LinkedHashMap<String, BigDecimal> sortedMap = expansesPerGroupMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        expansePerTransactionGroupBean.setExpansePerGroup(sortedMap.values().toArray(new BigDecimal[]{}));
+        expansePerTransactionGroupBean.setTransactionGroupNames(sortedMap.keySet().toArray(new String[]{}));
         return expansePerTransactionGroupBean;
     }
 }
