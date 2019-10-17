@@ -22,7 +22,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="operation-row" th:each="transaction,index : ${importedTransactions}">
+        <tr class="operation-row" th:each="transaction,index : ${validOperations}">
             <td th:text="${index.index +1}"></td>
             <td>
                 <span class="label-radius"
@@ -49,6 +49,48 @@
         </tr>
         </tbody>
     </table>
+    <h3 class="uk-margin-remove-bottom uk-text-danger">Transakcje z błędną datą dla danego cyklu (nie zostaną zaimportowane)</h3>
+    <hr class="uk-text-danger uk-margin-remove-top">
+        <table class="uk-table uk-table-striped uk-table-hover">
+            <thead>
+            <tr>
+                <th>Lp</th>
+                <th class="uk-width-small">Typ transakcji</th>
+                <th class="uk-width-small">Kwota</th>
+                <th class="uk-width-medium">Data</th>
+                <th class="uk-width-large">Opis</th>
+                <th class="uk-width-medium">Sposób transakcji</th>
+                <th class="uk-width-medium">Grupa transakcj</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="operation-row" th:each="transaction,index : ${notValidOperations}">
+                <td th:text="${index.index +1}"></td>
+                <td>
+                    <span class="label-radius"
+                          th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                          th:text="${transaction.transactionType.name}"></span>
+                    <input hidden th:value="${transaction.transactionType}">
+                </td>
+                <td>
+                    <p th:text = ${transaction.amount}></p>
+                    <input hidden type="number" th:value="${transaction.amount}">
+                </td>
+                <td>
+                    <p th:text="${transaction.date}"></p>
+                    <input hidden th:value="${transaction.date}">
+                </td>
+                <td class="operation-description" th:title="${transaction.description}"
+                    th:text="${transaction.description.length() > 100} ? ${#strings.substring(transaction.description,0,99)} + '...' : ${transaction.description}"></td>
+                <td th:text="${transaction.operationType}"></td>
+                <td>
+                    <select class="uk-select">
+                        <option th:each ="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
+                    </select>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     <div class="uk-text-center">
         <button type="submit" class="uk-button uk-button-primary">Importuj</button>
     </div>

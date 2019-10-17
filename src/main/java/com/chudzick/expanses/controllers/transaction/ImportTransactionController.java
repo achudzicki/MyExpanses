@@ -3,15 +3,13 @@ package com.chudzick.expanses.controllers.transaction;
 import com.chudzick.expanses.beans.transactions.ImportOperationFormBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
 import com.chudzick.expanses.domain.ApplicationActions;
-import com.chudzick.expanses.domain.expanses.AccountOperationDto;
-import com.chudzick.expanses.domain.expanses.SingleTransaction;
-import com.chudzick.expanses.domain.expanses.TransactionGroup;
-import com.chudzick.expanses.domain.expanses.TransactionType;
+import com.chudzick.expanses.domain.expanses.*;
 import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.expanses.imports.account_operations.pko_bp.AccountHistoryPKO_BP;
 import com.chudzick.expanses.domain.xml.Banks;
 import com.chudzick.expanses.exceptions.ImportTransactionException;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
+import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import com.chudzick.expanses.utils.CustomXmlUtils;
@@ -28,6 +26,9 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 public class ImportTransactionController {
     private static final Logger LOG = LoggerFactory.getLogger(ImportTransactionController.class);
     private static final String NOTIFICATIONS_ATTR_NAME = "notifications";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private TransactionGroupService transactionGroupService;
@@ -43,25 +45,28 @@ public class ImportTransactionController {
     @Autowired
     private SingleTransactionService<SingleTransaction, SingleTransactionDto> singleTransactionService;
 
+    @Autowired
+    private CycleService cycleService;
+
 
     @GetMapping("transactions")
     public String importTransactionsPage(Model model) {
         List<TransactionGroup> transactionGroups = transactionGroupService.getAllGroups();
-        model.addAttribute("transactionGroups",transactionGroups);
+        model.addAttribute("transactionGroups", transactionGroups);
         return "transaction/importTransactions";
     }
 
     @PostMapping("transactions")
-    public String importTransactions(@RequestParam("file") MultipartFile file, Model model) throws IOException, ImportTransactionException {
+    public String importTransactions(@RequestParam("file") MultipartFile file, Model model) throws IOException, ImportTransactionException, NoActiveCycleException {
         boolean xmlValid;
         try {
             xmlValid = XmlStructureValidator.validateStructure(Banks.PKO_BP.getSchemaName(), new String(file.getBytes()));
         } catch (SAXException | ParserConfigurationException e) {
-          throw new ImportTransactionException(ApplicationActions.IMPORT_TRANSACTIONS,"Błąd podczas wczytywania pliku, zły format wczytanego dokumentu");
+            throw new ImportTransactionException(ApplicationActions.IMPORT_TRANSACTIONS, "Błąd podczas wczytywania pliku, zły format wczytanego dokumentu");
         }
 
         if (!xmlValid) {
-            throw new ImportTransactionException(ApplicationActions.IMPORT_TRANSACTIONS,"Nieprawidłowa struktutra wczytanego dokumentu");
+            throw new ImportTransactionException(ApplicationActions.IMPORT_TRANSACTIONS, "Nieprawidłowa struktutra wczytanego dokumentu");
         }
 
         List<AccountOperationDto> operations = CustomXmlUtils.unmarshalToList(AccountHistoryPKO_BP.class,
@@ -70,9 +75,22 @@ public class ImportTransactionController {
                 .map(AccountOperationDto::from)
                 .collect(Collectors.toList());
 
-        List<TransactionGroup> transactionGroups = transactionGroupService.getAllGroups();
+        Cycle activeCycle = cycleService.findActiveCycle().orElseThrow(() -> new NoActiveCycleException(ApplicationActions.IMPORT_TRANSACTIONS));
+        List<AccountOperationDto> validDateOperations = new ArrayList<>();
+        List<AccountOperationDto> notValidDateOperations = new ArrayList<>();
+        operations.forEach(operation -> {
+            LocalDate transactionTime = LocalDate.parse(operation.getDate(), FORMATTER);
+            if (transactionTime.isBefore(activeCycle.getDateFrom()) || transactionTime.isAfter(activeCycle.getDateTo())) {
+                notValidDateOperations.add(operation);
+            } else {
+                validDateOperations.add(operation);
+            }
+        });
+
+        model.addAttribute("validOperations",validDateOperations);
+        model.addAttribute("notValidOperations",notValidDateOperations);
         model.addAttribute("importedTransactions", operations);
-        model.addAttribute("transactionGroups", transactionGroups);
+        model.addAttribute("transactionGroups", transactionGroupService.getAllGroups());
         model.addAttribute("transactionTypes", TransactionType.values());
         LOG.info(String.format("Successfully imported %d operations", operations.size()));
         return "transaction/include/importedTransactions";
