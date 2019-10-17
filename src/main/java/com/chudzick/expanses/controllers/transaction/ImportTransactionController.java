@@ -87,8 +87,8 @@ public class ImportTransactionController {
             }
         });
 
-        model.addAttribute("validOperations",validDateOperations);
-        model.addAttribute("notValidOperations",notValidDateOperations);
+        model.addAttribute("validOperations", validDateOperations);
+        model.addAttribute("notValidOperations", notValidDateOperations);
         model.addAttribute("importedTransactions", operations);
         model.addAttribute("transactionGroups", transactionGroupService.getAllGroups());
         model.addAttribute("transactionTypes", TransactionType.values());
@@ -98,6 +98,12 @@ public class ImportTransactionController {
 
     @PostMapping(value = "add")
     public String addImportedOperations(@ModelAttribute ImportOperationFormBean importOperationFormBean, RedirectAttributes redirectAttributes) throws NoActiveCycleException {
+        if (importOperationFormBean.getTransactionsDto() == null || importOperationFormBean.getTransactionsDto().isEmpty()) {
+            redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
+                    .withFailureNotificationMsg("Nie zaimporotwano żadnej transakcji, proszę sprawdzić daty transakcji")
+                    .getNotificationList());
+            return "redirect:/transaction/all";
+        }
         final int operationLisSize = importOperationFormBean.getTransactionsDto().size();
         LOG.info(String.format("Start adding imported operations %d", operationLisSize));
         singleTransactionService.addAll(importOperationFormBean.getTransactionsDto());

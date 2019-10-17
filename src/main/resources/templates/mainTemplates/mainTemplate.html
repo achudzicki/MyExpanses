@@ -93,7 +93,7 @@
             <div class="uk-navbar-left">
 
                 <ul class="uk-navbar-nav">
-                    <li class="uk-active"><a href="/transaction/all"><img th:src="@{/img/logo_2.png}" alt=""></a></li>
+                    <li class="uk-active"><a href="/"><img th:src="@{/img/logo_2.png}" alt=""></a></li>
                 </ul>
 
             </div>
@@ -103,7 +103,7 @@
                 <ul class="uk-navbar-nav">
                     <li><a href="/settings"><span class="uk-margin-small-right" uk-icon="user"></span>
                     <span th:remove="tag" th:text="${@userBean.getAppUser().getName() + ' ' + @userBean.getAppUser().getLastName()}"></span></a></li>
-                    <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Logout</a></li>
+                    <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Wyloguj</a></li>
                 </ul>
 
             </div>
@@ -115,7 +115,7 @@
             <div class="sidebarMenu">
                 <div style="margin-left: 15px;">
                     <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
-                        <li class="uk-parent">
+                        <li class="uk-parent uk-margin-small">
                             <a href="#"><span class="uk-margin-small-right" uk-icon="credit-card"></span>Wydatki</a>
                             <ul class="uk-nav-sub">
                                 <li><a href="/transaction/">Nowa transakcja</a></li>
@@ -125,20 +125,25 @@
                                 <li><a href="/import/transactions">Import transakcji z pliku</a></li>
                             </ul>
                         </li>
-                        <li class="uk-parent">
+                        <li class="uk-parent uk-margin-small">
                             <a href="#"><span class="uk-margin-small-right" uk-icon="grid"></span>Cykle</a>
                             <ul class="uk-nav-sub">
                                 <li><a href="/cycle/archive">Wszystkie cykle</a></li>
                             </ul>
                         </li>
-                        <li class="uk-parent">
+                        <li class="uk-parent uk-margin-small">
                             <a href="#"><span class="uk-margin-small-right" uk-icon="settings"></span>Analizy</a>
                             <ul class="uk-nav-sub">
                                 <li><a href="/analysis/actual">Podsumowanie aktualnego miesiąca</a></li>
-                                <li><a href="#">Podział na kategorie</a></li>
                             </ul>
                         </li>
-                        <li class="uk-parent">
+                        <li class="uk-parent uk-margin-small">
+                            <a href="#"><span class="uk-margin-small-right" uk-icon="lifesaver"></span>Oszczędności</a>
+                            <ul class="uk-nav-sub">
+                                <li><a href="/savings/all">Podsumowanie oszczędnośći</a></li>
+                            </ul>
+                        </li>
+                        <li class="uk-parent uk-margin-small">
                             <a href="#"><span class="uk-margin-small-right" uk-icon="cog"></span>Ustawienia</a>
                             <ul class="uk-nav-sub">
                                 <li><a href="/settings">Ustawienia cyklu</a></li>
