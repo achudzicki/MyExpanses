@@ -93,7 +93,7 @@
             <div class="uk-navbar-left">
 
                 <ul class="uk-navbar-nav">
-                    <li class="uk-active"><a href="/transaction/all"><img th:src="@{/img/logo_2.png}" alt=""></a></li>
+                    <li class="uk-active"><a href="/"><img th:src="@{/img/logo_2.png}" alt=""></a></li>
                 </ul>
 
             </div>
@@ -103,7 +103,7 @@
                 <ul class="uk-navbar-nav">
                     <li><a href="/settings"><span class="uk-margin-small-right" uk-icon="user"></span>
                     <span th:remove="tag" th:text="${@userBean.getAppUser().getName() + ' ' + @userBean.getAppUser().getLastName()}"></span></a></li>
-                    <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Logout</a></li>
+                    <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Wyloguj</a></li>
                 </ul>
 
             </div>
