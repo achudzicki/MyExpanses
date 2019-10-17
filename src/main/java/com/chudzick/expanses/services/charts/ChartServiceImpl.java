@@ -1,24 +1,24 @@
 package com.chudzick.expanses.services.charts;
 
+import com.chudzick.expanses.beans.chart.ExpansePerTransactionGroupBean;
 import com.chudzick.expanses.beans.chart.TransactionPerDayChartBean;
-import com.chudzick.expanses.domain.expanses.ConstantTransaction;
-import com.chudzick.expanses.domain.expanses.Cycle;
-import com.chudzick.expanses.domain.expanses.SingleTransaction;
-import com.chudzick.expanses.domain.expanses.TransactionType;
+import com.chudzick.expanses.domain.expanses.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ChartServiceImpl implements ChartService {
 
     @Autowired
     private TransactionPerDayChartBean transactionPerDayChartBean;
+
+    @Autowired
+    private ExpansePerTransactionGroupBean expansePerTransactionGroupBean;
 
     @Override
     public TransactionPerDayChartBean prepareTransactionPerDayChart(Cycle cycle, Collection<SingleTransaction> singleTransactions, Collection<ConstantTransaction> constantTransactions) {
@@ -58,5 +58,29 @@ public class ChartServiceImpl implements ChartService {
         transactionPerDayChartBean.setExpanses(expansesMap.values().toArray(new BigDecimal[]{}));
         transactionPerDayChartBean.setDates(incomesMap.keySet().toArray(new String[]{}));
         return transactionPerDayChartBean;
+    }
+
+    @Override
+    public ExpansePerTransactionGroupBean prepareExpansePerGroupChart(List<UserTransactions> userTransactionsList) {
+        Map<String, BigDecimal> expansesPerGroupMap = new HashMap<>();
+
+        for (UserTransactions transaction : userTransactionsList) {
+            String groupName = transaction.getTransactionGroup().getGorupName();
+            BigDecimal temp = expansesPerGroupMap.getOrDefault(groupName, BigDecimal.ZERO);
+            if (transaction.getTransactionType().equals(TransactionType.INCOME)) {
+                expansesPerGroupMap.put(groupName, temp.add(transaction.getAmount()));
+            } else {
+                expansesPerGroupMap.put(groupName, temp.subtract(transaction.getAmount()));
+            }
+        }
+
+        LinkedHashMap<String, BigDecimal> sortedMap = expansesPerGroupMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        expansePerTransactionGroupBean.setExpansePerGroup(sortedMap.values().toArray(new BigDecimal[]{}));
+        expansePerTransactionGroupBean.setTransactionGroupNames(sortedMap.keySet().toArray(new String[]{}));
+        return expansePerTransactionGroupBean;
     }
 }
