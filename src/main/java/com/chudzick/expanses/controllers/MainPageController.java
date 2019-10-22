@@ -54,7 +54,7 @@ public class MainPageController {
         }
 
         List<SingleTransaction> allSingle = singleTransactionService.findAll();
-        List<ConstantTransaction> allConstant = constantTransactionService.findAllActiveConstantTransactions();
+        List<ConstantTransaction> allConstant = constantTransactionService.findAll();
         List<UserTransactions> allTransactions = ListsUnion.union(allConstant, allSingle);
         List<SingleTransaction> lastFiveTransactions = singleTransactionService.findLastSingleTransactionsLimitBy(MAIN_PAGE_TRANSACTIONS);
 
