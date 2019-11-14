@@ -12,4 +12,6 @@ public interface CycleRepository extends JpaRepository<Cycle, Long> {
     Optional<Cycle> findByAppUserAndActive(AppUser appUser, boolean active);
 
     List<Cycle> findAllByAppUser(AppUser appUser);
+
+    long countCycleByAppUser(AppUser appUser);
 }

@@ -101,6 +101,12 @@ public class ConstantTransactionServiceImpl implements ConstantTransactionServic
     }
 
     @Override
+    public List<ConstantTransaction> findAllUserTransactions() {
+        AppUser currentUser = userService.getCurrentLogInUser();
+        return constantTransactionRepository.findAllByAppUser(currentUser);
+    }
+
+    @Override
     public List<ConstantTransaction> findAllActiveConstantTransactions() {
         AppUser appUser = userService.getCurrentLogInUser();
         return constantTransactionRepository.findAllByAppUserAndActiveOrderByIdDesc(appUser, true);

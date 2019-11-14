@@ -23,4 +23,6 @@ public interface CycleService {
     List<Cycle> findAllUserCycles();
 
     Cycle findById(long cycleId) throws NoActiveCycleException;
+
+    long countUserCycles();
 }

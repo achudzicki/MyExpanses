@@ -19,4 +19,6 @@ public interface ConstantTransactionRepository extends JpaRepository<ConstantTra
     List<ConstantTransaction> findAllByTransactionGroupId(long groupId);
 
     Optional<ConstantTransaction> findById(long id);
+
+    List<ConstantTransaction> findAllByAppUser(AppUser appUser);
 }
