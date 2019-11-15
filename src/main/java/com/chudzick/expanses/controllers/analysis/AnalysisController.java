@@ -9,6 +9,7 @@ import com.chudzick.expanses.domain.informations.CycleInformation;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
 import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
+import com.chudzick.expanses.services.analysis.AnalysisService;
 import com.chudzick.expanses.services.charts.ChartService;
 import com.chudzick.expanses.services.transactions.ConstantTransactionService;
 import com.chudzick.expanses.services.transactions.CycleService;
@@ -21,9 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -44,6 +43,9 @@ public class AnalysisController {
 
     @Autowired
     private ConstantTransactionService<ConstantTransaction, ConstantTransactionDto> constantTransactionService;
+
+    @Autowired
+    private AnalysisService analysisService;
 
 
     @GetMapping(value = "actual")
@@ -66,24 +68,11 @@ public class AnalysisController {
     @GetMapping(value = "average/groups")
     public String averageGroupsExpanses(Model model) {
         List<TransactionGroup> userGroups = transactionGroupService.getAllGroups();
-        List<SingleTransaction> allUserTransactions = singleTransactionService.findAllUserTransactions();
-        List<ConstantTransaction> allUserConstantTransaction = constantTransactionService.findAllUserTransactions();
-        List<UserTransactions> allTransactions = ListsUnion.union(allUserConstantTransaction, allUserTransactions);
-        long userCyclesCnt = cycleService.countUserCycles();
+        List<AverageExpanse> averageExpanseList = analysisService.getAverageExpansesList();
 
-
-        Map<Long, AverageExpanse> tempMap = new HashMap<>();
-        for (UserTransactions transaction : allTransactions) {
-            AverageExpanse temp = tempMap.get(transaction.getTransactionGroup().getId());
-            if (temp == null) {
-                tempMap.put(transaction.getTransactionGroup().getId(), new AverageExpanse(transaction, userCyclesCnt));
-            } else {
-                temp.update(transaction);
-            }
-        }
-
-        model.addAttribute("averageExpanses", tempMap.values());
+        model.addAttribute("averageExpanses", averageExpanseList);
         model.addAttribute("userGroups", userGroups);
+        model.addAttribute("chartData", chartService.prepareAverageTransactionPerGroupChart(averageExpanseList));
         return "analysis/averageExpanses";
     }
 }

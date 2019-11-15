@@ -13,7 +13,32 @@
             width: 250px !important;
         }
     </style>
-    <script></script>
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            var ctx = document.getElementById("expanses-incomes-chart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: /*[[ ${chartData.groupNames} ]]*/,
+                    datasets: [
+                        {
+                            label:'ŚREDNIE PRZYCHODY',
+                            data: /*[[ ${chartData.income} ]]*/,
+                            backgroundColor: 'rgb(50,210,150,0.4)',
+                            borderColor : 'rgb(50,210,150)',
+                        },
+                        {
+                            label: 'ŚREDNIE WYDATKI',
+                            data: /*[[ ${chartData.expanse} ]]*/,
+                            backgroundColor: 'rgb(240,80,110,0.4)',
+                            borderColor : 'rgb(240,80,110)',
+                        }
+                    ]
+                },
+            });
+        });
+
+    </script>
 </head>
 <body>
 <div class="content">
@@ -22,6 +47,7 @@
         <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Średnia wartość transakcji/cykl</h4>
         <i class="uk-text-meta uk-margin-remove-top">Średnia wartość transakcji obliczana poprzez podzielenie sumy wszystkich transakcji przez ilość wszystkich cyklów</i>
     </div>
+    <hr class="uk-margin-remove-top">
     <table class="uk-table uk-table-striped uk-text-center">
         <thead>
         <tr>
@@ -51,6 +77,7 @@
         <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Średnia wartość transakcji</h4>
         <i class="uk-text-meta uk-margin-remove-top">Średnia wartość transakcji według grup zakupowych</i>
     </div>
+    <hr class="uk-margin-remove-top">
     <table class="uk-table uk-table-striped uk-text-center">
         <thead>
         <tr>
@@ -86,6 +113,15 @@
         </tr>
         </tbody>
     </table>
+
+    <br/>
+    <div class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Średnia wartość transakcji - WYKRES</h4>
+        <i class="uk-text-meta uk-margin-remove-top">Wykres średniej wartości transakcji [przychodów/wydatków] według grup zakupowych</i>
+    </div>
+    <hr class="uk-margin-remove-top">
+    <canvas id="expanses-incomes-chart"></canvas>
+
 </div>
 </body>
 </html>
