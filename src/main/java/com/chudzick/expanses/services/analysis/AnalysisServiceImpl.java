@@ -14,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AnalysisServiceImpl implements AnalysisService {
@@ -49,6 +47,14 @@ public class AnalysisServiceImpl implements AnalysisService {
             }
         }
 
-        return new ArrayList<>(averageExpansesMap.values());
+        return prepareSortedList(averageExpansesMap.values());
+    }
+
+
+    private LinkedList<AverageExpanse> prepareSortedList(Collection<AverageExpanse> averageExpanses) {
+        return averageExpanses.stream()
+                .sorted(Comparator.comparing(AverageExpanse::getIncomeAverage)
+                        .thenComparing(AverageExpanse::getExpanseAverage))
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 }

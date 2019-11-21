@@ -115,14 +115,31 @@
         <i class="uk-text-meta uk-margin-remove-top">Wykres średniej wartości transakcji [przychodów/wydatków] według grup zakupowych</i>
     </div>
     <hr class="uk-margin-remove-top">
+    <div th:if="${excludedGroups != null}" class="uk-alert uk-alert-primary">
+        <span class="uk-margin-small-right uk-text-bold">Grupy które zostały wykluczone podczas generowania wykresu: </span>
+        <span class="uk-label uk-margin-small-right" th:each="group : ${userGroups}" th:if="${excludedGroups.contains(group.id)}" th:text="${group.gorupName}"></span>
+    </div>
     <canvas id="expanses-incomes-chart"></canvas>
-    <a  uk-toggle="target: #my-id" class="uk-button uk-button-primary uk-float-right">Wygeneruj ponownie</a>
+    <a  uk-toggle="target: #regenerate-chart-modal" class="uk-button uk-button-primary uk-float-right">Wygeneruj ponownie</a>
 
     <!-- This is the modal -->
-    <div id="my-id" uk-modal>
+    <div id="regenerate-chart-modal" uk-modal>
         <div class="uk-modal-dialog uk-modal-body">
-            <h2 class="uk-modal-title"></h2>
-            <button class="uk-modal-close" type="button"></button>
+            <div class="uk-width-expand">
+                <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Ponowne generowanie wykresu</h4>
+                <i class="uk-text-meta uk-margin-remove-top">Zaznacz grupy które chcesz <span class="uk-text-bold">wykluczyć</span> z generowania wykresu</i>
+            </div>
+            <hr class="uk-margin-remove-top">
+
+            <form id="exclude-groups-form" method="POST" th:action="@{/analysis/average/groups}">
+                <ul id="exclude-groups-list" class="uk-list uk-list-striped">
+                    <li th:each="group,index : ${userGroups}">
+                        <input hidden class="group-id"  th:name="|excludeObjects[${index.index}].id|" th:value="${group.id}">
+                        <input type="checkbox" th:name="|excludeObjects[${index.index}].exclude|" class="uk-checkbox uk-margin-small-right exclude-id"><span th:text="${group.gorupName}"></span>
+                    </li>
+                </ul>
+                <button id="regenerate-chart" class="uk-button uk-button-primary uk-float-right" type="submit">Generuj</button>
+            </form>
         </div>
     </div>
 

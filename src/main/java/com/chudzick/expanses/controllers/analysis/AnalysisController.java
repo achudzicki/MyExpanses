@@ -2,6 +2,7 @@ package com.chudzick.expanses.controllers.analysis;
 
 import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.analysis.AverageExpanse;
+import com.chudzick.expanses.domain.analysis.GroupExcludeDto;
 import com.chudzick.expanses.domain.expanses.*;
 import com.chudzick.expanses.domain.expanses.dto.ConstantTransactionDto;
 import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
@@ -20,10 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "analysis")
@@ -75,4 +80,21 @@ public class AnalysisController {
         model.addAttribute("chartData", chartService.prepareAverageTransactionPerGroupChart(averageExpanseList));
         return "analysis/averageExpanses";
     }
+
+    @PostMapping(value = "average/groups")
+    public String averageGroupsExpansesPost(@ModelAttribute("groupExcludeDto") GroupExcludeDto groupExcludeDto, Model model) {
+        List<TransactionGroup> userGroups = transactionGroupService.getAllGroups();
+        Set<Long> excludeId = groupExcludeDto.getExcludedIds();
+        List<AverageExpanse> averageExpanseList = analysisService.getAverageExpansesList();
+
+        model.addAttribute("averageExpanses", averageExpanseList);
+        model.addAttribute("userGroups", userGroups);
+        model.addAttribute("chartData", chartService.prepareAverageTransactionPerGroupChart(averageExpanseList
+                .stream()
+                .filter(avg -> !excludeId.contains(avg.getTransactionGroup().getId()))
+                .collect(Collectors.toList())));
+        model.addAttribute("excludedGroups",excludeId);
+        return "analysis/averageExpanses";
+    }
+
 }

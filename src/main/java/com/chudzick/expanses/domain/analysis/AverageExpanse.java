@@ -27,12 +27,13 @@ public class AverageExpanse {
         if (transaction.getTransactionType().equals(TransactionType.INCOME)) {
             incomeTransactions.add(transaction);
             incomeBalance = transaction.getAmount();
+            totalBalance = transaction.getAmount();
         } else {
             expanseTransactions.add(transaction);
             expanseBalance = transaction.getAmount();
+            totalBalance = transaction.getAmount().negate();
         }
 
-        totalBalance = transaction.getAmount();
         transactionGroup = transaction.getTransactionGroup();
         cyclesCount = userCyclesCnt;
     }
