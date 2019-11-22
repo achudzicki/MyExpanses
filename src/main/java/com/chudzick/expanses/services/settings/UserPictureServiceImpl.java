@@ -45,4 +45,10 @@ public class UserPictureServiceImpl implements UserPictureService {
         AppUser appUser = userService.getCurrentLogInUser();
         return userPictureRepository.findByAppUser(appUser);
     }
+
+    @Override
+    public Optional<UserAvatar> getPictureByAppUser(long id) {
+        AppUser appUser = userService.findUserById(id);
+        return userPictureRepository.findByAppUser(appUser);
+    }
 }

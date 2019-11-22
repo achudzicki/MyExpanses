@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -29,6 +30,16 @@ public class UserPictureController {
     @GetMapping(value = "picture/profile")
     public void getUserPicture(HttpServletResponse response) {
         Optional<UserAvatar> userAvatar = userPictureService.getPictureByAppUser();
+        returnAvatar(userAvatar, response);
+    }
+
+    @GetMapping(value = "picture/profile/{id}")
+    public void getUserPictureById(@PathVariable long id, HttpServletResponse response) {
+        Optional<UserAvatar> userAvatar = userPictureService.getPictureByAppUser(id);
+        returnAvatar(userAvatar, response);
+    }
+
+    private void returnAvatar(Optional<UserAvatar> userAvatar, HttpServletResponse response) {
         InputStream is = null;
         try (OutputStream outputStream = response.getOutputStream()) {
             if (userAvatar.isPresent()) {

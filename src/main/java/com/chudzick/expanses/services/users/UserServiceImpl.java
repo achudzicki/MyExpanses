@@ -108,4 +108,9 @@ public class UserServiceImpl implements UserService {
         userRole.add(role.get());
         userToRegister.setRoles(userRole);
     }
+
+    @Override
+    public AppUser findUserById(long id) {
+        return userRepository.findById(id).orElseThrow(LoggedInUserNotFoundException::new);
+    }
 }

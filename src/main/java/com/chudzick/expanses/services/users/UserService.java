@@ -15,4 +15,6 @@ public interface UserService {
     AppUser getCurrentLogInUser();
 
     AppUser updateUserProfileInformation(UserProfileSettingsDto userDto, AppUser currentUser);
+
+    AppUser findUserById(long id);
 }
