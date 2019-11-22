@@ -23,4 +23,6 @@ public interface UserTransactionService<E extends UserTransactions, T> {
     List<E> findAll();
 
     boolean addAll(List<T> list) throws NoActiveCycleException;
+
+    List<E> findAllUserTransactions();
 }

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class SingleTransactionServiceImpl implements SingleTransactionService<SingleTransaction, SingleTransactionDto> {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleTransactionServiceImpl.class);
-    private static final int DEFAULT_PAGE_SIZE = 15;
 
     @Autowired
     private UserService userService;
@@ -112,5 +111,11 @@ public class SingleTransactionServiceImpl implements SingleTransactionService<Si
                 .collect(Collectors.toList()));
         LOG.info("Successfully imported %d operations for user with login : ",list.size(),appUser.getLogin());
         return true;
+    }
+
+    @Override
+    public List<SingleTransaction> findAllUserTransactions() {
+        AppUser currentUser = userService.getCurrentLogInUser();
+        return singleTransactionRepository.findAllByAppUser(currentUser);
     }
 }
