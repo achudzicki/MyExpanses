@@ -31,6 +31,14 @@
                     ]
                 },
             });
+
+            $('#average-all-transaction-checkbox').on('change',function () {
+                if ($(this).prop('checked')) {
+                    $('.average-all').attr('hidden',true);
+                } else {
+                    $('.average-all').attr('hidden',false);
+                }
+            })
         });
 
     </script>
@@ -73,6 +81,7 @@
         <i class="uk-text-meta uk-margin-remove-top">Średnia wartość transakcji według grup zakupowych</i>
     </div>
     <hr class="uk-margin-remove-top">
+        <div class="uk-float-right"><input id="average-all-transaction-checkbox" type="checkbox" class="uk-checkbox uk-margin-small-right"><span>Ukryj średnią wartość wszystkich transakcji</span></div>
     <table class="uk-table uk-table-striped uk-text-center">
         <thead>
         <tr>
@@ -82,8 +91,8 @@
             <th class="uk-text-center">Średnia wartość przychodów</th>
             <th class="uk-text-center">Ilość wydatków</th>
             <th class="uk-text-center">Średnia wartość wydatków</th>
-            <th class="uk-text-center">Ilość transakcji</th>
-            <th class="uk-text-center">Średnia wartość</th>
+            <th class="uk-text-center average-all">Ilość transakcji</th>
+            <th class="uk-text-center average-all">Średnia wartość</th>
         </tr>
         </thead>
         <tbody>
@@ -100,8 +109,8 @@
                 [[${#numbers.formatDecimal(avg.getExpanseAverage(), 0, 'COMMA', 2, 'POINT')}]] zł
             </td>
             <td th:if="${avg.expanseTransactions.size() <=0}" class="uk-text-uppercase uk-text-muted">BRAK WYDATKÓW</td>
-            <td th:text="${avg.allTransactionCtn()}"></td>
-            <td th:inline="text"
+            <td class="average-all" th:text="${avg.allTransactionCtn()}"></td>
+            <td class="average-all" th:inline="text"
                 th:classappend="${avg.getTotalAverageTransaction() >= 0} ? uk-text-success : uk-text-danger">
                 [[${#numbers.formatDecimal(avg.getTotalAverageTransaction(), 0, 'COMMA', 2, 'POINT')}]] zł
             </td>
