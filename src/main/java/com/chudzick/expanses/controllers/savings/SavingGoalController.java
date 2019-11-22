@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -51,7 +52,11 @@ public class SavingGoalController {
 
     private String prepareSavingGoalPage(Model model) {
         List<SavingGoal> userSavingGoals = savingGoalService.findAllUserSavingGoals();
+        BigDecimal savingSum = userSavingGoals.stream()
+                .map(SavingGoal::getCurrentlySaved)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        model.addAttribute("savingSum", savingSum);
         model.addAttribute("userSavingGoals", userSavingGoals);
         model.addAttribute("savingGoalDto", new SavingGoalDto());
         return "savings/savingGoals";

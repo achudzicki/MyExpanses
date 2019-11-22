@@ -29,10 +29,45 @@
 </head>
 <body>
 <div class="content">
-
-    <div>
-        <a href="#goal-add-modal" uk-toggle><span  uk-icon="icon: plus" class="uk-margin-small-right" ></span>Dodaj nowy cel</a>
+    <div class="uk-width-expand">
+        <h4 class="uk-text-primary uk-margin-remove-bottom">Cele Oszczędzania</h4>
+        <i class="uk-text-meta uk-margin-remove-top">Wszystkie cele na jakie osczędza użytkownik. Można dodawać dowolną ilość
+            celów oszczędzania, natomiast do każdego z nich użytkownik samodzielnie przydziela zaoszczędzone środki
+            podczas wyszstkich swoich cyklów.</i>
     </div>
+    <hr class="uk-margin-remove-top">
+
+    <div class="uk-child-width-expand@s uk-text-center" uk-grid>
+        <div>
+            <div style="border-top : 5px solid green; border-radius : 5px 5px 0 0;" class="uk-card uk-card-default uk-card-body">
+                <div class="uk-width-expand">
+                    <span class="uk-margin uk-text-uppercase">Aktualnie aktywnych celów oszczędzania: </span><span class="uk-text-bold" th:text="${userSavingGoals.size()}"></span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="border-top : 5px solid green; border-radius : 5px 5px 0 0; height:100%" class="uk-card uk-card-default uk-card-body">
+                <div class="uk-width-expand">
+                    <span class="uk-margin uk-text-uppercase">Łączna suma zaoszczędzonych środków: </span>
+                    <span class="uk-text-bold" th:text="${#numbers.formatDecimal(savingSum, 0, 'COMMA', 2, 'POINT')}"></span> zł<br>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="border-top : 5px solid green; border-radius : 5px 5px 0 0; height:100%" class="uk-card uk-card-default uk-card-body">
+                <div class="uk-width-expand">
+                    <span class="uk-margin uk-text-uppercase">Środki dostępne do rozdysponowania: </span>
+                    <span class="uk-text-bold" th:text="${#numbers.formatDecimal(savingSum, 0, 'COMMA', 2, 'POINT')}"></span> zł<br>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="border-top : 5px solid #1e87f0; border-radius : 5px 5px 0 0;height:100%" class="uk-card uk-card-default uk-card-body">
+                <a class="uk-float-right" href="#goal-add-modal" uk-toggle><span  uk-icon="icon: plus" class="uk-margin-small-right" ></span>Dodaj nowy cel</a>
+            </div>
+        </div>
+    </div>
+
 
     <div uk-modal id="goal-add-modal">
         <div class="uk-modal-dialog">

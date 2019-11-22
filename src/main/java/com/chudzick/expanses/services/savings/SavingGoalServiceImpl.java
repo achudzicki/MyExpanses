@@ -31,7 +31,7 @@ public class SavingGoalServiceImpl implements SavingGoalService {
     @Override
     public SavingGoal addNewGoal(SavingGoalDto savingGoalDto) {
         AppUser appUser = userService.getCurrentLogInUser();
-        SavingGoal savingGoal = SavingGoalStaticFactory.createNewFromDto(savingGoalDto,appUser);
+        SavingGoal savingGoal = SavingGoalStaticFactory.createNewFromDto(savingGoalDto, appUser);
         return savingGoalRepository.save(savingGoal);
     }
 }

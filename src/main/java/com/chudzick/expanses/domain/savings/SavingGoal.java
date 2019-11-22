@@ -46,9 +46,14 @@ public class SavingGoal {
 
     @PostLoad
     public void setUpCurrentlySaved() {
-        BigDecimal allPayments = savingPayments.stream()
-                .map(SavingPayment::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal allPayments = BigDecimal.ZERO;
+        for (SavingPayment payment : savingPayments) {
+            if (payment.getSavingPaymentType().equals(SavingPaymentType.ADD)) {
+                allPayments = allPayments.add(payment.getAmount());
+            } else {
+                allPayments = allPayments.subtract(payment.getAmount());
+            }
+        }
         currentlySaved = allPayments.add(startAmount);
     }
 
