@@ -27,7 +27,7 @@ public class XmlStructureValidator {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
         //CREATE SCHEMA
-        Source schemaFile = new StreamSource(new ClassPathResource(String.format(schemaUriTemplate, schemaName)).getFile());
+        Source schemaFile = new StreamSource(new ClassPathResource(String.format(schemaUriTemplate, schemaName)).getInputStream());
         Schema schema = schemaFactory.newSchema(schemaFile);
 
         //CREATE VALIDATOR
