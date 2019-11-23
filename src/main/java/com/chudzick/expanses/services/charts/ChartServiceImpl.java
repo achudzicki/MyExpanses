@@ -1,7 +1,9 @@
 package com.chudzick.expanses.services.charts;
 
+import com.chudzick.expanses.beans.chart.AverageTransactionsPerGroupRadarChart;
 import com.chudzick.expanses.beans.chart.ExpansePerTransactionGroupBean;
 import com.chudzick.expanses.beans.chart.TransactionPerDayChartBean;
+import com.chudzick.expanses.domain.analysis.AverageExpanse;
 import com.chudzick.expanses.domain.expanses.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class ChartServiceImpl implements ChartService {
 
     @Autowired
     private ExpansePerTransactionGroupBean expansePerTransactionGroupBean;
+
+    @Autowired
+    private AverageTransactionsPerGroupRadarChart averageTransactionsPerGroupRadarChart;
 
     @Override
     public TransactionPerDayChartBean prepareTransactionPerDayChart(Cycle cycle, Collection<SingleTransaction> singleTransactions, Collection<ConstantTransaction> constantTransactions) {
@@ -82,5 +87,17 @@ public class ChartServiceImpl implements ChartService {
         expansePerTransactionGroupBean.setExpansePerGroup(sortedMap.values().toArray(new BigDecimal[]{}));
         expansePerTransactionGroupBean.setTransactionGroupNames(sortedMap.keySet().toArray(new String[]{}));
         return expansePerTransactionGroupBean;
+    }
+
+    @Override
+    public AverageTransactionsPerGroupRadarChart prepareAverageTransactionPerGroupChart(List<AverageExpanse> averageExpanseList) {
+        double[] income = averageExpanseList.stream().mapToDouble(AverageExpanse::getIncomeAverage).toArray();
+        double[] expanse = averageExpanseList.stream().mapToDouble(AverageExpanse::getExpanseAverage).toArray();
+        String[] groupNames = averageExpanseList.stream().map(avg -> avg.getTransactionGroup().getGorupName()).toArray(String[]::new);
+
+        averageTransactionsPerGroupRadarChart.setExpanse(expanse);
+        averageTransactionsPerGroupRadarChart.setIncome(income);
+        averageTransactionsPerGroupRadarChart.setGroupNames(groupNames);
+        return averageTransactionsPerGroupRadarChart;
     }
 }

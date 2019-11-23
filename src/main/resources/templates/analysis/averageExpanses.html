@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style>
+        .label-radius{
+            border-radius: 5px;
+        }
+    </style>
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            var ctx = document.getElementById("expanses-incomes-chart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: /*[[ ${chartData.groupNames} ]]*/,
+                    datasets: [
+                        {
+                            label:'ŚREDNIE PRZYCHODY',
+                            data: /*[[ ${chartData.income} ]]*/,
+                            backgroundColor: 'rgb(50,210,150,0.4)',
+                            borderColor : 'rgb(50,210,150)',
+                        },
+                        {
+                            label: 'ŚREDNIE WYDATKI',
+                            data: /*[[ ${chartData.expanse} ]]*/,
+                            backgroundColor: 'rgb(240,80,110,0.4)',
+                            borderColor : 'rgb(240,80,110)',
+                        }
+                    ]
+                },
+            });
+
+            $('#average-all-transaction-checkbox').on('change',function () {
+                if ($(this).prop('checked')) {
+                    $('.average-all').attr('hidden',true);
+                } else {
+                    $('.average-all').attr('hidden',false);
+                }
+            })
+        });
+
+    </script>
+</head>
+<body>
+<div class="content">
+
+    <div class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Średnia wartość transakcji/cykl</h4>
+        <i class="uk-text-meta uk-margin-remove-top">Średnia wartość transakcji obliczana poprzez podzielenie sumy wszystkich transakcji przez ilość wszystkich cyklów</i>
+    </div>
+    <hr class="uk-margin-remove-top">
+    <table class="uk-table uk-table-striped uk-text-center">
+        <thead>
+        <tr>
+            <th class="uk-text-center">Lp.</th>
+            <th class="uk-text-center">Grupa transakcji</th>
+            <th class="uk-text-center">Ilość transakcji</th>
+            <th class="uk-text-center">Ilość cykli</th>
+            <th class="uk-text-center">Średnia wartość/Cykl</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="avg,index : ${averageExpanses}">
+            <td th:text="${index.index + 1}"></td>
+            <td th:text="${avg.transactionGroup.gorupName}"></td>
+            <td th:text="${avg.allTransactionCtn()}"></td>
+            <td th:text="${avg.cyclesCount}"></td>
+            <td th:inline="text"
+                th:classappend="${avg.getTotalAverageCycle() >= 0} ? uk-text-success : uk-text-danger">
+                [[${#numbers.formatDecimal(avg.getTotalAverageCycle(), 0, 'COMMA', 2, 'POINT')}]] zł
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <div class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Średnia wartość transakcji</h4>
+        <i class="uk-text-meta uk-margin-remove-top">Średnia wartość transakcji według grup zakupowych</i>
+    </div>
+    <hr class="uk-margin-remove-top">
+        <div class="uk-float-right"><input id="average-all-transaction-checkbox" type="checkbox" class="uk-checkbox uk-margin-small-right"><span>Ukryj średnią wartość wszystkich transakcji</span></div>
+    <table class="uk-table uk-table-striped uk-text-center">
+        <thead>
+        <tr>
+            <th class="uk-text-center">Lp.</th>
+            <th class="uk-text-center">Grupa transakcji</th>
+            <th class="uk-text-center">Ilość przychodów</th>
+            <th class="uk-text-center">Średnia wartość przychodów</th>
+            <th class="uk-text-center">Ilość wydatków</th>
+            <th class="uk-text-center">Średnia wartość wydatków</th>
+            <th class="uk-text-center average-all">Ilość transakcji</th>
+            <th class="uk-text-center average-all">Średnia wartość</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="avg,index : ${averageExpanses}">
+            <td th:text="${index.index + 1}"></td>
+            <td th:text="${avg.transactionGroup.gorupName}"></td>
+            <td th:text="${avg.incomeTransactions.size()}"></td>
+            <td th:if="${avg.incomeTransactions.size() > 0}" class="uk-text-success" th:inline="text">
+                [[${#numbers.formatDecimal(avg.getIncomeAverage(), 0, 'COMMA', 2, 'POINT')}]] zł
+            </td>
+            <td th:if="${avg.incomeTransactions.size() <=0}" class="uk-text-uppercase uk-text-muted">BRAK DOCHODÓW</td>
+            <td th:text="${avg.expanseTransactions.size()}"></td>
+            <td th:if="${avg.expanseTransactions.size() > 0}" class="uk-text-danger" th:inline="text">
+                [[${#numbers.formatDecimal(avg.getExpanseAverage(), 0, 'COMMA', 2, 'POINT')}]] zł
+            </td>
+            <td th:if="${avg.expanseTransactions.size() <=0}" class="uk-text-uppercase uk-text-muted">BRAK WYDATKÓW</td>
+            <td class="average-all" th:text="${avg.allTransactionCtn()}"></td>
+            <td class="average-all" th:inline="text"
+                th:classappend="${avg.getTotalAverageTransaction() >= 0} ? uk-text-success : uk-text-danger">
+                [[${#numbers.formatDecimal(avg.getTotalAverageTransaction(), 0, 'COMMA', 2, 'POINT')}]] zł
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br/>
+    <div class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Średnia wartość transakcji - WYKRES</h4>
+        <i class="uk-text-meta uk-margin-remove-top">Wykres średniej wartości transakcji [przychodów/wydatków] według grup zakupowych</i>
+    </div>
+    <hr class="uk-margin-remove-top">
+    <div th:if="${excludedGroups != null}" class="uk-alert uk-alert-primary">
+        <span class="uk-margin-small-right uk-text-bold">Grupy które zostały wykluczone podczas generowania wykresu: </span>
+        <span class="uk-label uk-margin-small-right" th:each="group : ${userGroups}" th:if="${excludedGroups.contains(group.id)}" th:text="${group.gorupName}"></span>
+    </div>
+    <canvas id="expanses-incomes-chart"></canvas>
+    <a  uk-toggle="target: #regenerate-chart-modal" class="uk-button uk-button-primary uk-float-right">Wygeneruj ponownie</a>
+
+    <!-- This is the modal -->
+    <div id="regenerate-chart-modal" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <div class="uk-width-expand">
+                <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Ponowne generowanie wykresu</h4>
+                <i class="uk-text-meta uk-margin-remove-top">Zaznacz grupy które chcesz <span class="uk-text-bold">wykluczyć</span> z generowania wykresu</i>
+            </div>
+            <hr class="uk-margin-remove-top">
+
+            <form id="exclude-groups-form" method="POST" th:action="@{/analysis/average/groups}">
+                <ul id="exclude-groups-list" class="uk-list uk-list-striped">
+                    <li th:each="group,index : ${userGroups}">
+                        <input hidden class="group-id"  th:name="|excludeObjects[${index.index}].id|" th:value="${group.id}">
+                        <input type="checkbox" th:name="|excludeObjects[${index.index}].exclude|" class="uk-checkbox uk-margin-small-right exclude-id"><span th:text="${group.gorupName}"></span>
+                    </li>
+                </ul>
+                <button id="regenerate-chart" class="uk-button uk-button-primary uk-float-right" type="submit">Generuj</button>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

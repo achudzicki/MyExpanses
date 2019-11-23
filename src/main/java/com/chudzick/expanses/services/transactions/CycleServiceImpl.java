@@ -72,4 +72,10 @@ public class CycleServiceImpl implements CycleService {
     public Cycle findById(long cycleId) throws NoActiveCycleException {
         return cycleRepository.findById(cycleId).orElseThrow(() -> new NoActiveCycleException(ApplicationActions.MANAGE_ARCHIVE_CYCLES));
     }
+
+    @Override
+    public long countUserCycles() {
+        AppUser appUser = userService.getCurrentLogInUser();
+        return cycleRepository.countCycleByAppUser(appUser);
+    }
 }
