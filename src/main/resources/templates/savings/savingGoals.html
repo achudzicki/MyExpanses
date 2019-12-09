@@ -3,8 +3,13 @@
       th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
 <head>
     <title>Add new  transaction</title>
-    <style></style>
-    <script>
+    <style>
+        .add-user:hover{
+            opacity: 0.7;
+            cursor: pointer;
+            }
+    </style>
+    <script th:inline="javascript">
         $(document).ready(function () {
             $('.savingDate').flatpickr({
                 altInput: true,
@@ -24,13 +29,48 @@
                     $('#allSavingsFalse').attr('hidden',false);
                 }
             });
+
+            $('#payment-type-select').on('change',function () {
+                if ($(this).children('option:selected').text() === 'WPŁATA') {
+                    $('.saving-payment-amount').attr('max',/*[[ ${viewBean.savingToAllocate} ]]*/);
+                } else {
+                    $('.saving-payment-amount').attr('max',$(this).parent().find('.max-take-out-amount').val());
+                }
+            });
+
+            $(document).on('click','.page-select',function () {
+                let pageNumber = $(this).parent().find('input[class="page-number"]').val();
+                let goalId = $(this).parent().find('input[class="page-saving-goal-id"]').val();
+                $.ajax({
+                    type: "GET",
+                    url: "/savings/"+ goalId +"/payment/page/"+pageNumber,
+                    success : function (response) {
+                        var table = $('#payment-table-' + goalId);
+                        $(table).empty();
+                        $(table).append(response);
+                    }
+                });
+            });
+
+            $(document).on('click','.open-friend-modal',function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/savings/available/users/invite/list/" + $(this).attr('id'),
+                    success : function (response) {
+                        let list = $('#invite-user-list');
+                        $(list).empty();
+                        $(list).append(response);
+                        UIkit.modal('#friend-add-modal').show();
+                    }
+                });
+            });
         })
     </script>
 </head>
 <body>
 <div class="content">
     <div class="uk-width-expand">
-        <h4 class="uk-text-primary uk-margin-remove-bottom">Cele Oszczędzania</h4>
+        <h3 class="uk-text-primary uk-margin-remove-bottom">Cele Oszczędzania</h3>
         <i class="uk-text-meta uk-margin-remove-top">Wszystkie cele na jakie osczędza użytkownik. Można dodawać dowolną ilość
             celów oszczędzania, natomiast do każdego z nich użytkownik samodzielnie przydziela zaoszczędzone środki
             podczas wyszstkich swoich cyklów.</i>
@@ -41,7 +81,7 @@
         <div>
             <div style="border-top : 5px solid green; border-radius : 5px 5px 0 0;" class="uk-card uk-card-default uk-card-body">
                 <div class="uk-width-expand">
-                    <span class="uk-margin uk-text-uppercase">Aktualnie aktywnych celów oszczędzania: </span><span class="uk-text-bold" th:text="${userSavingGoals.size()}"></span>
+                    <span class="uk-margin uk-text-uppercase">Aktualnie aktywnych celów oszczędzania: </span><span class="uk-text-bold" th:text="${viewBean.userSavingGoals.size()}"></span>
                 </div>
             </div>
         </div>
@@ -49,7 +89,7 @@
             <div style="border-top : 5px solid green; border-radius : 5px 5px 0 0; height:100%" class="uk-card uk-card-default uk-card-body">
                 <div class="uk-width-expand">
                     <span class="uk-margin uk-text-uppercase">Łączna suma zaoszczędzonych środków: </span>
-                    <span class="uk-text-bold" th:text="${#numbers.formatDecimal(savingSum, 0, 'COMMA', 2, 'POINT')}"></span> zł<br>
+                    <span class="uk-text-bold" th:text="${#numbers.formatDecimal(viewBean.savingSum, 0, 'COMMA', 2, 'POINT')}"></span> zł<br>
                 </div>
             </div>
         </div>
@@ -57,13 +97,15 @@
             <div style="border-top : 5px solid green; border-radius : 5px 5px 0 0; height:100%" class="uk-card uk-card-default uk-card-body">
                 <div class="uk-width-expand">
                     <span class="uk-margin uk-text-uppercase">Środki dostępne do rozdysponowania: </span>
-                    <span class="uk-text-bold" th:text="${#numbers.formatDecimal(savingSum, 0, 'COMMA', 2, 'POINT')}"></span> zł<br>
+                    <span class="uk-text-bold" th:text="${#numbers.formatDecimal(viewBean.savingToAllocate, 0, 'COMMA', 2, 'POINT')}"></span> zł<br>
                 </div>
             </div>
         </div>
         <div>
-            <div style="border-top : 5px solid #1e87f0; border-radius : 5px 5px 0 0;height:100%" class="uk-card uk-card-default uk-card-body">
-                <a class="uk-float-right" href="#goal-add-modal" uk-toggle><span  uk-icon="icon: plus" class="uk-margin-small-right" ></span>Dodaj nowy cel</a>
+            <div href="#goal-add-modal" uk-toggle style="border-top : 5px solid #1e87f0; border-radius : 5px 5px 0 0;height:100%" class="uk-card uk-card-default uk-card-body uk-text-center uk-text-middle uk-box-shadow-hoverxpl">
+                <div class="uk-width-expand">
+                    <span class="uk-margin uk-text-uppercase"><span  uk-icon="icon: plus" class="uk-margin-small-right" ></span>Dodaj nowy cel</span>
+                </div>
             </div>
         </div>
     </div>
@@ -105,44 +147,80 @@
         </div>
     </div>
 
-    <div th:each="goal : ${userSavingGoals}" style="border-left : 5px solid green" class="uk-card uk-card-default uk-width-1-1 uk-margin-medium">
+    <div uk-modal id="friend-add-modal">
+        <div class="uk-modal-dialog">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">ZAPROŚ INNEGO UŻYTKOWNIKA</h2>
+            </div>
+            <div id="invite-user-list" class="uk-modal-body">
+            </div>
+        </div>
+    </div>
+
+    <div th:each="goal : ${viewBean.userSavingGoals}" style="border-left : 5px solid green" class="uk-card uk-card-default uk-width-1-1 uk-margin-medium">
         <div class="uk-card-header">
             <div class="uk-flex uk-flex-between">
                 <div class="uk-width-1-2">
-                    <h3 class="uk-margin-remove-bottom uk-text-primary uk-text-uppercase" th:text="${goal.goalName}"></h3>
+                    <h3 class="uk-margin-remove-bottom uk-text-primary uk-text-uppercase" th:text="${goal.savingGoal.goalName}"></h3>
                 </div>
                 <div class="uk-width-1-6">
-                    <a class="uk-alert-danger uk-float-right uk-icon-button" href="/savings/goals/delete/{goalId}(goalId = ${goal.id})"  uk-icon="icon: trash"></a>
+                    <a class="uk-alert-danger uk-float-right uk-icon-button" th:href="@{/savings/goal/delete/{goalId}(goalId = ${goal.savingGoal.id})}"  uk-icon="icon: trash"></a>
                 </div>
             </div>
         </div>
         <div class="uk-card-body">
-            <p><span class="uk-text-bold">OKRES OSZCZĘDZANIA: </span><span class="uk-text-muted" th:text="${#temporals.format(goal.dateFrom, 'yyyy-MM-dd')}"></span> - <span class="uk-text-muted" th:text="${#temporals.format(goal.dateTo, 'yyyy-MM-dd')}"></span></p>
+            <p><span class="uk-text-bold">OKRES OSZCZĘDZANIA: </span><span class="uk-text-muted" th:text="${#temporals.format(goal.savingGoal.dateFrom, 'yyyy-MM-dd')}"></span> - <span class="uk-text-muted" th:text="${#temporals.format(goal.savingGoal.dateTo, 'yyyy-MM-dd')}"></span></p>
 
             <label class="uk-text-bold">Progres oszczędzania</label>
             <div class="uk-flex uk-flex-between uk-margin-auto-bottom">
-                <div class="uk-width-1-4 uk-text-muted">Aktualnie oszczędzone: <span th:text="${#numbers.formatDecimal(goal.currentlySaved, 0, 'COMMA', 2, 'POINT')}"></span> zł</div>
-                <div class="uk-width-1-4 uk-text-muted" style="margin-right: 10%">Zakładana oszczędność: <span th:text="${#numbers.formatDecimal(goal.goal, 0, 'COMMA', 2, 'POINT')}"></span> zł</div>
+                <div class="uk-width-1-4 uk-text-muted">Aktualnie oszczędzone: <span th:text="${#numbers.formatDecimal(goal.savingGoal.currentlySaved, 0, 'COMMA', 2, 'POINT')}"></span> zł</div>
+                <div class="uk-width-1-4 uk-text-muted" style="margin-right: 10%">Zakładana oszczędność: <span th:text="${#numbers.formatDecimal(goal.savingGoal.goal, 0, 'COMMA', 2, 'POINT')}"></span> zł</div>
             </div>
             <div class="uk-flex uk-flex-around">
-                <div style="margin-top: 10px;width : 85%"><progress class="uk-progress" th:value="${goal.currentlySaved}" th:max="${goal.goal}"></progress></div>
-                <div class="uk-text-bold" style="width : 10%"><h3><span th:remove="tag" th:text="${#numbers.formatDecimal(((goal.currentlySaved * 100)/goal.goal), 1, 0)}"></span>%</h3></div>
+                <div style="margin-top: 10px;width : 85%"><progress class="uk-progress" th:value="${goal.savingGoal.currentlySaved}" th:max="${goal.savingGoal.goal}"></progress></div>
+                <div class="uk-text-bold" style="width : 10%"><h3><span th:remove="tag" th:text="${#numbers.formatDecimal(((goal.savingGoal.currentlySaved * 100)/goal.savingGoal.goal), 1, 0)}"></span>%</h3></div>
             </div>
 
             <hr>
             <div>
                 <label class="uk-text-bold uk-margin-small-right">Osoby odkładające na ten cel: </label>
-                <span th:each = "user : ${goal.appUsers}">
-                        <img th:title="${user.name + ' ' + user.lastName}" class="uk-border-circle" width="50" height="50" th:src="@{/picture/profile/{userId}(userId=${user.id})}">
-                    </span>
-                <span class="uk-float-right">
-                        <a href="">Zaproś innych użytkowników</a>
-                    </span>
+                <span th:each = "user : ${goal.savingGoal.appUsers}">
+                    <img th:title="${user.name + ' ' + user.lastName}" class="uk-border-circle" width="50" height="50" th:src="@{/picture/profile/{userId}(userId=${user.id})}">
+                </span>
+                <span>
+                    <a th:id="${goal.savingGoal.id}" class="open-friend-modal"><img title="Zaproś innego użytkownika" class="uk-border-circle add-user" width="50" height="50" th:src="@{/img/add-user.png}"></a>
+                </span>
+            </div>
+            <hr>
+            <p><span class="uk-text-bold">Aktualna liczba wpłat własnych użytkowników: </span><span th:text="${goal.savingGoal.savingPayments.size()}"></span></p>
+            <p><span class="uk-text-bold">Aktualna suma wpłat własnych: </span><span th:text="${#numbers.formatDecimal(goal.userPaymentsSum, 0, 'COMMA', 2, 'POINT')}"></span> zł</p>
+            <form class="uk-grid-small" th:object="${savingPaymentDto}" uk-grid method="POST" th:action="@{/savings/payment/add/{id}(id=${goal.savingGoal.id})}">
+                <div class="uk-width-1-5">
+                    <input value="0" type="number" step="0.01" th:max="${viewBean.savingToAllocate}"
+                            th:field="*{amount}" name="amount" class="uk-input saving-payment-amount">
+                </div>
+                <div class="uk-width-1-5">
+                    <select id="payment-type-select" th:field="*{type}" class="uk-select">
+                        <option class="uk-text-uppercase" th:each ="type : ${savingPaymentType}" th:value="${type}" th:text="${type.name}"></option>
+                    </select>
+                    <input hidden class="max-take-out-amount" th:value="${goal.userPaymentsSum}" th:field="*{userPaymentsSum}">
+                </div>
+                <div class="uk-width-1-5">
+                    <button type="submit" class="uk-button uk-button-secondary">Dodaj</button>
+                </div>
+                <div class="uk-width-1-5">
+                    <a th:href="@{/savings/goal/payment/add/all/{goalId}(goalId=${goal.savingGoal.id})}" class="uk-button uk-button-primary">Wpłać wszystko</a>
+                </div>
+                <div class="uk-width-1-5">
+                    <a th:href="@{/savings/goal/payment/take/all/{goalId}(goalId=${goal.savingGoal.id})}" class="uk-button uk-button-danger">Wypłać wszystko</a>
+                </div>
+            </form>
+
+            <div th:id="'payment-table-'+ ${goal.id}" class="payment-table" th:insert="savings/include/paymentTablePageable.html" th:with="paymentPage=(${goal.paymentPage}),goal=(${goal.savingGoal})">
             </div>
         </div>
     </div>
 </div>
-
-
 </body>
 </html>

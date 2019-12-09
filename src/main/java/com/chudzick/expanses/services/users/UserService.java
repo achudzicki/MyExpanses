@@ -5,6 +5,7 @@ import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.UserDto;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -17,4 +18,6 @@ public interface UserService {
     AppUser updateUserProfileInformation(UserProfileSettingsDto userDto, AppUser currentUser);
 
     AppUser findUserById(long id);
+
+    List<AppUser> findAll();
 }

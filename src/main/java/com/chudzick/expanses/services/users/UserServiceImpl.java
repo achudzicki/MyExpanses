@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -112,5 +113,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public AppUser findUserById(long id) {
         return userRepository.findById(id).orElseThrow(LoggedInUserNotFoundException::new);
+    }
+
+    @Override
+    public List<AppUser> findAll() {
+        return userRepository.findAll();
     }
 }
