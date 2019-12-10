@@ -10,4 +10,6 @@ public interface UserPictureService {
     UserAvatar updatePicture(MultipartFile multipartFile);
 
     Optional<UserAvatar> getPictureByAppUser();
+
+    Optional<UserAvatar> getPictureByAppUser(long id);
 }
