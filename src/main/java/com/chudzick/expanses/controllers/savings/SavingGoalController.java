@@ -12,6 +12,7 @@ import com.chudzick.expanses.domain.savings.SavingPaymentType;
 import com.chudzick.expanses.domain.savings.dto.SavingGoalDto;
 import com.chudzick.expanses.domain.savings.dto.SavingPaymentDto;
 import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.exceptions.InvitationNotFoundException;
 import com.chudzick.expanses.factories.paging.PageFactory;
 import com.chudzick.expanses.services.savings.SavingGoalService;
 import com.chudzick.expanses.services.users.UserService;
@@ -153,10 +154,19 @@ public class SavingGoalController {
 
     @GetMapping("goal/{goalId}/invite/user/{userId}")
     public String inviteUserToSavingGoal(@PathVariable long goalId, @PathVariable long userId
-            ,RedirectAttributes redirectAttributes) {
-        savingGoalService.inviteUser(goalId,userId);
+            , RedirectAttributes redirectAttributes) {
+        savingGoalService.inviteUser(goalId, userId);
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                 .withSuccessNotification("Pomyślnie zaproszono użytkownika")
+                .getNotificationList());
+        return "redirect:/savings/goal";
+    }
+
+    @GetMapping("invitation/{invitationId}/accept")
+    public String acceptInvitation(@PathVariable long invitationId, Model model, RedirectAttributes redirectAttributes) throws InvitationNotFoundException {
+        savingGoalService.acceptInvitation(invitationId);
+        redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
+                .withSuccessNotification("Poprawnie zaakceptowano zaproszenie")
                 .getNotificationList());
         return "redirect:/savings/goal";
     }

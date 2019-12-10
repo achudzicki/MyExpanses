@@ -9,7 +9,8 @@ public enum ApplicationActions {
     UPDATE_CYCLE_SETTINGS("Uaktualnienie ustawień cyklu"),
     IMPORT_TRANSACTIONS("Importowanie transakcji z pliku"),
     MANAGE_ARCHIVE_CYCLES("Zarządzanie cyklami"),
-    SHOW_ANALYSIS("Statystyki cyklu");
+    SHOW_ANALYSIS("Statystyki cyklu"),
+    ACCEPT_INVITATION("Akceptacja zaproszenia");
 
     private String actionName;
 

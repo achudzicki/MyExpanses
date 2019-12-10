@@ -1,5 +1,6 @@
 package com.chudzick.expanses.beans.savings;
 
+import com.chudzick.expanses.domain.savings.SavingGoalRequest;
 import com.chudzick.expanses.domain.savings.dto.SavingGoalView;
 
 import java.math.BigDecimal;
@@ -10,6 +11,15 @@ public class SavingGoalBean {
     private BigDecimal savingToAllocate;
     private BigDecimal userPaymentsSum;
     private List<SavingGoalView> userSavingGoals;
+    private List<SavingGoalRequest> goalRequests;
+
+    public List<SavingGoalRequest> getGoalRequests() {
+        return goalRequests;
+    }
+
+    public void setGoalRequests(List<SavingGoalRequest> goalRequests) {
+        this.goalRequests = goalRequests;
+    }
 
     public BigDecimal getUserPaymentsSum() {
         return userPaymentsSum;

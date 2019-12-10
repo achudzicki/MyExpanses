@@ -1,17 +1,16 @@
 package com.chudzick.expanses.services.savings;
 
 import com.chudzick.expanses.beans.savings.SavingGoalBean;
+import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.expanses.UserTransactions;
-import com.chudzick.expanses.domain.savings.SavingGoal;
-import com.chudzick.expanses.domain.savings.SavingGoalRequest;
-import com.chudzick.expanses.domain.savings.SavingPayment;
-import com.chudzick.expanses.domain.savings.SavingPaymentType;
+import com.chudzick.expanses.domain.savings.*;
 import com.chudzick.expanses.domain.savings.dto.SavingGoalDto;
 import com.chudzick.expanses.domain.savings.dto.SavingGoalView;
 import com.chudzick.expanses.domain.savings.dto.SavingPaymentDto;
 import com.chudzick.expanses.domain.statictics.ActualTransactionStats;
 import com.chudzick.expanses.domain.users.AppUser;
+import com.chudzick.expanses.exceptions.InvitationNotFoundException;
 import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
 import com.chudzick.expanses.factories.savings.SavingGoalStaticFactory;
 import com.chudzick.expanses.factories.savings.SavingPaymentStaticFactory;
@@ -97,13 +96,13 @@ public class SavingGoalServiceImpl implements SavingGoalService {
                 if (payment.getSavingPaymentType().equals(SavingPaymentType.ADD)) {
                     if (payment.getAppUser().getId().equals(currentUser.getId())) {
                         userPaymentsSum = userPaymentsSum.add(payment.getAmount());
+                        savingPaymentSum = savingPaymentSum.add(payment.getAmount());
                     }
-                    savingPaymentSum = savingPaymentSum.add(payment.getAmount());
                 } else {
                     if (payment.getAppUser().getId().equals(currentUser.getId())) {
                         userPaymentsSum = userPaymentsSum.subtract(payment.getAmount());
+                        savingPaymentSum = savingPaymentSum.subtract(payment.getAmount());
                     }
-                    savingPaymentSum = savingPaymentSum.subtract(payment.getAmount());
                 }
             }
             savingGoalViews.add(new SavingGoalView(saving, userPaymentsSum));
@@ -112,6 +111,7 @@ public class SavingGoalServiceImpl implements SavingGoalService {
         savingGoalBean.setSavingSum(savingSum);
         savingGoalBean.setSavingToAllocate(actualSavings.subtract(savingPaymentSum));
         savingGoalBean.setUserSavingGoals(savingGoalViews);
+        savingGoalBean.setGoalRequests(requestRepository.findAllByRequestOwnerAndInvitationStatus(currentUser, InvitationStatus.PENDING));
         return savingGoalBean;
     }
 
@@ -158,7 +158,27 @@ public class SavingGoalServiceImpl implements SavingGoalService {
         savingGoalRequest.setRequestOwner(invitedUser);
         savingGoalRequest.setSavingGoal(goal);
         savingGoalRequest.setSavingGoalOwner(current);
+        savingGoalRequest.setRequestDate(LocalDate.now());
+        savingGoalRequest.setInvitationStatus(InvitationStatus.PENDING);
         requestRepository.save(savingGoalRequest);
+    }
+
+    @Override
+    public void acceptInvitation(long invitationId) throws InvitationNotFoundException {
+        SavingGoalRequest invitation = requestRepository.findById(invitationId)
+                .orElseThrow(() -> new InvitationNotFoundException(ApplicationActions.ACCEPT_INVITATION));
+        AppUser currentUser = userService.getCurrentLogInUser();
+
+        if (!invitation.getRequestOwner().getId().equals(currentUser.getId())) {
+            throw new InvitationNotFoundException(ApplicationActions.ACCEPT_INVITATION, "Zaproszenie nie należy do użytkownika");
+        }
+
+        invitation.setInvitationStatus(InvitationStatus.ACCEPTED);
+        SavingGoal goal = savingGoalRepository.getOne(invitation.getSavingGoal().getId());
+        goal.getAppUsers().add(currentUser);
+
+        requestRepository.save(invitation);
+        savingGoalRepository.save(goal);
     }
 
     private void setUpPayment(SavingPaymentDto savingPaymentDto, SavingGoal goal) {

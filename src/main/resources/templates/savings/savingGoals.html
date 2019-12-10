@@ -69,6 +69,42 @@
 </head>
 <body>
 <div class="content">
+
+    <div th:if="${viewBean.goalRequests != null && !viewBean.goalRequests.isEmpty()}">
+        <div class="uk-width-expand">
+            <h3 class="uk-text-primary uk-margin-remove-bottom">Zaproszenia od innych użytkowników</h3>
+            <i class="uk-text-meta uk-margin-remove-top">Wszystkie zaproszenia od innych użytkowników programu do wspólnego oszczędzania na dany cel.</i>
+        </div>
+        <hr class="uk-margin-remove-top">
+
+        <div th:each="invitation : ${viewBean.goalRequests}" class="uk-margin">
+            <article class="uk-comment uk-comment-primary">
+                <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                    <div class="uk-width-auto">
+                        <img class="uk-comment-avatar" th:src="@{/picture/profile/{userId}(userId=${invitation.savingGoalOwner.id})}" width="80" height="80" alt="">
+                    </div>
+                    <div class="uk-width-expand">
+                        <h4 class="uk-comment-title uk-margin-remove" th:text="${invitation.savingGoalOwner.name + ' ' + invitation.savingGoalOwner.lastName }"></h4>
+                        <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                            <li th:if="${invitation.getDaysAgo() > 0}"><span><span th:remove="tag" th:text="${invitation.getDaysAgo()}"></span> dni temu</span></li>
+                            <li th:if="${invitation.getDaysAgo() == 0}"><span>DZISIAJ</li>
+                            <li><a href="#">ZAPROSZENIE</a></li>
+                        </ul>
+                    </div>
+                </header>
+                <div class="uk-comment-body">
+                    <p><span class="uk-text-bold">CEL OSZCZĘDZANIA: </span><span th:text="${invitation.savingGoal.goalName}"></span></p>
+                    <p><span class="uk-text-bold">OKRES OSZCZĘDZANIA: </span><span class="uk-text-muted" th:text="${#temporals.format(invitation.savingGoal.dateFrom, 'yyyy-MM-dd')}"></span> - <span class="uk-text-muted" th:text="${#temporals.format(invitation.savingGoal.dateTo, 'yyyy-MM-dd')}"></span></p>
+                    <hr>
+                    <div>
+                        <a th:href="@{/savings/invitation/{invitationId}/accept(invitationId=${invitation.id})}" class="uk-float-right uk-button-primary uk-button">Zaakceptuj</a>
+                        <a class="uk-float-right uk-button-danger uk-button uk-margin-medium-left">Odrzuć</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+
     <div class="uk-width-expand">
         <h3 class="uk-text-primary uk-margin-remove-bottom">Cele Oszczędzania</h3>
         <i class="uk-text-meta uk-margin-remove-top">Wszystkie cele na jakie osczędza użytkownik. Można dodawać dowolną ilość
@@ -204,7 +240,7 @@
                     <select id="payment-type-select" th:field="*{type}" class="uk-select">
                         <option class="uk-text-uppercase" th:each ="type : ${savingPaymentType}" th:value="${type}" th:text="${type.name}"></option>
                     </select>
-                    <input hidden class="max-take-out-amount" th:value="${goal.userPaymentsSum}" th:field="*{userPaymentsSum}">
+                    <input hidden class="max-take-out-amount" th:value="${goal.userPaymentsSum}" name="userPaymentsSum">
                 </div>
                 <div class="uk-width-1-5">
                     <button type="submit" class="uk-button uk-button-secondary">Dodaj</button>
