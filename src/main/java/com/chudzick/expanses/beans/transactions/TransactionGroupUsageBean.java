@@ -1,5 +1,6 @@
 package com.chudzick.expanses.beans.transactions;
 
+import com.chudzick.expanses.domain.expanses.ConstantTransaction;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +15,16 @@ import java.util.List;
 public class TransactionGroupUsageBean {
 
     private TransactionGroup transactionGroup;
-    private List<SingleTransaction> groupTransactions;
+    private List<SingleTransaction> groupSingleTransactions;
+    private List<ConstantTransaction> constantTransactions;
+
+    public List<ConstantTransaction> getConstantTransactions() {
+        return constantTransactions;
+    }
+
+    public void setConstantTransactions(List<ConstantTransaction> constantTransactions) {
+        this.constantTransactions = constantTransactions;
+    }
 
     public TransactionGroup getTransactionGroup() {
         return transactionGroup;
@@ -24,11 +34,11 @@ public class TransactionGroupUsageBean {
         this.transactionGroup = transactionGroup;
     }
 
-    public List<SingleTransaction> getGroupTransactions() {
-        return groupTransactions;
+    public List<SingleTransaction> getGroupSingleTransactions() {
+        return groupSingleTransactions;
     }
 
-    public void setGroupTransactions(List<SingleTransaction> groupTransactions) {
-        this.groupTransactions = groupTransactions;
+    public void setGroupSingleTransactions(List<SingleTransaction> groupSingleTransactions) {
+        this.groupSingleTransactions = groupSingleTransactions;
     }
 }
