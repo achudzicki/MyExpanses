@@ -33,6 +33,7 @@ import java.util.List;
 public class SavingGoalController {
     private static final String NOTIFICATIONS_ATTR_NAME = "notifications";
     private static final String NOTIFICATION_MESSAGES_BEAN_ATTR_NAME = "notificationMessagesBean";
+    private static final String REDIRECT_SAVINGS_GOAL_MAIN_PAGE = "redirect:/savings/goal";
 
     @Autowired
     private SavingGoalService savingGoalService;
@@ -63,7 +64,7 @@ public class SavingGoalController {
             return prepareSavingGoalPage(model);
         }
         savingGoalService.addNewGoal(savingGoalDto);
-        return prepareSavingGoalPage(model);
+        return REDIRECT_SAVINGS_GOAL_MAIN_PAGE;
     }
 
     @PostMapping("payment/add/{goalId}")
@@ -86,7 +87,7 @@ public class SavingGoalController {
         }
 
         savingGoalService.addPaymentToGoal(goalId, savingPaymentDto);
-        return "redirect:/savings/goal";
+        return REDIRECT_SAVINGS_GOAL_MAIN_PAGE;
     }
 
     @GetMapping("goal/payment/add/all/{goalId}")
@@ -101,7 +102,7 @@ public class SavingGoalController {
         savingPaymentDto.setAmount(savingGoalBean.getSavingToAllocate());
         savingPaymentDto.setType(SavingPaymentType.ADD);
         savingGoalService.addPaymentToGoal(goalId, savingPaymentDto);
-        return "redirect:/savings/goal";
+        return REDIRECT_SAVINGS_GOAL_MAIN_PAGE;
     }
 
     @GetMapping("goal/payment/take/all/{goalId}")
@@ -121,7 +122,7 @@ public class SavingGoalController {
         savingPaymentDto.setAmount(amountToTake);
         savingPaymentDto.setType(SavingPaymentType.TAKE);
         savingGoalService.addPaymentToGoal(goalId, savingPaymentDto);
-        return "redirect:/savings/goal";
+        return REDIRECT_SAVINGS_GOAL_MAIN_PAGE;
     }
 
     @GetMapping("{goalId}/payment/page/{pageNum}")
@@ -141,7 +142,7 @@ public class SavingGoalController {
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                 .withSuccessNotification("Pomyślnie usunięto cel oszczędzania")
                 .getNotificationList());
-        return "redirect:/savings/goal";
+        return REDIRECT_SAVINGS_GOAL_MAIN_PAGE;
     }
 
     @GetMapping("available/users/invite/list/{goalId}")
@@ -159,7 +160,7 @@ public class SavingGoalController {
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                 .withSuccessNotification("Pomyślnie zaproszono użytkownika")
                 .getNotificationList());
-        return "redirect:/savings/goal";
+        return REDIRECT_SAVINGS_GOAL_MAIN_PAGE;
     }
 
     @GetMapping("invitation/{invitationId}/accept")
@@ -168,7 +169,16 @@ public class SavingGoalController {
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                 .withSuccessNotification("Poprawnie zaakceptowano zaproszenie")
                 .getNotificationList());
-        return "redirect:/savings/goal";
+        return REDIRECT_SAVINGS_GOAL_MAIN_PAGE;
+    }
+
+    @GetMapping("invitation/{invitationId}/reject")
+    public String rejectInvitation(@PathVariable long invitationId, Model model, RedirectAttributes redirectAttributes) throws InvitationNotFoundException {
+        savingGoalService.rejectInvitation(invitationId);
+        redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
+                .withSuccessNotification("Poprawnie odrzucono zaproszenie")
+                .getNotificationList());
+        return REDIRECT_SAVINGS_GOAL_MAIN_PAGE;
     }
 
     @ModelAttribute(NOTIFICATIONS_ATTR_NAME)

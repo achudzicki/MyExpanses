@@ -99,17 +99,35 @@
             </div>
 
             <div class="uk-navbar-right">
-
                 <ul class="uk-navbar-nav">
-                    <li><a href="/settings"><span class="uk-margin-small-right" uk-icon="user"></span>
+                    <li><a href="/settings"><span class="uk-margin-small-right" uk-icon="icon: user"></span>
                     <span th:remove="tag" th:text="${@userBean.getAppUser().getName() + ' ' + @userBean.getAppUser().getLastName()}"></span></a></li>
-                    <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Wyloguj</a></li>
+                    <li th:if="${!@mainPageNotificationBean.getUserSavingGoalRequests().isEmpty()}" class="uk-inline" title="Powiadomienia">
+                        <a class="uk-text-warning" href="#"><span class="uk-margin-small-right" uk-icon="icon: bell; ratio: 1.2"></span></a>
+                        <div uk-dropdown="mode: click" style="width: 550px">
+                            <div th:each="notis : ${@mainPageNotificationBean.getUserSavingGoalRequests()}">
+                                <div class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                                    <div class="uk-width-auto">
+                                        <img class="uk-comment-avatar" th:src="@{/picture/profile/{userId}(userId=${notis.savingGoalOwner.id})}" width="50" height="50" alt="">
+                                    </div>
+                                    <div class="uk-width-expand">
+                                        <i class="uk-margin-remove">ZAPROSZENIE DO WSPÓLNEGO OSZCZĘDZANIA</i>
+                                        <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                                            <li><a class="uk-text-primary" th:href="@{/savings/invitation/{invitationId}/accept(invitationId=${notis.id})}">ZAAKCEPTUJ</a></li>
+                                            <li><a class="uk-text-danger" th:href="@{/savings/invitation/{invitationId}/reject(invitationId=${notis.id})}">ODRZUĆ</a></li>
+                                            <li><a class="uk-text-warning" th:href="@{/savings/goal}">POKAŻ</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="uk-inline"><a href="/logout"><span class="uk-margin-small-right" uk-icon="sign-out"></span>Wyloguj</a></li>
                 </ul>
-
             </div>
         </nav>
     </div>
-
     <div class="uk-flex">
         <div style="width: 250px">
             <div class="sidebarMenu">

@@ -1,5 +1,6 @@
 package com.chudzick.expanses.services.savings;
 
+import com.chudzick.expanses.beans.notifications.MainPageNotificationBean;
 import com.chudzick.expanses.beans.savings.SavingGoalBean;
 import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.Cycle;
@@ -49,6 +50,9 @@ public class SavingGoalServiceImpl implements SavingGoalService {
 
     @Autowired
     private CycleService cycleService;
+
+    @Autowired
+    private MainPageNotificationBean mainPageNotificationBean;
 
     @Override
     @Transactional
@@ -134,7 +138,10 @@ public class SavingGoalServiceImpl implements SavingGoalService {
 
     @Override
     public void deleteGoalById(Long goalId) {
-        savingGoalRepository.deleteById(goalId);
+        SavingGoal goalToDelete = savingGoalRepository.getOne(goalId);
+        List<SavingGoalRequest> goalInvitations = requestRepository.findAllBySavingGoal(goalToDelete);
+        goalInvitations.forEach(invitation -> requestRepository.deleteById(invitation.getId()));
+        savingGoalRepository.delete(goalToDelete);
     }
 
     @Override
@@ -179,6 +186,29 @@ public class SavingGoalServiceImpl implements SavingGoalService {
 
         requestRepository.save(invitation);
         savingGoalRepository.save(goal);
+        mainPageNotificationBean.resetBean();
+    }
+
+    @Override
+    public void rejectInvitation(long invitationId) throws InvitationNotFoundException {
+        SavingGoalRequest invitation = requestRepository.findById(invitationId)
+                .orElseThrow(() -> new InvitationNotFoundException(ApplicationActions.ACCEPT_INVITATION));
+
+        AppUser currentUser = userService.getCurrentLogInUser();
+
+        if (!invitation.getRequestOwner().getId().equals(currentUser.getId())) {
+            throw new InvitationNotFoundException(ApplicationActions.ACCEPT_INVITATION, "Zaproszenie nie należy do użytkownika");
+        }
+
+        invitation.setInvitationStatus(InvitationStatus.DECLINED);
+        requestRepository.save(invitation);
+        mainPageNotificationBean.resetBean();
+    }
+
+    @Override
+    public List<SavingGoalRequest> findUserSavingGoalRequests() {
+        AppUser appUser = userService.getCurrentLogInUser();
+        return requestRepository.findAllByRequestOwnerAndInvitationStatus(appUser,InvitationStatus.PENDING);
     }
 
     private void setUpPayment(SavingPaymentDto savingPaymentDto, SavingGoal goal) {

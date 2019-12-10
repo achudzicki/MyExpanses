@@ -4,9 +4,9 @@
 <head>
     <title>Add new  transaction</title>
     <style>
-        .add-user:hover{
-            opacity: 0.7;
-            cursor: pointer;
+        .add-user:hover {
+            opacity: 0.7 !important;
+            cursor: pointer !important;
             }
     </style>
     <script th:inline="javascript">
@@ -98,7 +98,7 @@
                     <hr>
                     <div>
                         <a th:href="@{/savings/invitation/{invitationId}/accept(invitationId=${invitation.id})}" class="uk-float-right uk-button-primary uk-button">Zaakceptuj</a>
-                        <a class="uk-float-right uk-button-danger uk-button uk-margin-medium-left">Odrzuć</a>
+                        <a th:href="@{/savings/invitation/{invitationId}/reject(invitationId=${invitation.id})}" class="uk-float-right uk-button-danger uk-button uk-margin-medium-left">Odrzuć</a>
                     </div>
                 </div>
             </article>
@@ -134,13 +134,6 @@
                 <div class="uk-width-expand">
                     <span class="uk-margin uk-text-uppercase">Środki dostępne do rozdysponowania: </span>
                     <span class="uk-text-bold" th:text="${#numbers.formatDecimal(viewBean.savingToAllocate, 0, 'COMMA', 2, 'POINT')}"></span> zł<br>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div href="#goal-add-modal" uk-toggle style="border-top : 5px solid #1e87f0; border-radius : 5px 5px 0 0;height:100%" class="uk-card uk-card-default uk-card-body uk-text-center uk-text-middle uk-box-shadow-hoverxpl">
-                <div class="uk-width-expand">
-                    <span class="uk-margin uk-text-uppercase"><span  uk-icon="icon: plus" class="uk-margin-small-right" ></span>Dodaj nowy cel</span>
                 </div>
             </div>
         </div>
@@ -191,6 +184,12 @@
             </div>
             <div id="invite-user-list" class="uk-modal-body">
             </div>
+        </div>
+    </div>
+
+    <div style="border-left : 5px solid #1e87f0" class="uk-card uk-card-default uk-width-1-1 uk-margin-medium uk-height-small">
+        <div class="uk-card-body">
+            <a href="#goal-add-modal" uk-toggle class="uk-margin uk-text-uppercase"><span  uk-icon="icon: plus" class="uk-margin-small-right" ></span>Dodaj nowy cel</a>
         </div>
     </div>
 

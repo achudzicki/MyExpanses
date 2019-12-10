@@ -2,6 +2,7 @@ package com.chudzick.expanses.services.savings;
 
 import com.chudzick.expanses.beans.savings.SavingGoalBean;
 import com.chudzick.expanses.domain.savings.SavingGoal;
+import com.chudzick.expanses.domain.savings.SavingGoalRequest;
 import com.chudzick.expanses.domain.savings.dto.SavingGoalDto;
 import com.chudzick.expanses.domain.savings.dto.SavingPaymentDto;
 import com.chudzick.expanses.domain.users.AppUser;
@@ -28,4 +29,8 @@ public interface SavingGoalService {
     void inviteUser(long goalId, long userId);
 
     void acceptInvitation(long invitationId) throws InvitationNotFoundException;
+
+    void rejectInvitation(long invitationId) throws InvitationNotFoundException;
+
+    List<SavingGoalRequest> findUserSavingGoalRequests();
 }
