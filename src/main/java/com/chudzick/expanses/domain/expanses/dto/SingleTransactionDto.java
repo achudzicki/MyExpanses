@@ -22,11 +22,21 @@ public class SingleTransactionDto {
 
     private Cycle cycle;
 
+    private String importedTransactionTitle;
+
     public SingleTransactionDto() {
     }
 
     public SingleTransactionDto(Cycle cycle) {
         this.cycle = cycle;
+    }
+
+    public String getImportedTransactionTitle() {
+        return importedTransactionTitle;
+    }
+
+    public void setImportedTransactionTitle(String importedTransactionTitle) {
+        this.importedTransactionTitle = importedTransactionTitle;
     }
 
     public void setCycle(Cycle cycle) {

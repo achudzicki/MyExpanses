@@ -4,6 +4,7 @@ import com.chudzick.expanses.domain.users.AppUser;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "transaction_group")
@@ -73,5 +74,21 @@ public class TransactionGroup {
 
     public void setGroupDescription(String groupDescription) {
         this.groupDescription = groupDescription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TransactionGroup)) return false;
+        TransactionGroup that = (TransactionGroup) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(gorupName, that.gorupName) &&
+                Objects.equals(groupDescription, that.groupDescription) &&
+                Objects.equals(appUser, that.appUser);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, gorupName, groupDescription, appUser);
     }
 }
