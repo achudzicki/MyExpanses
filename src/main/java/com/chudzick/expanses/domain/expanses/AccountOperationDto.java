@@ -8,6 +8,22 @@ public final class AccountOperationDto {
     private String operationType;
     private double amount;
     private TransactionType transactionType;
+    private TransactionGroup tipGroup;
+
+    public TransactionGroup getTipGroup() {
+        return tipGroup;
+    }
+
+    public void setTipGroup(TransactionGroup tipGroup) {
+        this.tipGroup = tipGroup;
+    }
+
+    public long getTipGroupId() {
+        if (tipGroup != null) {
+            return tipGroup.getId();
+        }
+        return 0;
+    }
 
     public String getDate() {
         return date;
@@ -31,7 +47,7 @@ public final class AccountOperationDto {
 
     private AccountOperationDto(String date, String description, String operationType, double amount, TransactionType transactionType) {
         this.date = date;
-        this.description = description;
+        this.description = description.replace("\n"," ");
         this.operationType = operationType;
         this.amount = amount;
         this.transactionType = transactionType;

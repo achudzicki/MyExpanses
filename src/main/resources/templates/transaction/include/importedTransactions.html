@@ -38,12 +38,15 @@
                 <p th:text="${transaction.date}"></p>
                 <input hidden th:value="${transaction.date}" th:name="|transactionsDto[${index.index}].transactionDate|">
             </td>
-            <td class="operation-description" th:title="${transaction.description}"
-                th:text="${transaction.description.length() > 100} ? ${#strings.substring(transaction.description,0,99)} + '...' : ${transaction.description}"></td>
+            <td class="operation-description" th:title="${transaction.description}">
+                <p th:text="${transaction.description.length() > 100} ? ${#strings.substring(transaction.description,0,99)} + '...' : ${transaction.description}"></p>
+                <input hidden type="text" th:value="${transaction.description}" th:name="|transactionsDto[${index.index}].importedTransactionTitle|">
+            </td>
             <td th:text="${transaction.operationType}"></td>
             <td>
                 <select id="transaction-group-template" class="uk-select" th:name="|transactionsDto[${index.index}].transactionGroup|">
-                    <option th:each ="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
+                    <option th:each ="group : ${transactionGroups}" th:value="${group.id}"
+                            th:selected="${group.id == transaction.getTipGroupId()}" th:text="${group.gorupName}"></option>
                 </select>
             </td>
         </tr>
