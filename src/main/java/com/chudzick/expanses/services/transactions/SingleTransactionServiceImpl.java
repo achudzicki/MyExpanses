@@ -14,6 +14,7 @@ import com.chudzick.expanses.services.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -48,6 +49,11 @@ public class SingleTransactionServiceImpl implements SingleTransactionService<Si
         }
 
         return singleTransactionRepository.findTop5ByAppUserAndCycleOrderByIdDesc(current, currentCycle.get());
+    }
+
+    @Override
+    public List<SingleTransaction> findFilteredTransactions(Specification<SingleTransaction> specification) {
+        return singleTransactionRepository.findAll(specification);
     }
 
     @Override
@@ -107,9 +113,9 @@ public class SingleTransactionServiceImpl implements SingleTransactionService<Si
         AppUser appUser = userService.getCurrentLogInUser();
         Cycle currentCycle = cycleService.findActiveCycle().orElseThrow(() -> new NoActiveCycleException(ApplicationActions.ADD_TRANSACTION));
         singleTransactionRepository.saveAll(list.stream()
-                .map(dto -> SingleTransactionStaticFactory.createFromDto(dto,appUser,currentCycle))
+                .map(dto -> SingleTransactionStaticFactory.createFromDto(dto, appUser, currentCycle))
                 .collect(Collectors.toList()));
-        LOG.info("Successfully imported %d operations for user with login : ",list.size(),appUser.getLogin());
+        LOG.info("Successfully imported %d operations for user with login : ", list.size(), appUser.getLogin());
         return true;
     }
 

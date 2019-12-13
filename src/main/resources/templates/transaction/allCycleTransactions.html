@@ -115,6 +115,35 @@
     <h5 style="color: #1e87f0" class="uk-margin-remove-bottom">Transakcje cyklu</h5>
     <hr class="uk-margin-remove-top">
 
+    <form method="POST" th:action="@{/transaction/all/filter}" th:object="${transactionFilterRequest}" class="uk-grid-small" uk-grid>
+        <div class="uk-width-1-5">
+            <label for="date-from">Data od</label>
+            <input th:field="*{dateFrom}" id="date-from" class="uk-input" type="date" placeholder="50">
+        </div>
+        <div class="uk-width-1-5">
+            <label for="date-to">Data do</label>
+            <input th:field="*{dateTo}" id="date-to" class="uk-input" type="date" placeholder="25">
+        </div>
+        <div class="uk-width-1-5">
+            <label for="transaction-type">Typ transakcji</label>
+            <select th:field="*{transactionType}" class="uk-select" id="transaction-type">
+                <option value="">-</option>
+                <option th:each="type : ${transactionTypes}" th:value="${type}" th:text="${type.name}"></option>
+            </select>
+        </div>
+        <div class="uk-width-1-5">
+            <label for="transaction-group">Grupa transakcji</label>
+            <select th:field="*{transactionGroup}" class="uk-select" id="transaction-group">
+                <option value="">-</option>
+                <option th:each="group : ${transactionGroups}" th:value="${group.id}" th:text="${group.gorupName}"></option>
+            </select>
+        </div>
+        <div class="uk-width-1-5 uk-text-center" style="margin-top: 20px">
+            <button class="uk-button uk-button-primary" type="submit">Filtruj</button>
+        </div>
+    </form>
+
+    <hr>
     <div id="table-content" th:insert="transaction/include/singleTransactionPageableTable.html"></div>
 
 </div>

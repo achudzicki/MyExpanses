@@ -7,6 +7,10 @@ import com.chudzick.expanses.domain.ApplicationActions;
 import com.chudzick.expanses.domain.expanses.*;
 import com.chudzick.expanses.domain.expanses.dto.ConstantTransactionDto;
 import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
+import com.chudzick.expanses.domain.filter.SearchCriteria;
+import com.chudzick.expanses.domain.filter.SearchOperation;
+import com.chudzick.expanses.domain.filter.transactions.TransactionFilterRequest;
+import com.chudzick.expanses.domain.filter.transactions.TransactionSpecificationBuilder;
 import com.chudzick.expanses.domain.informations.CycleInformation;
 import com.chudzick.expanses.domain.paging.PageSettings;
 import com.chudzick.expanses.domain.paging.RequestPage;
@@ -145,7 +149,33 @@ public class TransactionController {
         model.addAttribute("transactionPage", transactionPage);
         model.addAttribute("constantTransactions", allConstantTransactions);
         model.addAttribute("actualTransactionStats", actualTransactionStats);
+        model.addAttribute("transactionTypes", TransactionType.values());
+        model.addAttribute("transactionGroups", transactionGroupService.getAllGroups());
+        model.addAttribute("transactionFilterRequest", new TransactionFilterRequest());
         return "transaction/allCycleTransactions";
+    }
+
+    @PostMapping(value = "all/filter")
+    public String filterTransaction(@ModelAttribute TransactionFilterRequest transactionFilterRequest, Model model) {
+
+        //TODO to do jakiej factory
+        List<SearchCriteria> criteriaList = new ArrayList<>();
+        if (transactionFilterRequest.getDateFrom() != null) {
+            criteriaList.add(new SearchCriteria("transactionDate", SearchOperation.GRATER_THAN, transactionFilterRequest.getDateFrom()));
+        }
+        if (transactionFilterRequest.getDateTo() != null) {
+            criteriaList.add(new SearchCriteria("transactionDate", SearchOperation.LESS_THAN, transactionFilterRequest.getDateFrom()));
+        }
+        if (transactionFilterRequest.getTransactionGroup() != null) {
+            criteriaList.add(new SearchCriteria("transactionGroup", SearchOperation.EQUALITY, transactionFilterRequest.getTransactionGroup()));
+        }
+        if (transactionFilterRequest.getTransactionType() != null) {
+            criteriaList.add(new SearchCriteria("transactionType", SearchOperation.EQUALITY, transactionFilterRequest.getTransactionType()));
+        }
+
+        TransactionSpecificationBuilder<SingleTransaction> builder = new TransactionSpecificationBuilder<>(criteriaList);
+        singleTransactionService.findFilteredTransactions(builder.build());
+        return "";
     }
 
     @GetMapping(value = "single/page/{pageNumber}")
