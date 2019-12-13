@@ -19,7 +19,8 @@
 <div class="content">
     <div class="uk-width-expand">
         <h4 style="color: #1e87f0" class="uk-margin-remove-bottom" th:text="#{group.usage.header}"> <span th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></span></h4>
-        <i class="uk-text-meta uk-margin-remove-top">Wszystkie znalezione transakcje dla danej grupy.</i><i class="uk-float-right">Liczba znalezionych rekordów : <span th:text="${transactionGroupUsageBean.groupTransactions.size()}"></span></i>
+        <i class="uk-text-meta uk-margin-remove-top">Wszystkie znalezione transakcje dla danej grupy.</i><i class="uk-float-right">Liczba znalezionych rekordów :
+        <span th:text="${transactionGroupUsageBean.groupSingleTransactions.size() + transactionGroupUsageBean.constantTransactions.size()}"></span></i>
     </div>
     <hr>
 
@@ -27,40 +28,81 @@
         <i><span class="uk-margin-small-right" uk-icon="icon: warning; ratio : 1.5"></span><span th:text="#{group.usage.info.text}" th:remove="tag"></span></i>
     </div>
 
-    <div th:if="${transactionGroupUsageBean.groupTransactions.isEmpty()}" class="uk-alert-success" uk-alert>
+    <div th:if="${transactionGroupUsageBean.groupSingleTransactions.isEmpty() && transactionGroupUsageBean.constantTransactions.isEmpty()}" class="uk-alert-success" uk-alert>
         <i><span class="uk-margin-small-right" uk-icon="icon: check; ratio : 1.5"></span>Usunięto wszystkie powiązane transakcje z daną grupą, aby przejść do widoku wszystkich grup
         <a href="/transaction/group">kliknij tu</a>.</i>
     </div>
 
-
-    <table class="uk-table uk-table-striped">
-        <thead>
-        <tr>
-            <th th:text="#{add.transaction.amount}"></th>
-            <th th:text="#{add.transaction.type}"></th>
-            <th th:text="#{add.transaction.group}"></th>
-            <th th:text="#{add.transaction.date}"></th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="transaction : ${transactionGroupUsageBean.groupTransactions}">
-            <th th:text="${transaction.amount}"></th>
-            <th>
+    <div th:if="${!transactionGroupUsageBean.groupSingleTransactions.isEmpty()}">
+        <div class="uk-width-expand">
+            <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Transakcje pojedyńcze</h4>
+        </div>
+        <hr class="uk-margin-remove-top">
+        <table class="uk-table uk-table-striped">
+            <thead>
+            <tr>
+                <th th:text="#{add.transaction.amount}"></th>
+                <th th:text="#{add.transaction.type}"></th>
+                <th th:text="#{add.transaction.group}"></th>
+                <th th:text="#{add.transaction.date}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="transaction : ${transactionGroupUsageBean.groupSingleTransactions}">
+                <th th:text="${transaction.amount}"></th>
+                <th>
                 <span class="label-radius"
                       th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
                       th:text="${transaction.transactionType.name}"></span>
-            </th>
-            <th th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></th>
-            <th th:text="${transaction.transactionDate}"></th>
+                </th>
+                <th th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></th>
+                <th th:text="${transaction.transactionDate}"></th>
 
-            <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
-                <input hidden name="transactionDuration" th:value="${transaction.transactionDuration}">
-                <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
-            </form></th>
-        </tr>
-        </tbody>
-    </table>
+                <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+                    <input hidden name="transactionDuration" th:value="${transaction.transactionDuration}">
+                    <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
+                </form></th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${!transactionGroupUsageBean.constantTransactions.isEmpty()}">
+        <div class="uk-width-expand">
+            <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Transakcje stałe</h4>
+        </div>
+        <hr class="uk-margin-remove-top">
+        <table class="uk-table uk-table-striped">
+            <thead>
+            <tr>
+                <th th:text="#{add.transaction.amount}"></th>
+                <th th:text="#{add.transaction.type}"></th>
+                <th th:text="#{add.transaction.group}"></th>
+                <th th:text="#{add.transaction.date}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="transaction : ${transactionGroupUsageBean.constantTransactions}">
+                <th th:text="${transaction.amount}"></th>
+                <th>
+                <span class="label-radius"
+                      th:classappend="${transaction.transactionType == T(com.chudzick.expanses.domain.expanses.TransactionType).INCOME} ? uk-label-success : uk-label-danger"
+                      th:text="${transaction.transactionType.name}"></span>
+                </th>
+                <th th:text="${transactionGroupUsageBean.transactionGroup.gorupName}"></th>
+                <th><span class="label-radius uk-label uk-text-center">STAŁA</span></th>
+
+                <th><form method="POST" th:action="@{/transaction/delete/{transactionId}(transactionId=${transaction.id})}">
+                    <input hidden name="transactionDuration" th:value="${transaction.transactionDuration}">
+                    <button class="uk-alert-danger" type="submit"  uk-icon="trash"></button>
+                </form></th>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
 </div>
 </body>
 </html>

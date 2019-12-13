@@ -34,23 +34,29 @@ public class AnalysisServiceImpl implements AnalysisService {
     public List<AverageExpanse> getAverageExpansesList() {
         List<SingleTransaction> allUserTransactions = singleTransactionService.findAllUserTransactions();
         List<ConstantTransaction> allUserConstantTransaction = constantTransactionService.findAllUserTransactions();
-        List<UserTransactions> allTransactions = ListsUnion.union(allUserConstantTransaction, allUserTransactions);
         long userCyclesCnt = cycleService.countUserCycles();
 
         Map<Long, AverageExpanse> averageExpansesMap = new HashMap<>();
-        for (UserTransactions transaction : allTransactions) {
-            AverageExpanse temp = averageExpansesMap.get(transaction.getTransactionGroup().getId());
-            if (temp == null) {
-                averageExpansesMap.put(transaction.getTransactionGroup().getId(), new AverageExpanse(transaction, userCyclesCnt));
-            } else {
-                temp.update(transaction);
+        for (SingleTransaction transaction : allUserTransactions) {
+            addTransactionToMap(averageExpansesMap,transaction,userCyclesCnt);
+        }
+        for (ConstantTransaction transaction : allUserConstantTransaction) {
+            for (int i = 0; i < transaction.getCycles().size(); i++) {
+               addTransactionToMap(averageExpansesMap,transaction,userCyclesCnt);
             }
         }
 
         return prepareSortedList(averageExpansesMap.values());
     }
 
-
+    private void addTransactionToMap(Map<Long, AverageExpanse> averageExpansesMap, UserTransactions transaction, long userCyclesCnt) {
+        AverageExpanse temp = averageExpansesMap.get(transaction.getTransactionGroup().getId());
+        if (temp == null) {
+            averageExpansesMap.put(transaction.getTransactionGroup().getId(), new AverageExpanse(transaction, userCyclesCnt));
+        } else {
+            temp.update(transaction);
+        }
+    }
     private LinkedList<AverageExpanse> prepareSortedList(Collection<AverageExpanse> averageExpanses) {
         return averageExpanses.stream()
                 .sorted(Comparator.comparing(AverageExpanse::getIncomeAverage)

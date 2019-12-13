@@ -1,0 +1,15 @@
+<div xmlns:th="http://www.w3.org/1999/xhtml">
+    <ul class="uk-list uk-list-striped">
+        <div th:each="user : ${availableUsers}" th:remove="tag">
+            <li class="uk-flex uk-flex-between uk-flex-middle">
+                <div class="uk-width-expand">
+                    <img class="uk-border-circle" width="50" height="50" th:src="@{/picture/profile/{userId}(userId=${user.id})}">
+                    <span th:text="${user.name + '' + user.lastName}"></span>
+                </div>
+                <div class="uk-width-1-6">
+                    <a th:href="@{/savings/goal/{goalId}/invite/user/{userId}(goalId=${goalId},userId=${user.id})}">ZAPROŚ</a>
+                </div>
+            </li>
+        </div>
+    </ul>
+</div>

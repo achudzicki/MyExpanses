@@ -9,6 +9,7 @@ import com.chudzick.expanses.domain.settings.UserSettings;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -170,5 +171,21 @@ public class AppUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AppUser)) return false;
+        AppUser appUser = (AppUser) o;
+        return Objects.equals(id, appUser.id) &&
+                Objects.equals(login, appUser.login) &&
+                Objects.equals(password, appUser.password) &&
+                Objects.equals(email, appUser.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, login, password, email);
     }
 }

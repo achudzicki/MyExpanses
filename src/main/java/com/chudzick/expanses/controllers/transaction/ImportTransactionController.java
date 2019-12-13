@@ -3,12 +3,15 @@ package com.chudzick.expanses.controllers.transaction;
 import com.chudzick.expanses.beans.transactions.ImportOperationFormBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
 import com.chudzick.expanses.domain.ApplicationActions;
+import com.chudzick.expanses.domain.categorize.TransactionGroupCategorizeData;
 import com.chudzick.expanses.domain.expanses.*;
 import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.expanses.imports.account_operations.pko_bp.AccountHistoryPKO_BP;
+import com.chudzick.expanses.domain.expanses.imports.account_operations.pko_bp.AccountOperationsPKO_BP;
 import com.chudzick.expanses.domain.xml.Banks;
 import com.chudzick.expanses.exceptions.ImportTransactionException;
 import com.chudzick.expanses.exceptions.NoActiveCycleException;
+import com.chudzick.expanses.services.categorize.CategorizeService;
 import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
@@ -30,7 +33,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "import")
@@ -47,6 +50,9 @@ public class ImportTransactionController {
 
     @Autowired
     private CycleService cycleService;
+
+    @Autowired
+    private CategorizeService categorizeService;
 
 
     @GetMapping("transactions")
@@ -69,23 +75,26 @@ public class ImportTransactionController {
             throw new ImportTransactionException(ApplicationActions.IMPORT_TRANSACTIONS, "Nieprawidłowa struktutra wczytanego dokumentu");
         }
 
-        List<AccountOperationDto> operations = CustomXmlUtils.unmarshalToList(AccountHistoryPKO_BP.class,
-                new String(file.getBytes()))
-                .stream()
-                .map(AccountOperationDto::from)
-                .collect(Collectors.toList());
-
         Cycle activeCycle = cycleService.findActiveCycle().orElseThrow(() -> new NoActiveCycleException(ApplicationActions.IMPORT_TRANSACTIONS));
+        Map<String, List<TransactionGroupCategorizeData>> categorizeData = categorizeService.getCategorizeData();
+        List<AccountOperationsPKO_BP> rawOperations = CustomXmlUtils.unmarshalToList(AccountHistoryPKO_BP.class,
+                new String(file.getBytes()));
+        List<AccountOperationDto> operations = new ArrayList<>();
         List<AccountOperationDto> validDateOperations = new ArrayList<>();
         List<AccountOperationDto> notValidDateOperations = new ArrayList<>();
-        operations.forEach(operation -> {
-            LocalDate transactionTime = LocalDate.parse(operation.getDate(), FORMATTER);
+
+        for (AccountOperationsPKO_BP transaction : rawOperations) {
+            AccountOperationDto dto = AccountOperationDto.from(transaction);
+            categorizeService.addTipToOperation(categorizeData, dto);
+            operations.add(dto);
+            LocalDate transactionTime = LocalDate.parse(dto.getDate(), FORMATTER);
             if (transactionTime.isBefore(activeCycle.getDateFrom()) || transactionTime.isAfter(activeCycle.getDateTo())) {
-                notValidDateOperations.add(operation);
+                notValidDateOperations.add(dto);
             } else {
-                validDateOperations.add(operation);
+                validDateOperations.add(dto);
             }
-        });
+
+        }
 
         model.addAttribute("validOperations", validDateOperations);
         model.addAttribute("notValidOperations", notValidDateOperations);
@@ -106,6 +115,7 @@ public class ImportTransactionController {
         }
         final int operationLisSize = importOperationFormBean.getTransactionsDto().size();
         LOG.info(String.format("Start adding imported operations %d", operationLisSize));
+        categorizeService.addCategorizeData(importOperationFormBean.getTransactionsDto());
         singleTransactionService.addAll(importOperationFormBean.getTransactionsDto());
         redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
                 .withSuccessNotification(String.format("Poprawnie zaimportowano %d %s", operationLisSize,

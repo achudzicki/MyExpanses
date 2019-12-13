@@ -4,13 +4,16 @@ import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupBean;
 import com.chudzick.expanses.beans.transactions.TransactionGroupUsageBean;
 import com.chudzick.expanses.builders.NotificationMessageListBuilder;
+import com.chudzick.expanses.domain.expanses.ConstantTransaction;
 import com.chudzick.expanses.domain.expanses.SingleTransaction;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
+import com.chudzick.expanses.domain.expanses.dto.ConstantTransactionDto;
 import com.chudzick.expanses.domain.expanses.dto.SingleTransactionDto;
 import com.chudzick.expanses.domain.expanses.dto.TransactionGroupDto;
 import com.chudzick.expanses.domain.responses.SimpleNotificationMsg;
 import com.chudzick.expanses.exceptions.UserNotPermittedToActionException;
 import com.chudzick.expanses.services.permissions.PermissionsService;
+import com.chudzick.expanses.services.transactions.ConstantTransactionService;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +47,9 @@ public class TransactionGroupController {
 
     @Autowired
     private SingleTransactionService<SingleTransaction, SingleTransactionDto> singleTransactionService;
+
+    @Autowired
+    private ConstantTransactionService<ConstantTransaction, ConstantTransactionDto> constantTransactionService;
 
     @Autowired
     private TransactionGroupUsageBean transactionGroupUsageBean;
@@ -84,7 +90,7 @@ public class TransactionGroupController {
         permissionsService.checkUserPermissionsToDeleteGroup(groupId);
 
 
-        int transactionsToGroup = singleTransactionService.countTransactionsByGroup(groupId);
+        int transactionsToGroup = singleTransactionService.countTransactionsByGroup(groupId) + constantTransactionService.countTransactionsByGroup(groupId);
 
         if (transactionsToGroup > 0) {
             redirectAttributes.addFlashAttribute(NOTIFICATIONS_ATTR_NAME, new NotificationMessageListBuilder()
@@ -106,9 +112,11 @@ public class TransactionGroupController {
             , @PathVariable int groupId) {
 
         final List<SingleTransaction> groupTransactions = singleTransactionService.findAllTransactionsByGroupId(groupId);
+        final List<ConstantTransaction> constantTransactions = constantTransactionService.findAllTransactionsByGroupId(groupId);
         final TransactionGroup transactionGroup = transactionGroupService.findById(groupId);
-        transactionGroupUsageBean.setGroupTransactions(groupTransactions);
+        transactionGroupUsageBean.setGroupSingleTransactions(groupTransactions);
         transactionGroupUsageBean.setTransactionGroup(transactionGroup);
+        transactionGroupUsageBean.setConstantTransactions(constantTransactions);
         notificationMessagesBean.setNotificationsMessages(notifications);
         model.addAttribute("transactionGroupUsageBean", transactionGroupUsageBean);
         model.addAttribute("notificationMessagesBean", notificationMessagesBean);
