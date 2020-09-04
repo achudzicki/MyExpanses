@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserService {
     Optional<AppUser> findUserByUserName(String userName);
 
-    void register(UserDto appUser) throws LoginAlreadyExistException;
+    AppUser register(UserDto appUser) throws LoginAlreadyExistException;
 
     AppUser getCurrentLogInUser();
 

@@ -167,14 +167,16 @@ public class TransactionController {
             criteriaList.add(new SearchCriteria("transactionDate", SearchOperation.LESS_THAN, transactionFilterRequest.getDateFrom()));
         }
         if (transactionFilterRequest.getTransactionGroup() != null) {
-            criteriaList.add(new SearchCriteria("transactionGroup", SearchOperation.EQUALITY, transactionFilterRequest.getTransactionGroup()));
+            criteriaList.add(new SearchCriteria("transactionGroup", SearchOperation.EQUALITY, transactionGroupService.findById(transactionFilterRequest.getTransactionGroup())));
         }
         if (transactionFilterRequest.getTransactionType() != null) {
             criteriaList.add(new SearchCriteria("transactionType", SearchOperation.EQUALITY, transactionFilterRequest.getTransactionType()));
         }
 
         TransactionSpecificationBuilder<SingleTransaction> builder = new TransactionSpecificationBuilder<>(criteriaList);
-        singleTransactionService.findFilteredTransactions(builder.build());
+        List<SingleTransaction> filtred = singleTransactionService.findFilteredTransactions(builder.build());
+        System.out.println();
+        int i = 0;
         return "";
     }
 

@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void register(UserDto userDto) throws LoginAlreadyExistException {
+    public AppUser register(UserDto userDto) throws LoginAlreadyExistException {
         LOG.info("Try to register new user {}", userDto.getLogin());
 
         AppUser userToRegister = userDtoToAppUserMapper.mapObjects(userDto);
@@ -66,8 +66,8 @@ public class UserServiceImpl implements UserService {
 
         userToRegister.setPassword(cryptPasswordEncoder.encode(userToRegister.getPassword()));
         setUserRoles(userToRegister);
-        userRepository.save(userToRegister);
         LOG.info("New user with userName = {} successful registered", userDto.getLogin());
+        return userRepository.save(userToRegister);
     }
 
     @Override

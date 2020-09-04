@@ -21,7 +21,7 @@ public class AppUser {
     private Long id;
 
     @Column(name = "roles")
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "appuser_role",
             joinColumns = @JoinColumn(name = "appuser_id"),

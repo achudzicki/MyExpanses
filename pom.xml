@@ -14,7 +14,6 @@
     <packaging>war</packaging>
     <name>expanses</name>
     <description>Control savings and expanses app</description>
-
     <profiles>
         <profile>
             <id>dev</id>
@@ -33,6 +32,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <jwttoken.version>0.10.7</jwttoken.version>
     </properties>
 
     <dependencies>
@@ -115,6 +115,31 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20190722</version>
+        </dependency>
+
+        <!--JWT-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jwttoken.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jwttoken.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jwttoken.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
         </dependency>
     </dependencies>
 

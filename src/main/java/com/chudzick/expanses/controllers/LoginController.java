@@ -1,21 +1,21 @@
 package com.chudzick.expanses.controllers;
 
 import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
-import com.chudzick.expanses.builders.NotificationMessageListBuilder;
+import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.UserDto;
 import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
 import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
-
-@Controller
+@RestController
 public class LoginController {
 
     @Autowired
@@ -31,25 +31,15 @@ public class LoginController {
     }
 
     @PostMapping(value = "/register")
-    public String registration(@ModelAttribute @Valid UserDto userDto, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("bindingResult", bindingResult);
-            return "register";
-        }
+    public ResponseEntity<AppUser> registration(@RequestBody UserDto userDto) {
+        AppUser appUser;
+
         try {
-            userService.register(userDto);
+            appUser = userService.register(userDto);
         } catch (LoginAlreadyExistException ex) {
-            model.addAttribute("userExistError", ex.getMessage());
-            return "register";
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Login already Exist");
         }
 
-        notificationMessagesBean.setNotificationsMessages(
-                new NotificationMessageListBuilder()
-                        .withSuccessNotification("Zarejestrowano użytkownika")
-                        .getNotificationList()
-        );
-
-        model.addAttribute("notificationMessagesBean",notificationMessagesBean);
-        return "login";
+        return new ResponseEntity<>(appUser, HttpStatus.OK);
     }
 }
