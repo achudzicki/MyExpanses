@@ -1,14 +1,14 @@
 package com.chudzick.expanses.domain.users;
 
-import com.chudzick.expanses.validators.register.PasswordMatches;
 import com.chudzick.expanses.validators.register.ValidEmail;
 import com.chudzick.expanses.validators.register.ValidPassword;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@PasswordMatches
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
 
     @NotNull
@@ -19,7 +19,7 @@ public class UserDto {
     private String name;
     @NotNull
     @NotEmpty(message = "{form.validation.not.empty}")
-    @Size(min = 6,max = 20,message = "{form.validation.wrong.login.length}" )
+    @Size(min = 6, max = 20, message = "{form.validation.wrong.login.length}")
     private String login;
     @NotNull
     @NotEmpty(message = "{form.validation.not.empty}")

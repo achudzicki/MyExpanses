@@ -17,7 +17,6 @@ import com.chudzick.expanses.factories.paging.PageFactory;
 import com.chudzick.expanses.services.savings.SavingGoalService;
 import com.chudzick.expanses.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = "savings")
 public class SavingGoalController {
     private static final String NOTIFICATIONS_ATTR_NAME = "notifications";

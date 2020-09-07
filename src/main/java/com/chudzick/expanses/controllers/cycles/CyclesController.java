@@ -15,16 +15,16 @@ import com.chudzick.expanses.services.charts.ChartService;
 import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.util.ListsUnion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping(value = "cycle")
 public class CyclesController {
 

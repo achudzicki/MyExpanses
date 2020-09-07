@@ -1,19 +1,20 @@
 package com.chudzick.expanses.controllers;
 
-import com.chudzick.expanses.beans.responses.NotificationMessagesBean;
+import com.chudzick.expanses.domain.api.Response;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.UserDto;
-import com.chudzick.expanses.exceptions.LoginAlreadyExistException;
+import com.chudzick.expanses.mappers.UserDtoToAppUserMapper;
 import com.chudzick.expanses.services.users.UserService;
+import com.chudzick.expanses.validators.register.PasswordMatches;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
 
 @RestController
 public class LoginController {
@@ -22,24 +23,13 @@ public class LoginController {
     private UserService userService;
 
     @Autowired
-    private NotificationMessagesBean notificationMessagesBean;
-
-    @GetMapping(value = "/register")
-    public String registration(Model model) {
-        model.addAttribute("userDto", new UserDto());
-        return "register";
-    }
+    private UserDtoToAppUserMapper userMapper;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<AppUser> registration(@RequestBody UserDto userDto) {
-        AppUser appUser;
-
-        try {
-            appUser = userService.register(userDto);
-        } catch (LoginAlreadyExistException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Login already Exist");
-        }
-
-        return new ResponseEntity<>(appUser, HttpStatus.OK);
+    @ResponseBody
+    public ResponseEntity<Response<UserDto>> registration(@Valid @PasswordMatches @RequestBody UserDto userDto) {
+        AppUser appUser = userService.register(userDto);
+        Response<UserDto> response = new Response<>(userMapper.reverseMapping(appUser));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

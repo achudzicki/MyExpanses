@@ -15,6 +15,9 @@ public class CustomEmailValidator implements ConstraintValidator<ValidEmail, Str
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
+        if (email == null) {
+            return true;
+        }
         pattern = Pattern.compile(EMAIL_PATTERN);
         matcher = pattern.matcher(email);
         return matcher.matches();

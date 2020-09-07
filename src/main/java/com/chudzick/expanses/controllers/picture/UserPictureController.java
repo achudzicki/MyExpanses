@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -20,7 +20,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Optional;
 
-@Controller
+@RestController
 public class UserPictureController {
     private static final Logger LOG = LoggerFactory.getLogger(UserPictureController.class);
 

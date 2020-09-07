@@ -12,4 +12,15 @@ public class UserDtoToAppUserMapper implements ObjectMapper<AppUser, UserDto> {
     public AppUser mapObjects(UserDto oldObject) {
         return AppUserStaticFactory.createFromDto(oldObject);
     }
+
+    @Override
+    public UserDto reverseMapping(AppUser oldObject) {
+        UserDto userDto = new UserDto();
+        userDto.setEmail(oldObject.getEmail());
+        userDto.setGender(oldObject.getGender());
+        userDto.setLastName(oldObject.getLastName());
+        userDto.setLogin(oldObject.getLogin());
+        userDto.setName(oldObject.getName());
+        return userDto;
+    }
 }

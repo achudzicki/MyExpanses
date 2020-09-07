@@ -9,10 +9,10 @@ import com.chudzick.expanses.factories.ActualTransactionStatsFactory;
 import com.chudzick.expanses.services.transactions.CycleService;
 import com.chudzick.expanses.util.ListsUnion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping(value = "savings")
 public class SavingsController {
 

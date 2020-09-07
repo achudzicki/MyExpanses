@@ -1,8 +1,11 @@
 package com.chudzick.expanses.config;
 
+import com.chudzick.expanses.domain.api.ErrorCode;
+import com.chudzick.expanses.domain.api.Response;
 import com.chudzick.expanses.domain.auth.AuthUserDetails;
 import com.chudzick.expanses.util.jwt.JwtTokenUtils;
 import io.jsonwebtoken.JwtException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,7 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -49,7 +51,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 return;
             } else if (authorization == null) {
                 LOG.warn("Authorization is null");
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+                sendResponse(response, ErrorCode.AUTH_BAD_CREDENTIALS.getErrMsq());
             } else {
                 AuthUserDetails details = (AuthUserDetails) authorization.getDetails();
                 details.hidePassword();
@@ -57,8 +59,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(authorization);
             chain.doFilter(request, response);
         } catch (JwtException | UsernameNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            sendResponse(response, "Bad credentials");
+            LOG.warn("Authorization is null");
+            sendResponse(response, ErrorCode.AUTH_BAD_CREDENTIALS.getErrMsq());
         }
     }
 
@@ -71,6 +73,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         response.setContentType("application/json");
         response.setStatus(HttpStatus.FORBIDDEN.value());
         PrintWriter writer = response.getWriter();
-        writer.print(message);
+        Response res = new Response(message);
+        JSONObject jsonObject = new JSONObject(res);
+        writer.print(jsonObject.toString());
     }
 }

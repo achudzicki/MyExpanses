@@ -17,7 +17,6 @@ import com.chudzick.expanses.services.transactions.ConstantTransactionService;
 import com.chudzick.expanses.services.transactions.SingleTransactionService;
 import com.chudzick.expanses.services.transactions.TransactionGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +26,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = "transaction/group")
 public class TransactionGroupController {
     private final String SUCCESS_NOTIFICATION_MESSAGE = "Poprawnie dodano nową grupę";
