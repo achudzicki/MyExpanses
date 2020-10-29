@@ -40,7 +40,7 @@ public class UserSettingsRepositoryTest implements UserSettingsSuplier, TestUser
         UserDto userDto = prepareValidUserDto();
 
         appUser = AppUserStaticFactory.createFromDto(userDto);
-        userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser);
+        userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser).get();
     }
 
     @Test

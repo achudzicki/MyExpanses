@@ -56,7 +56,7 @@ public class UserSettingsServiceTest implements TestUserSupplier, UserSettingsSu
         UserSettingsDto userSettingsDto = prepareUserSettingsDto(true, true);
 
         when(userSettingsRepository.findByAppUser(appUser)).thenReturn(Optional.empty());
-        when(userSettingsRepository.save(any(UserSettings.class))).thenReturn(UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser));
+        when(userSettingsRepository.save(any(UserSettings.class))).thenReturn(UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser).get());
         when(cycleService.createInitialCycle(any(UserSettings.class), eq(appUser))).thenReturn(null);
 
         UserSettings userSettings = userSettingsService.saveOrUpdate(userSettingsDto);
@@ -71,7 +71,7 @@ public class UserSettingsServiceTest implements TestUserSupplier, UserSettingsSu
     @Test
     public void updateCycleIfExistTest() throws CycleImpositionException {
         UserSettingsDto userSettingsDto = prepareUserSettingsDto(true, true);
-        UserSettings userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser);
+        UserSettings userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser).get();
 
         when(userSettingsRepository.findByAppUser(appUser)).thenReturn(Optional.of(userSettings));
         when(userSettingsRepository.save(any(UserSettings.class))).thenReturn(userSettings);

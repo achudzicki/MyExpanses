@@ -1,9 +1,8 @@
-package com.chudzick.expanses.factiories;
+package com.chudzick.expanses.factories;
 
 import com.chudzick.expanses.TestUserSupplier;
 import com.chudzick.expanses.domain.users.AppUser;
 import com.chudzick.expanses.domain.users.UserDto;
-import com.chudzick.expanses.factories.AppUserStaticFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

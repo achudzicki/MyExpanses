@@ -16,6 +16,9 @@ public final class UserAvatarStaticFactory {
     }
 
     public static Optional<UserAvatar> fromMultipartFile(MultipartFile multipartFile, AppUser currentUser) {
+        if (currentUser == null || multipartFile == null) {
+            return Optional.empty();
+        }
         try {
             UserAvatar userAvatar = new UserAvatar();
             userAvatar.setAppUser(currentUser);

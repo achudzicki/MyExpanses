@@ -1,5 +1,6 @@
 package com.chudzick.expanses.domain.paging;
 
+import java.util.Collections;
 import java.util.List;
 
 public class RequestPage<T> {
@@ -15,6 +16,18 @@ public class RequestPage<T> {
         this.currentPage = currentPage;
         this.totalPages = totalPages;
         this.itemsOnPage = itemsOnPage;
+    }
+
+    private RequestPage() {
+        this.content = Collections.emptyList();
+        this.allItems = 0;
+        this.currentPage = 0;
+        this.totalPages = 0;
+        this.itemsOnPage = 0;
+    }
+
+    public static <T> RequestPage<T> emptyPage() {
+        return new RequestPage<>();
     }
 
     public List<T> getContent() {
