@@ -58,11 +58,7 @@ public class SavingGoalServiceImpl implements SavingGoalService {
     @Transactional
     public List<SavingGoal> findAllUserSavingGoals() {
         AppUser appUser = userService.getCurrentLogInUser();
-        LocalDate now = LocalDate.now();
-        return savingGoalRepository.findAllByAppUsers(appUser).stream()
-                .filter(goal -> (goal.getDateFrom().isBefore(now) || goal.getDateFrom().isEqual(now))
-                        && (goal.getDateTo().isAfter(now) || goal.getDateTo().isEqual(now)))
-                .collect(Collectors.toList());
+        return savingGoalRepository.findAllByAppUsers(appUser);
     }
 
     @Override
@@ -84,7 +80,7 @@ public class SavingGoalServiceImpl implements SavingGoalService {
         List<SavingGoal> userSavingGoals = findAllUserSavingGoals();
         List<Cycle> allUserCycles = cycleService.findAllUserCycles();
         List<SavingGoalView> savingGoalViews = new LinkedList<>();
-
+        List<SavingGoalView> closedSavingGoalViews = new LinkedList<>();
 
         for (Cycle cycle : allUserCycles) {
             if (!cycle.isActive()) {
@@ -109,12 +105,20 @@ public class SavingGoalServiceImpl implements SavingGoalService {
                     }
                 }
             }
-            savingGoalViews.add(new SavingGoalView(saving, userPaymentsSum));
+
+            LocalDate now = LocalDate.now();
+            if ((saving.getDateFrom().isBefore(now) || saving.getDateFrom().isEqual(now))
+                    && (saving.getDateTo().isAfter(now) || saving.getDateTo().isEqual(now))) {
+                savingGoalViews.add(new SavingGoalView(saving, userPaymentsSum));
+            } else {
+                closedSavingGoalViews.add(new SavingGoalView(saving, userPaymentsSum));
+            }
         }
 
         savingGoalBean.setSavingSum(savingSum);
         savingGoalBean.setSavingToAllocate(actualSavings.subtract(savingPaymentSum));
         savingGoalBean.setUserSavingGoals(savingGoalViews);
+        savingGoalBean.setClosedSavingsGoals(closedSavingGoalViews);
         savingGoalBean.setGoalRequests(requestRepository.findAllByRequestOwnerAndInvitationStatus(currentUser, InvitationStatus.PENDING));
         return savingGoalBean;
     }

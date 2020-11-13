@@ -11,6 +11,7 @@ public class SavingGoalBean {
     private BigDecimal savingToAllocate;
     private BigDecimal userPaymentsSum;
     private List<SavingGoalView> userSavingGoals;
+    private List<SavingGoalView> closedSavingsGoals;
     private List<SavingGoalRequest> goalRequests;
 
     public List<SavingGoalRequest> getGoalRequests() {
@@ -51,5 +52,13 @@ public class SavingGoalBean {
 
     public void setUserSavingGoals(List<SavingGoalView> userSavingGoals) {
         this.userSavingGoals = userSavingGoals;
+    }
+
+    public List<SavingGoalView> getClosedSavingsGoals() {
+        return closedSavingsGoals;
+    }
+
+    public void setClosedSavingsGoals(List<SavingGoalView> closedSavingsGoals) {
+        this.closedSavingsGoals = closedSavingsGoals;
     }
 }
