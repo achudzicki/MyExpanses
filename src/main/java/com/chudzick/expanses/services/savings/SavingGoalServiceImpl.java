@@ -125,8 +125,11 @@ public class SavingGoalServiceImpl implements SavingGoalService {
         AppUser appUser = userService.getCurrentLogInUser();
         SavingGoal goal = savingGoalRepository.getOne(goalId);
         setUpPayment(savingPaymentDto, goal);
-        SavingPayment payment = SavingPaymentStaticFactory.createFromDto(savingPaymentDto, appUser, goal);
-        payment = savingPaymentRepository.save(payment);
+        Optional<SavingPayment> paymentOptional = SavingPaymentStaticFactory.createFromDto(savingPaymentDto, appUser, goal);
+        if (!paymentOptional.isPresent()) {
+            return;
+        }
+        SavingPayment payment = savingPaymentRepository.save(paymentOptional.get());
         goal.getSavingPayments().add(payment);
         savingGoalRepository.save(goal);
     }
@@ -208,7 +211,7 @@ public class SavingGoalServiceImpl implements SavingGoalService {
     @Override
     public List<SavingGoalRequest> findUserSavingGoalRequests() {
         AppUser appUser = userService.getCurrentLogInUser();
-        return requestRepository.findAllByRequestOwnerAndInvitationStatus(appUser,InvitationStatus.PENDING);
+        return requestRepository.findAllByRequestOwnerAndInvitationStatus(appUser, InvitationStatus.PENDING);
     }
 
     private void setUpPayment(SavingPaymentDto savingPaymentDto, SavingGoal goal) {

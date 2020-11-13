@@ -1,11 +1,9 @@
-package com.chudzick.expanses.factiories;
+package com.chudzick.expanses.factories;
 
 import com.chudzick.expanses.TestUserSupplier;
 import com.chudzick.expanses.domain.expanses.TransactionGroup;
 import com.chudzick.expanses.domain.expanses.dto.TransactionGroupDto;
 import com.chudzick.expanses.domain.users.AppUser;
-import com.chudzick.expanses.factories.AppUserStaticFactory;
-import com.chudzick.expanses.factories.TransactionGroupStaticFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
