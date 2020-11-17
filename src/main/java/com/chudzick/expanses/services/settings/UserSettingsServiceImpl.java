@@ -48,7 +48,11 @@ public class UserSettingsServiceImpl implements UserSettingsService {
             }
         } else {
             LOG.info("Create initial cycle for user {} with settings {}", currentUser, userSettings);
-            settingToSave = UserSettingsStaticFactory.createFromDto(userSettingsDto, currentUser);
+            Optional<UserSettings> fromDto = UserSettingsStaticFactory.createFromDto(userSettingsDto, currentUser);
+            if (!fromDto.isPresent()) {
+                return null;
+            }
+            settingToSave = fromDto.get();
             cycleService.createInitialCycle(settingToSave, currentUser);
         }
         LOG.info("Save settings for user {}", currentUser);

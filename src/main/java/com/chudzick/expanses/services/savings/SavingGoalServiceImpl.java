@@ -58,11 +58,7 @@ public class SavingGoalServiceImpl implements SavingGoalService {
     @Transactional
     public List<SavingGoal> findAllUserSavingGoals() {
         AppUser appUser = userService.getCurrentLogInUser();
-        LocalDate now = LocalDate.now();
-        return savingGoalRepository.findAllByAppUsers(appUser).stream()
-                .filter(goal -> (goal.getDateFrom().isBefore(now) || goal.getDateFrom().isEqual(now))
-                        && (goal.getDateTo().isAfter(now) || goal.getDateTo().isEqual(now)))
-                .collect(Collectors.toList());
+        return savingGoalRepository.findAllByAppUsers(appUser);
     }
 
     @Override
@@ -84,7 +80,7 @@ public class SavingGoalServiceImpl implements SavingGoalService {
         List<SavingGoal> userSavingGoals = findAllUserSavingGoals();
         List<Cycle> allUserCycles = cycleService.findAllUserCycles();
         List<SavingGoalView> savingGoalViews = new LinkedList<>();
-
+        List<SavingGoalView> closedSavingGoalViews = new LinkedList<>();
 
         for (Cycle cycle : allUserCycles) {
             if (!cycle.isActive()) {
@@ -109,12 +105,20 @@ public class SavingGoalServiceImpl implements SavingGoalService {
                     }
                 }
             }
-            savingGoalViews.add(new SavingGoalView(saving, userPaymentsSum));
+
+            LocalDate now = LocalDate.now();
+            if ((saving.getDateFrom().isBefore(now) || saving.getDateFrom().isEqual(now))
+                    && (saving.getDateTo().isAfter(now) || saving.getDateTo().isEqual(now))) {
+                savingGoalViews.add(new SavingGoalView(saving, userPaymentsSum));
+            } else {
+                closedSavingGoalViews.add(new SavingGoalView(saving, userPaymentsSum));
+            }
         }
 
         savingGoalBean.setSavingSum(savingSum);
         savingGoalBean.setSavingToAllocate(actualSavings.subtract(savingPaymentSum));
         savingGoalBean.setUserSavingGoals(savingGoalViews);
+        savingGoalBean.setClosedSavingsGoals(closedSavingGoalViews);
         savingGoalBean.setGoalRequests(requestRepository.findAllByRequestOwnerAndInvitationStatus(currentUser, InvitationStatus.PENDING));
         return savingGoalBean;
     }
@@ -125,8 +129,11 @@ public class SavingGoalServiceImpl implements SavingGoalService {
         AppUser appUser = userService.getCurrentLogInUser();
         SavingGoal goal = savingGoalRepository.getOne(goalId);
         setUpPayment(savingPaymentDto, goal);
-        SavingPayment payment = SavingPaymentStaticFactory.createFromDto(savingPaymentDto, appUser, goal);
-        payment = savingPaymentRepository.save(payment);
+        Optional<SavingPayment> paymentOptional = SavingPaymentStaticFactory.createFromDto(savingPaymentDto, appUser, goal);
+        if (!paymentOptional.isPresent()) {
+            return;
+        }
+        SavingPayment payment = savingPaymentRepository.save(paymentOptional.get());
         goal.getSavingPayments().add(payment);
         savingGoalRepository.save(goal);
     }
@@ -208,7 +215,7 @@ public class SavingGoalServiceImpl implements SavingGoalService {
     @Override
     public List<SavingGoalRequest> findUserSavingGoalRequests() {
         AppUser appUser = userService.getCurrentLogInUser();
-        return requestRepository.findAllByRequestOwnerAndInvitationStatus(appUser,InvitationStatus.PENDING);
+        return requestRepository.findAllByRequestOwnerAndInvitationStatus(appUser, InvitationStatus.PENDING);
     }
 
     private void setUpPayment(SavingPaymentDto savingPaymentDto, SavingGoal goal) {

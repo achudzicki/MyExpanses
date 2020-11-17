@@ -7,6 +7,7 @@ import com.chudzick.expanses.domain.savings.SavingPayment;
 import com.chudzick.expanses.factories.paging.PageFactory;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class SavingGoalView {
     private SavingGoal savingGoal;
@@ -42,5 +43,9 @@ public class SavingGoalView {
 
     public void setPaymentPage(RequestPage<SavingPayment> paymentPage) {
         this.paymentPage = paymentPage;
+    }
+
+    public boolean finished() {
+        return this.savingGoal.getDateTo().isBefore(LocalDate.now());
     }
 }

@@ -96,7 +96,7 @@ public class UserCycleSettingsControllerTest implements UserSettingsSuplier {
     @Test
     public void setUpUserCycleValidTest() throws Exception {
         UserSettingsDto userSettingsDto = prepareUserSettingsDto(true, true);
-        UserSettings userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser);
+        UserSettings userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser).get();
 
         when(userSettingsService.saveOrUpdate(userSettingsDto)).thenReturn(userSettings);
 
@@ -119,7 +119,7 @@ public class UserCycleSettingsControllerTest implements UserSettingsSuplier {
 
     private void sendAndCheckPostWithNotValidFields(boolean validDays, boolean validSaveGoal) throws Exception {
         UserSettingsDto userSettingsDto = prepareUserSettingsDto(validDays, validSaveGoal);
-        UserSettings userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser);
+        UserSettings userSettings = UserSettingsStaticFactory.createFromDto(userSettingsDto, appUser).get();
 
         when(userSettingsService.findUserSettings()).thenReturn(Optional.ofNullable(userSettings));
 

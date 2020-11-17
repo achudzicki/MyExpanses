@@ -1,11 +1,9 @@
-package com.chudzick.expanses.factiories;
+package com.chudzick.expanses.factories;
 
 import com.chudzick.expanses.TestUserSupplier;
 import com.chudzick.expanses.domain.expanses.Cycle;
 import com.chudzick.expanses.domain.settings.UserSettings;
 import com.chudzick.expanses.domain.users.AppUser;
-import com.chudzick.expanses.factories.AppUserStaticFactory;
-import com.chudzick.expanses.factories.CycleStaticFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
