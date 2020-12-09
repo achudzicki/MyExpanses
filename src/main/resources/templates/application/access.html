@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{mainTemplates/mainTemplate :: layout(~{::title}, ~{::.content}, ~{::script}, ~{::style})}">
+<head>
+    <title></title>
+    <style></style>
+    <script>
+        $(document).ready(function () {
+            $('#copyToClipboard').on('click', function () {
+               var text = $(this).closest('tr').find('.applicationId').get(0);
+               var selection = window.getSelection();
+               var range = document.createRange();
+
+               range.selectNodeContents(text);
+               selection.removeAllRanges();
+               selection.addRange(range);
+               document.execCommand("copy");
+               selection.removeAllRanges();
+
+                UIkit.notification({
+                    message: 'skopiowano do schowka',
+                    status: 'primary',
+                    pos: 'bottom-right',
+                    timeout: 3000
+                });
+            })
+        })
+    </script>
+</head>
+<body>
+<div class="content">
+    <div class="uk-width-expand">
+        <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Dostęp do Aplikacji</h4>
+    </div>
+    <hr>
+    <form class="uk-form-horizontal uk-margin-small" th:object="${applicationAccessDto}" method="post"
+          th:action="@{/application/access}">
+        <div class="uk-margin">
+            <label th:text="#{application.access.description.label}"></label>
+            <textarea required class="uk-textarea" name="description" th:field="*{description}"></textarea>
+            <i class="uk-text-danger" th:each="error : ${#fields.errors('description')}" th:text="${error}"></i>
+        </div>
+
+        <div class="uk-text-center">
+            <button type="submit" class="uk-button-primary uk-button uk-float-right uk-margin"
+                    th:text="#{application.access.save.button}"></button>
+        </div>
+    </form>
+    <br>
+    <div th:if="${applicationAccess != null && !applicationAccess.isEmpty()}">
+        <div class="uk-width-expand">
+            <h4 style="color: #1e87f0" class="uk-margin-remove-bottom">Wygenerowane klucze</h4>
+        </div>
+        <hr>
+        <table class="uk-table uk-table-striped">
+            <thead>
+            <tr>
+                <th class="uk-text-center" th:text="Lp"></th>
+                <th class="uk-text-center" th:text="#{application.access.description.label}"></th>
+                <th class="uk-text-center" th:text="#{application.access.key.label}"></th>
+                <th class="uk-text-center" th:text="#{application.access.ctime.label}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="access,iter : ${applicationAccess}">
+                <th class="uk-text-center" th:text="${iter.index + 1}"></th>
+                <th class="uk-text-center">
+                    <span class="label-radius" th:text="${access.description}"></span>
+                </th>
+                <th class="uk-text-center">
+                    <span style="text-transform: none!important;" class="label-radius applicationId" th:text="${access.applicationId}"></span>
+                </th>
+                <th class="uk-text-center">
+                    <span class="label-radius"
+                          th:text="${#temporals.format(access.creationTime, 'dd-MM-yyyy HH:mm')}"></span>
+                </th>
+                <th>
+                    <span style="cursor: pointer" id="copyToClipboard" uk-icon="icon: copy"
+                          uk-tooltip="kopiuj do schowka"></span>
+                </th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
