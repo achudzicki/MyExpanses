@@ -1,5 +1,6 @@
 package com.chudzick.expanses.services.users;
 
+import com.chudzick.expanses.beans.rest.RestRequestBean;
 import com.chudzick.expanses.beans.users.UserBean;
 import com.chudzick.expanses.domain.settings.dto.UserProfileSettingsDto;
 import com.chudzick.expanses.domain.users.AppUser;
@@ -44,6 +45,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserBean userBean;
 
+    @Autowired
+    private RestRequestBean restRequestBean;
+
     private String loginAlreadyExistMessage = "Login already exist";
 
     @Override
@@ -72,6 +76,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AppUser getCurrentLogInUser() {
+        if (restRequestBean.isRestRequest()) {
+            return restRequestBean.getRequestUser();
+        }
+        
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
